@@ -19,7 +19,7 @@
 \title{Adaptive Credit-Weighted Online Mirror Descent\\
 for Sparse Verifiable Reward Reinforcement Learning}
 \author{RC-OMD Project Team}
-\date{Working draft --- 8 August 2026}
+\date{Working draft --- 9 August 2026}
 
 \begin{document}
 \maketitle
@@ -39,9 +39,12 @@ group and $O(H|\A|)$ persistent state.  In a frozen out-of-distribution protocol
 covering four threshold-reward tasks and ten seeds per task, Online RC-OMD
 remained within $0.0018$ normalized success AUC of a tuned uniform Group OMD
 baseline while using only $18.9\%$--$24.8\%$ as much absolute cumulative KL at
-known distractor positions.  These results support a narrow Pareto claim about
-controlled policy movement; they do not establish causal credit assignment or
-performance under function approximation.
+known distractor positions.  A subsequent frozen shared-linear-policy test
+passed only the separable-feature scenario and returned No-Go under partial or
+complete feature aliasing.  The combined results support a narrow claim about
+controlled policy movement and identify parameter coupling as the next
+bottleneck; they do not establish causal credit assignment or neural-policy
+performance.
 \end{abstract}
 
 \section{Introduction}
@@ -77,6 +80,10 @@ Our contributions are:
     \item We report development results separately from a protocol frozen
     before evaluation.  The pre-registered comparison passes all four unseen
     scenarios under a declared AUC--distractor-KL rule.
+    \item We run a second frozen transfer test with shared linear policy
+    parameters.  It preserves the result only when pivotal and distractor
+    features are separable, exposing an explicit limit of local reliability
+    scaling followed by global parametric projection.
 \end{enumerate}
 
 The central empirical claim is a trade-off, not universal dominance: reliability
@@ -242,6 +249,13 @@ success AUC and used at most $50\%$ of Uniform's distractor KL.  The method-leve
 Go decision required at least three of four scenario passes.  Runtime feasibility
 required an Online-to-Uniform ratio below $1.5$ in at least three scenarios.
 
+The second frozen protocol replaces independent policy rows with shared linear
+logits $\ell_k=\phi_k^\top W$.  Each method first forms a tabular OMD target and
+then performs 60 fixed gradient steps minimizing average target-to-parametric
+KL.  Three scenarios use separable, partially aliased, and completely aliased
+position features.  Projected transfer required at least two of three scenarios
+to remain within $0.02$ AUC and $75\%$ distractor KL of Projected Uniform.
+
 \section{Results}
 
 \subsection{Pre-registered OOD evaluation}
@@ -299,6 +313,36 @@ runtime.  Replacing bootstrap resampling with online moments reduced runtime to
 within roughly $7\%$--$13\%$ of Uniform on the development tasks.  These
 measurements are exploratory and are not pooled with the frozen OOD result.
 
+\subsection{Frozen shared-parameter transfer}
+
+\begin{table}[t]
+\centering
+\small
+\caption{Frozen shared-linear-policy transfer.  Only the separable scenario
+passes the declared AUC and distractor-KL conditions; the resulting transfer
+decision is No-Go.}
+\label{tab:function}
+\begin{tabular}{lrrrcr}
+\toprule
+Feature geometry & Uniform AUC & Online AUC & $\Delta$AUC & KL ratio & Pass\\
+\midrule
+Separable         & 0.982550 & 0.980943 & -0.001608 & 0.193 & Yes\\
+Partial aliasing  & 0.977562 & 0.977033 & -0.000529 & 0.967 & No\\
+Complete aliasing & 0.971513 & 0.972722 &  0.001209 & 1.176 & No\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+All three AUC conditions pass, but only the separable-feature task passes the KL
+condition (Table~\ref{tab:function}).  The estimator itself continues to rank
+pivotal positions above distractors: mean pivotal reliability is
+$0.401$--$0.432$, mean distractor reliability is $0.137$--$0.167$, and top-$k$
+precision is $0.704$--$0.725$.  The failure occurs after projection.  With
+complete aliasing, every pivotal position shares its feature with a distractor,
+so their projected KL movements are structurally identical.  The larger Online
+base step then produces $17.6\%$ more distractor KL than Projected Uniform.  The
+runtime ratio remains $0.999$--$1.055$ across the three scenarios.
+
 \section{Discussion and Limitations}
 
 The results are consistent with a simple mechanism: reward-relevant score
@@ -308,14 +352,20 @@ associational mechanism, not a causal-credit theorem.  A persistent spurious
 correlation can also look reliable, and estimator lag can suppress newly useful
 directions after a policy or task change.
 
-The current scope has five important limits.  First, the policy is tabular and
-factorized; shared neural parameters may couple local updates.  Second, known
+The shared-linear transfer result sharpens the mechanism: the reliability
+estimate can remain discriminative while the parameterization prevents its
+local constraints from being realized.  Reliability must therefore enter the
+parameter-space metric or constrained projection, rather than only the tabular
+target distribution.
+
+The current scope has five important limits.  First, function approximation is
+restricted to fixed linear features; no representation is learned.  Second, known
 distractor positions are used only to evaluate drift, an oracle unavailable in
 real RLVR.  Third, the principal methods use base steps chosen on development
 tasks.  Fourth, ten seeds quantify simulation variation but not universality.
-Fifth, no language model, process reward model, or long natural-language
-trajectory has been tested.  These limitations make function approximation the
-next necessary experiment, while a language-model study remains optional.
+Fifth, no nonlinear neural policy, language model, process reward model, or long
+natural-language trajectory has been tested.  These limitations rule out a
+direct language-model experiment with the current optimizer.
 
 \section{Conclusion}
 
@@ -323,9 +373,11 @@ We studied whether the reliability of a noisy step-level credit proxy should
 control local mirror-descent geometry under sparse terminal rewards.  A
 low-cost online moment estimator produced a reproducible Pareto improvement in
 four frozen controlled OOD scenarios: nearly unchanged success learning with
-substantially less policy movement at known distractor decisions.  The next
-stage must determine whether this behavior survives shared-parameter function
-approximation, where local policy constraints are only approximately realizable.
+substantially less policy movement at known distractor decisions.  A frozen
+shared-linear transfer test then showed that this behavior survives separable
+features but not feature aliasing.  The next algorithmic stage is to make credit
+reliability control parameter-space geometry itself, then subject that new
+method to a separately frozen transfer protocol.
 
 \begin{thebibliography}{9}
 

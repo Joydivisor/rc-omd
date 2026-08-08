@@ -133,5 +133,9 @@ See `docs/MILESTONE_5_OOD_PROTOCOL.md` for the frozen protocol and
 
 The controlled environment suite, diagnostic baselines, bootstrap RC-OMD, and
 low-cost Online RC-OMD are implemented and covered by unit tests. Pre-registered
-OOD validation passed its frozen Go criterion. The next milestone is a paper
-draft plus a pre-registered function-approximation experiment.
+OOD validation passed its frozen Go criterion. A working paper draft is now
+available under `paper/`. The pre-registered shared-linear-policy transfer test
+returned NO-GO: reliability calibration preserved its Pareto behavior with
+separable features but not under partial or complete feature aliasing. The next
+algorithmic milestone is therefore parameter-space reliability geometry, not a
+premature language-model experiment.
