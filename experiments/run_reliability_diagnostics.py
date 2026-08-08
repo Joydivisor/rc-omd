@@ -18,6 +18,8 @@ from algorithms import (
     GroupOMD,
     OnlineReliabilityOMD,
     OracleCreditOMD,
+    ProjectedGroupOMD,
+    ProjectedOnlineReliabilityOMD,
     ReliabilityCalibratedOMD,
 )
 from environments import ControlledSequenceMDP, StructuredSequenceMDP
@@ -30,6 +32,8 @@ METHOD_LABELS = {
     "rc_omd": "Local RC-OMD",
     "oracle_credit_omd": "Oracle-credit OMD",
     "online_rc_omd": "Online RC-OMD",
+    "projected_group_omd": "Projected Group OMD",
+    "projected_online_rc_omd": "Projected Online RC-OMD",
 }
 
 METHOD_COLORS = {
@@ -39,6 +43,8 @@ METHOD_COLORS = {
     "rc_omd": "#DC2626",
     "oracle_credit_omd": "#15803D",
     "online_rc_omd": "#0891B2",
+    "projected_group_omd": "#2458A6",
+    "projected_online_rc_omd": "#0891B2",
 }
 
 
@@ -85,6 +91,33 @@ def build_algorithm(
         return EntropyWeightedOMD(**arguments)
     if algorithm_name == "oracle_credit_omd":
         return OracleCreditOMD(**arguments)
+    if algorithm_name in {"projected_group_omd", "projected_online_rc_omd"}:
+        arguments.update(
+            {
+                "features": np.asarray(scenario["features"], dtype=np.float64),
+                "projection_steps": int(method_config["projection_steps"]),
+                "projection_learning_rate": float(
+                    method_config["projection_learning_rate"]
+                ),
+                "projection_ridge": float(method_config["projection_ridge"]),
+                "projection_tolerance": float(
+                    method_config.get("projection_tolerance", 1e-9)
+                ),
+            }
+        )
+        if algorithm_name == "projected_group_omd":
+            return ProjectedGroupOMD(**arguments)
+        arguments.update(
+            {
+                "reliability_decay": float(method_config["reliability_decay"]),
+                "confidence_multiplier": float(method_config["confidence_multiplier"]),
+                "warmup_effective_samples": float(
+                    method_config["warmup_effective_samples"]
+                ),
+                "reliability_floor": float(method_config["reliability_floor"]),
+            }
+        )
+        return ProjectedOnlineReliabilityOMD(**arguments)
 
     if algorithm_name in {"global_reliability_omd", "rc_omd"}:
         arguments.update(
@@ -174,6 +207,7 @@ def run_one(
     history: list[dict[str, Any]] = []
     cumulative_critical_kl = 0.0
     cumulative_distractor_kl = 0.0
+    cumulative_projection_kl = 0.0
     harmful_updates = 0
     zero_variance_groups = 0
     start = time.perf_counter()
@@ -191,6 +225,7 @@ def run_one(
                     "success_probability": success_before,
                     "cumulative_critical_kl": cumulative_critical_kl,
                     "cumulative_distractor_kl": cumulative_distractor_kl,
+                    "cumulative_projection_kl": cumulative_projection_kl,
                     "distractor_kl_fraction": (
                         cumulative_distractor_kl / total_kl if total_kl > 0.0 else 0.0
                     ),
@@ -227,6 +262,7 @@ def run_one(
         success_after = environment.expected_success_probability(algorithm.policy)
         harmful_updates += int(success_after + 1e-12 < success_before)
         zero_variance_groups += int(stats["zero_variance_group"] > 0.5)
+        cumulative_projection_kl += float(stats.get("projection_kl", 0.0))
 
     runtime_seconds = time.perf_counter() - start
     return history, {
@@ -264,6 +300,7 @@ def summarize(
             critical_reliability: list[float] = []
             distractor_reliability: list[float] = []
             topk_precision: list[float] = []
+            projection_kl: list[float] = []
             for seed in seeds:
                 seed_rows = sorted(
                     [row for row in selected if int(row["seed"]) == seed],
@@ -278,6 +315,9 @@ def summarize(
                 distractor_kl.append(float(seed_rows[-1]["cumulative_distractor_kl"]))
                 harmful_rate.append(float(seed_rows[-1]["harmful_update_rate"]))
                 runtime.append(run_metadata[(scenario, method, seed)]["runtime_seconds"])
+                projection_kl.append(
+                    float(seed_rows[-1].get("cumulative_projection_kl", 0.0))
+                )
                 valid = [
                     row
                     for row in seed_rows
@@ -307,6 +347,7 @@ def summarize(
                 ),
                 "harmful_update_rate_mean": float(np.mean(harmful_rate)),
                 "runtime_seconds_mean": float(np.mean(runtime)),
+                "cumulative_projection_kl_mean": float(np.mean(projection_kl)),
                 "critical_reliability_mean": (
                     float(np.mean(critical_reliability))
                     if critical_reliability

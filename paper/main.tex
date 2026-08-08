@@ -1,0 +1,370 @@
+% !TEX program = pdflatex
+\documentclass[10pt]{article}
+
+\usepackage[margin=0.85in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+
+\newcommand{\KL}{D_{\mathrm{KL}}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\method}{Online RC-OMD}
+\newtheorem{proposition}{Proposition}
+
+\title{Adaptive Credit-Weighted Online Mirror Descent\\
+for Sparse Verifiable Reward Reinforcement Learning}
+\author{RC-OMD Project Team}
+\date{Working draft --- 8 August 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Sparse terminal rewards make it difficult to decide which actions in a long
+trajectory deserve a large policy update.  Broadcasting one group-relative
+advantage to every decision is inexpensive, but finite-sample correlations can
+move policy mass at decisions that do not affect the reward.  We study a
+controlled sequence setting in which the reward-relevant positions are known
+for evaluation but hidden from the optimizer.  We introduce Online RC-OMD, a
+low-cost reliability-calibrated variant of Online Mirror Descent (OMD).  It
+tracks exponentially weighted first and second moments of group-relative
+action-score estimates and uses their persistent signal-to-uncertainty ratio to
+scale the local KL-mirror step.  The method requires one score computation per
+group and $O(H|\A|)$ persistent state.  In a frozen out-of-distribution protocol
+covering four threshold-reward tasks and ten seeds per task, Online RC-OMD
+remained within $0.0018$ normalized success AUC of a tuned uniform Group OMD
+baseline while using only $18.9\%$--$24.8\%$ as much absolute cumulative KL at
+known distractor positions.  These results support a narrow Pareto claim about
+controlled policy movement; they do not establish causal credit assignment or
+performance under function approximation.
+\end{abstract}
+
+\section{Introduction}
+
+Reinforcement learning with verifiable rewards (RLVR) supplies an attractive
+training signal for tasks whose final outcomes can be checked automatically.
+The reward is often binary and observed only after a complete trajectory.  A
+group-relative baseline can avoid learning a separate critic, as in Group
+Relative Policy Optimization (GRPO)~\cite{shao2024deepseekmath}, but the same
+trajectory-level advantage is then commonly propagated through many decisions.
+This leaves an optimizer-level question: when the available credit signal is a
+noisy proxy, how much policy movement should each decision be allowed to make?
+
+Recent work has attacked token-level credit assignment using entropy-aware
+weights and related local signals~\cite{he2026eapo,xie2026acpo}.  Entropy can be
+informative, but uncertainty is not identical to reward relevance.  A decision
+can be uncertain and irrelevant, or confident and pivotal.  We therefore treat
+credit reliability as a quantity to be estimated rather than equating it with
+entropy.  Our approach is deliberately smaller than language-model RL: a
+factorized tabular policy lets us observe local policy movement exactly and
+construct environments with known distractor decisions.
+
+Our contributions are:
+\begin{enumerate}
+    \item We construct controlled sparse terminal-reward sequence tasks with
+    exact counterfactual credit and known reward-irrelevant positions for
+    evaluation.  The suite includes settings where policy entropy is aligned
+    with, and deliberately misleading about, true positional importance.
+    \item We propose \method, which converts persistent agreement in online
+    group-relative action scores into per-position OMD step scales.  Unlike a
+    per-group bootstrap estimator, it adds no rollout resampling and maintains
+    only $O(H|\A|)$ state.
+    \item We report development results separately from a protocol frozen
+    before evaluation.  The pre-registered comparison passes all four unseen
+    scenarios under a declared AUC--distractor-KL rule.
+\end{enumerate}
+
+The central empirical claim is a trade-off, not universal dominance: reliability
+calibration directs substantially less policy movement toward known distractors
+while retaining almost all learning efficiency in the tested controlled tasks.
+
+\section{Related Work}
+
+\paragraph{Mirror-descent policy optimization.}
+Mirror descent replaces Euclidean proximity with a Bregman divergence and is
+particularly natural on a probability simplex~\cite{beck2003mirror}.  MDPO
+connects this geometry to practical trust-region policy optimization by
+combining a linearized RL objective with a proximity term~\cite{tomar2020mdpo}.
+We use the negative-entropy mirror map, for which the proximity term is KL and
+the exact local update is exponentiated gradient.
+
+\paragraph{Group-relative optimization and sparse verifiable rewards.}
+DeepSeekMath introduced GRPO as a critic-free relative policy optimization
+method for mathematical reasoning~\cite{shao2024deepseekmath}.  Outcome-only
+feedback saves the cost of a process reward model, but it leaves temporal credit
+coarse.  A recent survey organizes the rapidly growing LLM credit-assignment
+literature by granularity and methodology~\cite{zhang2026survey}.
+
+\paragraph{Entropy-aware credit.}
+EAPO analyzes reward polarity and token entropy, and shows that entropy bounds
+the credit a token can carry under its information-theoretic formulation
+\cite{he2026eapo}.  ACPO uses a mode-local surrogate entropy to modulate token
+updates asymmetrically~\cite{xie2026acpo}.  Our study does not compete with
+these systems at language-model scale.  Instead, it tests a distinct diagnostic
+hypothesis: persistent score agreement can regulate local mirror geometry even
+when instantaneous entropy is a misleading proxy for reward relevance.
+
+\section{Controlled Problem}
+
+Let a trajectory be $\tau=(a_1,\ldots,a_H)$ with
+$a_k\in\A=\{1,\ldots,A\}$.  The factorized policy is
+$\pi(\tau)=\prod_{k=1}^{H}\pi_k(a_k)$.  A hidden set
+$\mathcal{K}\subseteq\{1,\ldots,H\}$ contains the pivotal positions.  Each
+$k\in\mathcal{K}$ has a target action $a_k^\star$.  The terminal reward is
+\begin{equation}
+R(\tau)=\mathbf{1}\!\left\{
+\sum_{k\in\mathcal{K}}\mathbf{1}\{a_k=a_k^\star\}\ge m
+\right\}.
+\label{eq:reward}
+\end{equation}
+Positions outside $\mathcal{K}$ are distractors: changing them never changes
+the reward.  The special case $m=|\mathcal{K}|$ is an all-match or ``needle''
+task.  Threshold tasks use $m<|\mathcal{K}|$.
+
+For each update, $K$ trajectories are sampled and assigned group-relative
+advantages
+\begin{equation}
+\widehat A_i=R(\tau_i)-\frac{1}{K}\sum_{j=1}^{K}R(\tau_j).
+\label{eq:group_advantage}
+\end{equation}
+We estimate the gain for action $a$ at position $k$ with inverse propensity
+weighting,
+\begin{equation}
+\widehat g_{t,k,a}=
+\frac{1}{K}\sum_{i=1}^{K}
+\frac{\mathbf{1}\{a_{i,k}=a\}\widehat A_i}
+{\max(\pi_{t,k}(a),p_{\min})},
+\label{eq:score}
+\end{equation}
+with a fixed importance cap in the implementation.  Uniform Group OMD applies
+this noisy action score at every position.  Although the expected distractor
+score is zero in our controlled environment, its finite-group realization need
+not be, so repeated updates may accumulate irrelevant KL drift.
+
+For diagnosis only, the known transition and reward structure gives exact
+on-trajectory counterfactual credit
+\begin{equation}
+c_k(\tau,\pi)=Q^\pi(s_k,a_k)-V^\pi(s_k).
+\end{equation}
+The optimizer never receives the pivotal set or oracle credit unless explicitly
+labelled as an oracle baseline.
+
+\section{Reliability-Calibrated OMD}
+
+\subsection{Uniform KL-mirror update}
+
+At position $k$, negative-entropy OMD solves
+\begin{equation}
+\pi_{t+1,k}=\arg\max_{p\in\Delta_A}
+\left\{\eta\langle \widehat g_{t,k},p\rangle
+-\KL(p\,\|\,\pi_{t,k})\right\},
+\end{equation}
+with solution
+\begin{equation}
+\pi_{t+1,k}(a)=
+\frac{\pi_{t,k}(a)\exp(\eta\widehat g_{t,k,a})}
+{\sum_b\pi_{t,k}(b)\exp(\eta\widehat g_{t,k,b})}.
+\label{eq:uniform_omd}
+\end{equation}
+
+\subsection{Online reliability estimate}
+
+We center each score vector across actions and maintain exponentially weighted
+first and second moments with decay $\beta$.  Let $\widehat\mu_{t,k}$ be the
+running mean vector, $\widehat s_{t,k}$ its estimated standard-error vector,
+and $n_{\mathrm{eff},t}$ the effective sample size of the exponential weights.
+We define
+\begin{align}
+q_{t,k}
+&=\min\left\{1,
+\frac{n_{\mathrm{eff},t}}{n_{\mathrm{warm}}}
+\right\}
+\left[
+1-z\frac{\|\widehat s_{t,k}\|_2}
+{\max(\|\widehat\mu_{t,k}\|_2,\epsilon)}
+\right]_+, \\
+\alpha_{t,k}
+&=\alpha_{\min}+(1-\alpha_{\min})q_{t,k}.
+\label{eq:reliability}
+\end{align}
+The first factor prevents confidence before enough effective observations; the
+second rewards a persistent signal relative to its uncertainty.  The local OMD
+update replaces $\eta$ in Eq.~\eqref{eq:uniform_omd} by
+$\eta\alpha_{t,k}$.  The current score determines direction, whereas the
+historical reliability estimate controls how far the policy may move.
+
+\begin{proposition}[Exact local movement control]
+For any actions $a,b$ with positive probability, the reliability-calibrated
+update satisfies
+\begin{equation}
+\log\frac{\pi_{t+1,k}(a)}{\pi_{t+1,k}(b)}
+-\log\frac{\pi_{t,k}(a)}{\pi_{t,k}(b)}
+=\eta\alpha_{t,k}
+\bigl(\widehat g_{t,k,a}-\widehat g_{t,k,b}\bigr).
+\end{equation}
+Thus reliability scales every local log-odds displacement linearly, without
+changing the ranking induced by the current action-score vector.
+\end{proposition}
+
+\begin{proof}
+Take the log ratio of the two normalized exponentiated-gradient probabilities;
+the shared normalizer cancels.
+\end{proof}
+
+The estimator uses one action-score computation per group.  Its first and second
+moments require $O(HA)$ memory and $O(HA)$ arithmetic per update, matching the
+asymptotic score-update cost of the uniform baseline.
+
+\section{Experimental Design}
+
+We separate exploratory development from frozen evaluation.  Development tasks
+were used to construct entropy counterexamples, compare bootstrap and online
+reliability, and choose the online configuration.  The subsequent OOD protocol,
+including tasks, seeds, metrics, parameter values, and decision rule, was
+committed before execution under identifier \texttt{ood-v1-2026-08-08}.
+
+The frozen comparison used ten seeds per task.  Uniform Group OMD used base step
+$0.75$.  Online RC-OMD used base step $1.25$, decay $0.9$, $z=1$, warm-up $8$,
+and reliability floor $0.1$.  These unequal base steps were selected on
+development tasks to compare a Pareto-matched operating point; a separate
+same-step diagnostic was also frozen.  Normalized success AUC is the mean exact
+success probability across evaluation checkpoints.  Distractor KL is the sum
+over training iterations and known distractor positions of the absolute local
+KL movement.
+
+A scenario passed when Online RC-OMD was no more than $0.01$ below Uniform in
+success AUC and used at most $50\%$ of Uniform's distractor KL.  The method-level
+Go decision required at least three of four scenario passes.  Runtime feasibility
+required an Online-to-Uniform ratio below $1.5$ in at least three scenarios.
+
+\section{Results}
+
+\subsection{Pre-registered OOD evaluation}
+
+\begin{table}[t]
+\centering
+\small
+\caption{Frozen OOD comparison.  AUC difference and KL ratio are Online minus
+Uniform and Online divided by Uniform, respectively.  Values are means across
+ten seeds; the seed is the replication unit.}
+\label{tab:ood}
+\begin{tabular}{lrrrrr}
+\toprule
+Scenario & Uniform AUC & Online AUC & $\Delta$AUC & KL ratio & Runtime ratio\\
+\midrule
+Dense 2-of-6        & 0.992182 & 0.990865 & -0.001317 & 0.248 & 1.107\\
+Needle 5-of-5       & 0.980026 & 0.980782 &  0.000755 & 0.239 & 1.081\\
+Threshold 3-of-5    & 0.992195 & 0.990567 & -0.001628 & 0.189 & 1.069\\
+Threshold 4-of-6    & 0.989446 & 0.987688 & -0.001758 & 0.199 & 1.079\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+All four scenarios passed the pre-declared rule (Table~\ref{tab:ood}), yielding
+a Go decision.  Online RC-OMD retained AUC to within $0.0018$ while using between
+$18.9\%$ and $24.8\%$ as much distractor KL.  Runtime overhead was
+$6.9\%$--$10.7\%$, so all four scenarios also passed the systems rule.  The
+scenarios changed reward structure, horizon, group size, initial success
+probability, and included both two- and three-action policies.
+
+\IfFileExists{../results/ood_preregistered/auc_distractor_kl_pareto.png}{
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.82\linewidth]{../results/ood_preregistered/auc_distractor_kl_pareto.png}
+\caption{Pre-registered OOD success--distractor-drift comparison.  The generated
+artifact is reproduced from the frozen configuration; the numerical decision
+is based on the machine-readable summary rather than the figure.}
+\label{fig:pareto}
+\end{figure}
+}{}
+
+At a common base step of $1.0$, Online RC-OMD had $0.0044$--$0.0069$ lower AUC,
+but used only $10.7\%$--$13.4\%$ as much distractor KL.  This diagnostic confirms
+that the main result is an update-allocation trade-off, not evidence that
+reliability scaling always raises reward at an identical nominal step size.
+
+\subsection{Development diagnostics}
+
+In entropy-aligned development tasks, entropy weighting improved early learning;
+when distractor positions were initialized with high entropy and pivotal
+positions with lower entropy, the same heuristic reduced sample efficiency.
+This controlled reversal motivated reliability estimation.  Per-group bootstrap
+reliability reduced distractor drift but cost roughly $7$--$9\times$ the uniform
+runtime.  Replacing bootstrap resampling with online moments reduced runtime to
+within roughly $7\%$--$13\%$ of Uniform on the development tasks.  These
+measurements are exploratory and are not pooled with the frozen OOD result.
+
+\section{Discussion and Limitations}
+
+The results are consistent with a simple mechanism: reward-relevant score
+directions recur, whereas finite-sample distractor directions fluctuate, so
+running agreement can allocate a larger KL budget to the former.  This is an
+associational mechanism, not a causal-credit theorem.  A persistent spurious
+correlation can also look reliable, and estimator lag can suppress newly useful
+directions after a policy or task change.
+
+The current scope has five important limits.  First, the policy is tabular and
+factorized; shared neural parameters may couple local updates.  Second, known
+distractor positions are used only to evaluate drift, an oracle unavailable in
+real RLVR.  Third, the principal methods use base steps chosen on development
+tasks.  Fourth, ten seeds quantify simulation variation but not universality.
+Fifth, no language model, process reward model, or long natural-language
+trajectory has been tested.  These limitations make function approximation the
+next necessary experiment, while a language-model study remains optional.
+
+\section{Conclusion}
+
+We studied whether the reliability of a noisy step-level credit proxy should
+control local mirror-descent geometry under sparse terminal rewards.  A
+low-cost online moment estimator produced a reproducible Pareto improvement in
+four frozen controlled OOD scenarios: nearly unchanged success learning with
+substantially less policy movement at known distractor decisions.  The next
+stage must determine whether this behavior survives shared-parameter function
+approximation, where local policy constraints are only approximately realizable.
+
+\begin{thebibliography}{9}
+
+\bibitem{beck2003mirror}
+A. Beck and M. Teboulle.
+Mirror descent and nonlinear projected subgradient methods for convex
+optimization.
+\emph{Operations Research Letters}, 31(3):167--175, 2003.
+
+\bibitem{he2026eapo}
+Y. He, H. Wu, S. Liu, H. Ge, H. Zhou, K. Wu, Z. Zheng, Q. Lin, Z. Zhong,
+and Y. Zhang.
+Rethinking token-level credit assignment in RLVR: A polarity-entropy analysis.
+\emph{arXiv preprint arXiv:2604.11056}, 2026.
+
+\bibitem{shao2024deepseekmath}
+Z. Shao, P. Wang, Q. Zhu, R. Xu, J. Song, X. Bi, H. Zhang, M. Zhang,
+Y. K. Li, Y. Wu, and D. Guo.
+DeepSeekMath: Pushing the limits of mathematical reasoning in open language
+models.
+\emph{arXiv preprint arXiv:2402.03300}, 2024.
+
+\bibitem{tomar2020mdpo}
+M. Tomar, L. Shani, Y. Efroni, and M. Ghavamzadeh.
+Mirror Descent Policy Optimization.
+\emph{arXiv preprint arXiv:2005.09814}, 2020.
+
+\bibitem{xie2026acpo}
+Z. Xie, Y. You, Y. Li, E. Gong, Z. Chen, Q. Chen, Y. Cheng, P. Jiang,
+and Y. Mu.
+ACPO: Adaptive credit policy optimization via fine-grained surrogate entropy.
+\emph{arXiv preprint arXiv:2607.03126}, 2026.
+
+\bibitem{zhang2026survey}
+C. Zhang.
+From reasoning to agentic: Credit assignment in reinforcement learning for
+large language models.
+\emph{arXiv preprint arXiv:2604.09459}, 2026.
+
+\end{thebibliography}
+
+\end{document}

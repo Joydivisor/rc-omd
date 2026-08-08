@@ -1,0 +1,104 @@
+{
+  "protocol_id": "function-approx-v1-2026-08-09",
+  "scenarios": [
+    {
+      "name": "separable_shared_features",
+      "environment": "threshold",
+      "horizon": 12,
+      "n_actions": 2,
+      "critical_positions": [0, 2, 4, 6, 8, 10],
+      "target_actions": [1, 0, 1, 1, 0, 1],
+      "minimum_matches": 5,
+      "initial_policy": [[0.5, 0.5], [0.5, 0.5], [0.5, 0.5], [0.5, 0.5], [0.5, 0.5], [0.5, 0.5], [0.5, 0.5], [0.5, 0.5], [0.5, 0.5], [0.5, 0.5], [0.5, 0.5], [0.5, 0.5]],
+      "features": [
+        [1,0,0,0,0,0], [0,0,0,1,0,0], [0,1,0,0,0,0], [0,0,0,0,1,0],
+        [0,0,1,0,0,0], [0,0,0,0,0,1], [1,0,0,0,0,0], [0,0,0,1,0,0],
+        [0,1,0,0,0,0], [0,0,0,0,1,0], [0,0,1,0,0,0], [0,0,0,0,0,1]
+      ],
+      "iterations": 500,
+      "group_size": 48
+    },
+    {
+      "name": "partial_feature_aliasing",
+      "environment": "threshold",
+      "horizon": 12,
+      "n_actions": 2,
+      "critical_positions": [0, 2, 4, 6, 8, 10],
+      "target_actions": [1, 0, 1, 1, 0, 1],
+      "minimum_matches": 5,
+      "initial_policy": [[0.5, 0.5], [0.5, 0.5], [0.5, 0.5], [0.5, 0.5], [0.5, 0.5], [0.5, 0.5], [0.5, 0.5], [0.5, 0.5], [0.5, 0.5], [0.5, 0.5], [0.5, 0.5], [0.5, 0.5]],
+      "features": [
+        [1,0,0,0], [0,0,0,1], [0,1,0,0], [1,0,0,0],
+        [0,0,1,0], [0,0,0,1], [1,0,0,0], [0,1,0,0],
+        [0,1,0,0], [0,0,0,1], [0,0,1,0], [0,0,1,0]
+      ],
+      "iterations": 500,
+      "group_size": 48
+    },
+    {
+      "name": "complete_feature_aliasing_negative_control",
+      "environment": "threshold",
+      "horizon": 12,
+      "n_actions": 2,
+      "critical_positions": [0, 2, 4, 6, 8, 10],
+      "target_actions": [1, 0, 1, 1, 0, 1],
+      "minimum_matches": 5,
+      "initial_policy": [[0.5, 0.5], [0.5, 0.5], [0.5, 0.5], [0.5, 0.5], [0.5, 0.5], [0.5, 0.5], [0.5, 0.5], [0.5, 0.5], [0.5, 0.5], [0.5, 0.5], [0.5, 0.5], [0.5, 0.5]],
+      "features": [
+        [1,0,0], [1,0,0], [0,1,0], [0,1,0],
+        [0,0,1], [0,0,1], [1,0,0], [1,0,0],
+        [0,1,0], [0,1,0], [0,0,1], [0,0,1]
+      ],
+      "iterations": 500,
+      "group_size": 48
+    }
+  ],
+  "methods": {
+    "projected_uniform_eta075": {
+      "algorithm": "projected_group_omd",
+      "step_size": 0.75,
+      "projection_steps": 60,
+      "projection_learning_rate": 0.5,
+      "projection_ridge": 0.0,
+      "projection_tolerance": 1e-9
+    },
+    "projected_online_eta125": {
+      "algorithm": "projected_online_rc_omd",
+      "step_size": 1.25,
+      "reliability_decay": 0.9,
+      "confidence_multiplier": 1.0,
+      "warmup_effective_samples": 8.0,
+      "reliability_floor": 0.1,
+      "projection_steps": 60,
+      "projection_learning_rate": 0.5,
+      "projection_ridge": 0.0,
+      "projection_tolerance": 1e-9
+    },
+    "tabular_uniform_eta075": {
+      "algorithm": "uniform_group_omd",
+      "step_size": 0.75
+    },
+    "tabular_online_eta125": {
+      "algorithm": "online_rc_omd",
+      "step_size": 1.25,
+      "reliability_decay": 0.9,
+      "confidence_multiplier": 1.0,
+      "warmup_effective_samples": 8.0,
+      "reliability_floor": 0.1
+    }
+  },
+  "training": {
+    "evaluation_interval": 5,
+    "seeds": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  },
+  "decision_rule": {
+    "primary_uniform": "projected_uniform_eta075",
+    "primary_online": "projected_online_eta125",
+    "max_auc_deficit": 0.02,
+    "max_distractor_kl_ratio": 0.75,
+    "max_runtime_ratio": 1.5,
+    "required_scenario_passes": 2,
+    "required_runtime_passes": 3
+  },
+  "output_directory": "results/function_approx_preregistered"
+}

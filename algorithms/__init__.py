@@ -2,6 +2,7 @@
 
 from .group_omd import GroupOMD
 from .online_reliability_omd import OnlineReliabilityOMD
+from .projected_omd import ProjectedGroupOMD, ProjectedOnlineReliabilityOMD
 from .credit_weighted_omd import EntropyWeightedOMD, OracleCreditOMD
 from .reliability_calibrated_omd import (
     GlobalReliabilityOMD,
@@ -14,5 +15,7 @@ __all__ = [
     "GroupOMD",
     "OracleCreditOMD",
     "OnlineReliabilityOMD",
+    "ProjectedGroupOMD",
+    "ProjectedOnlineReliabilityOMD",
     "ReliabilityCalibratedOMD",
 ]

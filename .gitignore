@@ -25,6 +25,7 @@ mlruns/
 .ipynb_checkpoints/
 
 # LaTeX build artifacts
+paper/build/
 *.aux
 *.log
 *.out
