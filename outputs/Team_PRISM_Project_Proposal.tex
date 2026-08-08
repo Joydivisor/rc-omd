@@ -1,0 +1,139 @@
+% !TEX program = xelatex
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[a4paper,margin=2.54cm]{geometry}
+\usepackage{fontspec}
+\setmainfont{Times New Roman}
+\usepackage{amsmath,amssymb}
+\usepackage{setspace}
+\setstretch{1.15}
+\usepackage[table]{xcolor}
+\usepackage{booktabs,tabularx,array}
+\usepackage{enumitem}
+\usepackage{xurl}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+
+\definecolor{prismblue}{HTML}{2458A6}
+\definecolor{prismcyan}{HTML}{39A7D0}
+\definecolor{lightblue}{HTML}{EAF3FA}
+\definecolor{rulegray}{HTML}{6B7280}
+\hypersetup{colorlinks=true,urlcolor=prismblue,linkcolor=prismblue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{3pt}
+\setlist{nosep,leftmargin=1.4em}
+\setlength{\headheight}{14pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Team PRISM --- Project Proposal}
+\fancyhead[R]{RL-GROUP 1}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.35pt}
+
+\newcommand{\ganttcell}{\cellcolor{prismblue!78}\rule{0pt}{1.55ex}}
+\newcommand{\blankcell}{\rule{0pt}{1.55ex}}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE\bfseries Project Proposal}\par
+  \vspace{3pt}
+  {\large\color{prismblue}\bfseries Team PRISM}\par
+\end{center}
+
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\textwidth}{>{\bfseries\raggedright\arraybackslash}p{3.0cm}X}
+\toprule
+Programme Cohort & Reinforcement Learning \& Robotic Automation \\
+Course Group & RL-GROUP 1 \\
+Group Name & Team PRISM \\
+Group Members & HUANG YUXUAN; LIU YIPU; XIE HAOXIANG; ZHONG YIFAN; LI YUFEI \\
+\bottomrule
+\end{tabularx}
+
+\section*{Project Title}
+
+\textbf{Adaptive Credit-Weighted Online Mirror Descent for Sparse Verifiable Reward Reinforcement Learning}
+
+\section*{Project Summary}
+
+Reinforcement learning with verifiable rewards (RLVR) can train an agent from an automatically checked final answer, but the reward is usually sparse: a long sequence of decisions receives only one terminal success or failure signal. Common group-relative methods therefore broadcast a trajectory-level advantage across every step. This is simple and scalable, yet it may reinforce routine or irrelevant actions while giving insufficient attention to pivotal decisions. Existing token-level approaches improve this allocation using entropy, counterfactual comparisons or self-conditioned signals, but an estimated credit signal can itself be noisy. A large update based on unreliable credit may cause unstable policy drift even when the apparent importance of the step is high.
+
+We propose Reliability-Calibrated Credit-Weighted Online Mirror Descent (RC-OMD). At step $k$, an estimated credit $\widehat c_{t,k}$ determines the direction of the policy update, while a reliability score $q_{t,k}\in[0,1]$ controls its permitted magnitude through a local learning rate or KL-divergence trust-region budget. Reliable evidence therefore permits a wider update; uncertain or contradictory evidence produces a conservative update. This separates the questions ``where should the policy move?'' and ``how far should it move?'' within the geometry of mirror descent.
+
+During the fourteen-day project, we will first construct controlled sparse-reward environments in which ground-truth step credit is available. We will compare entropy, bootstrap variance, rollout agreement and counterfactual resampling as reliability proxies, then implement RC-OMD variants and benchmark them against group-level OMD, entropy-weighted OMD, global adaptive-KL OMD and an oracle-credit reference. Evaluation will measure success rate, sample efficiency, update variance, KL drift, robustness to misplaced credit and reliability calibration. Our anticipated outputs are a reproducible experimental pipeline, documented algorithm, ablation study and research report. Because computing resources are not yet confirmed, the core study is designed for modest hardware; a small-model RLVR demonstration will proceed only if resources and controlled results satisfy a recorded Go/No-Go decision. To keep conclusions credible, all comparisons will use matched training budgets, multiple random seeds and predeclared success criteria, with negative results retained.
+
+\section*{Project Significance and Contribution to the Field}
+
+Sparse delayed rewards create a classical temporal credit-assignment problem: the learner must infer which earlier actions influenced the final outcome (Sutton and Barto, 2018). In language-model RLVR, GRPO estimates advantages relative to sampled solution groups but still broadcasts one sequence-level signal across the response (Shao \textit{et al.}, 2024). This may waste gradient on predictable tokens and dilute learning at informative positions. Entropy-Aware Policy Optimization identifies high-entropy tokens as important credit carriers (He \textit{et al.}, 2026), while counterfactual reasoning paths provide step-sensitive comparisons that reduce gradient variance (Ding \textit{et al.}, 2026). Self-conditioned credit assignment instead derives token weights from verified trajectories (Shan \textit{et al.}, 2026).
+
+These advances establish that credit should be more fine-grained, but they leave a separate optimisation question: how aggressively should a policy trust an imperfect credit estimate? A signal can appear important yet be unreliable because of limited rollouts, stochastic continuations or proxy mismatch. Conversely, a low-entropy action can be causally decisive. Treating estimated importance and confidence as the same quantity risks amplifying estimation error. RC-OMD addresses this gap by coupling an explicit reliability estimate to step-specific proximity control. Its optimisation basis follows mirror-descent policy optimisation, where a linearised objective is balanced against a divergence from the previous policy (Tomar \textit{et al.}, 2020), but replaces a uniform proximity strength with reliability-calibrated local geometry.
+
+The project's main contribution will be a controlled empirical test of this distinction. Ground-truth-credit environments let us test whether a reliability proxy predicts credit error rather than merely correlating with entropy. Factorial ablations will hold the estimated direction fixed while changing the local KL controller, and vice versa, isolating gradient weighting from trust-region allocation. We will also relocate or corrupt credit signals to expose failure cases. Theory will seek stability or regret-style statements under explicit assumptions; this is an exploratory objective, not a claimed result. Whether or not performance improves, the calibration analysis will identify when local reliability control is useful and establish a boundary for future RLVR research. The reliability estimate will also be evaluated as a calibrated prediction, making uncertainty quality an explicit scientific outcome.
+
+\section*{Project Timeline and Task Allocations}
+
+\begin{center}
+\normalsize
+\setlength{\tabcolsep}{1.55pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{>{\raggedright\arraybackslash}p{4.15cm}*{14}{c}}
+\toprule
+\textbf{Workstream} & \textbf{1} & \textbf{2} & \textbf{3} & \textbf{4} & \textbf{5} & \textbf{6} & \textbf{7} & \textbf{8} & \textbf{9} & \textbf{10} & \textbf{11} & \textbf{12} & \textbf{13} & \textbf{14} \\
+\midrule
+Scope and literature
+& \ganttcell & \ganttcell & \blankcell & \blankcell & \blankcell & \blankcell & \blankcell & \blankcell & \blankcell & \blankcell & \blankcell & \blankcell & \blankcell & \blankcell \\
+Environment and baselines
+& \blankcell & \ganttcell & \ganttcell & \ganttcell & \ganttcell & \blankcell & \blankcell & \blankcell & \blankcell & \blankcell & \blankcell & \blankcell & \blankcell & \blankcell \\
+RC-OMD development
+& \blankcell & \blankcell & \ganttcell & \ganttcell & \ganttcell & \ganttcell & \ganttcell & \ganttcell & \blankcell & \blankcell & \blankcell & \blankcell & \blankcell & \blankcell \\
+Experiments and ablations
+& \blankcell & \blankcell & \blankcell & \blankcell & \ganttcell & \ganttcell & \ganttcell & \ganttcell & \ganttcell & \ganttcell & \ganttcell & \ganttcell & \blankcell & \blankcell \\
+Analysis and reporting
+& \blankcell & \blankcell & \blankcell & \blankcell & \blankcell & \blankcell & \blankcell & \ganttcell & \ganttcell & \ganttcell & \ganttcell & \ganttcell & \ganttcell & \ganttcell \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+HUANG YUXUAN coordinates the project and final report. LIU YIPU leads theory; XIE HAOXIANG, environments and estimators; ZHONG YIFAN, algorithms and infrastructure; LI YUFEI, experiments and analysis. All members review evidence and prepare the presentation. Major outputs receive cross-review, and workloads may be rebalanced after Day~8.
+
+\section*{Bibliography}
+
+\hangindent=1.5em
+Ding, F., Zhang, Y., Wang, Y. and Zeng, Z. (2026) `Reducing Credit Assignment Variance via Counterfactual Reasoning Paths', \textit{arXiv preprint}, arXiv:2605.16302. Available at: \url{https://arxiv.org/abs/2605.16302} (Accessed: 5 August 2026).
+
+\hangindent=1.5em
+He, Y., Wu, H., Liu, S., Ge, H., Zhou, H., Wu, K., Zheng, Z., Lin, Q., Zhong, Z. and Zhang, Y. (2026) `Rethinking Token-Level Credit Assignment in RLVR: A Polarity-Entropy Analysis', \textit{arXiv preprint}, arXiv:2604.11056. Available at: \url{https://arxiv.org/abs/2604.11056} (Accessed: 5 August 2026).
+
+\hangindent=1.5em
+Shan, Y., Guo, Y., Cheng, Z., Liu, Z., Zhu, X., Wang, X., Yao, J., Lin, W., Wang, H. and Huang, H. (2026) `Learning from Own Solutions: Self-Conditioned Credit Assignment for Reinforcement Learning with Verifiable Rewards', \textit{arXiv preprint}, arXiv:2606.18810. Available at: \url{https://arxiv.org/abs/2606.18810} (Accessed: 5 August 2026).
+
+\hangindent=1.5em
+Shao, Z., Wang, P., Zhu, Q., Xu, R., Song, J., Bi, X., Zhang, H., Zhang, M., Li, Y.K., Wu, Y. and Guo, D. (2024) `DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models', \textit{arXiv preprint}, arXiv:2402.03300. Available at: \url{https://arxiv.org/abs/2402.03300} (Accessed: 5 August 2026).
+
+\hangindent=1.5em
+Sutton, R.S. and Barto, A.G. (2018) \textit{Reinforcement Learning: An Introduction}. 2nd edn. Cambridge, MA: MIT Press.
+
+\hangindent=1.5em
+Tomar, M., Shani, L., Efroni, Y. and Ghavamzadeh, M. (2020) `Mirror Descent Policy Optimization', \textit{arXiv preprint}, arXiv:2005.09814. Available at: \url{https://arxiv.org/abs/2005.09814} (Accessed: 5 August 2026).
+
+\section*{Total Word Count (excluding title and bibliography)}
+
+\textbf{750 words}
+
+\clearpage
+\section*{Evaluation Sheet}
+
+\textit{This section is to be completed by the Instructor(s). Please do not delete.}
+
+\vspace{1em}
+\renewcommand{\arraystretch}{1.8}
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.5cm}X}
+\toprule
+Final Mark & \\
+\midrule
+Further Comments & \rule{0pt}{9cm} \\
+\bottomrule
+\end{tabularx}
+
+\end{document}

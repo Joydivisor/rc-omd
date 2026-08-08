@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyd
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+
+# Experiment outputs and caches
+results/
+checkpoints/
+artifacts/
+wandb/
+mlruns/
+*.ckpt
+*.safetensors
+*.pt
+*.pth
+*.bin
+*.cache
+
+# Jupyter
+.ipynb_checkpoints/
+
+# LaTeX build artifacts
+*.aux
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.xdv
+proposal/qa_pages/
+proposal/qa_contact_sheet.png
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+
+# Local scratch space
+work/tmp/
+work/cache/
