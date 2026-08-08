@@ -42,6 +42,7 @@ The first milestone uses only NumPy and Matplotlib:
 ```powershell
 python -m unittest discover -s tests -v
 python -m experiments.run_sequence_baseline --config configs/sequence_baseline.json
+python -m experiments.run_credit_diagnostics --config configs/credit_diagnostics.json
 ```
 
 The experiment writes a CSV history, JSON summary, and learning-curve figure to
@@ -57,8 +58,28 @@ credit of the form `Q(s_k, a_k) - V(s_k)`. The Uniform Group OMD baseline
 broadcasts each trajectory's group-relative advantage across all positions and
 applies an exponentiated-gradient KL-mirror update.
 
+## Milestone 2: entropy is a proxy, not credit
+
+Three OMD variants now share the same exponentiated-gradient implementation:
+
+- Uniform Group OMD broadcasts group-relative trajectory advantages;
+- Entropy-weighted OMD allocates more update mass to high-entropy positions;
+- Oracle-credit OMD uses exact counterfactual step credit as a diagnostic
+  reference (not a guaranteed performance upper bound).
+
+The controlled experiment contains an entropy-aligned scenario and a deliberately
+misleading scenario with high-entropy distractors and lower-entropy pivotal
+positions. Ten-seed results show that entropy weighting improves early learning
+when entropy is aligned with oracle importance, but reduces sample efficiency
+when entropy is negatively correlated with oracle importance. This motivates the
+next step: estimate whether a credit proxy is reliable before allowing it to
+control the local OMD update.
+
+See `docs/MILESTONE_2_CREDIT_DIAGNOSTICS.md` for the exact setup and preliminary
+measurements.
+
 ## Status
 
-The first controlled sequence MDP and Uniform Group OMD baseline are implemented
-and covered by unit tests. The next milestone is to add entropy and oracle-credit
-baselines, followed by controlled high-entropy-distractor experiments.
+The controlled environment, Uniform Group OMD, Entropy-weighted OMD, and
+Oracle-credit OMD are implemented and covered by unit tests. The next milestone
+is a reliability estimator and a local trust-region RC-OMD update.

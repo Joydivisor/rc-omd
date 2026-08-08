@@ -33,6 +33,7 @@ class GroupOMD:
         normalize_advantages: bool = False,
         importance_clip: float = 20.0,
         min_probability: float = 1e-8,
+        initial_policy: FloatArray | None = None,
     ) -> None:
         if horizon <= 0:
             raise ValueError("horizon must be positive")
@@ -51,17 +52,47 @@ class GroupOMD:
         self.normalize_advantages = normalize_advantages
         self.importance_clip = float(importance_clip)
         self.min_probability = float(min_probability)
-        self._log_policy = np.full(
-            (horizon, n_actions),
-            -np.log(n_actions),
-            dtype=np.float64,
-        )
+        if initial_policy is None:
+            probabilities = np.full(
+                (horizon, n_actions),
+                1.0 / n_actions,
+                dtype=np.float64,
+            )
+        else:
+            probabilities = np.asarray(initial_policy, dtype=np.float64)
+            if probabilities.shape != (horizon, n_actions):
+                raise ValueError(
+                    f"initial_policy must have shape ({horizon}, {n_actions})"
+                )
+            if np.any(probabilities <= 0.0) or not np.all(np.isfinite(probabilities)):
+                raise ValueError("initial_policy must contain finite positive values")
+            if not np.allclose(probabilities.sum(axis=1), 1.0, atol=1e-10):
+                raise ValueError("each initial_policy row must sum to one")
+        self._log_policy = np.log(probabilities)
 
     @property
     def policy(self) -> FloatArray:
         return _softmax(self._log_policy)
 
     def update(self, trajectories: IntArray, rewards: FloatArray) -> dict[str, float]:
+        batch, outcomes = self._validate_group(trajectories, rewards)
+        advantages, reward_std = self._group_advantages(outcomes)
+        step_signals = np.repeat(advantages[:, None], self.horizon, axis=1)
+        stats = self._apply_step_signals(batch, step_signals)
+        stats.update(
+            {
+                "mean_reward": float(outcomes.mean()),
+                "reward_std": reward_std,
+                "zero_variance_group": float(reward_std <= 1e-12),
+            }
+        )
+        return stats
+
+    def _validate_group(
+        self,
+        trajectories: IntArray,
+        rewards: FloatArray,
+    ) -> tuple[IntArray, FloatArray]:
         batch = np.asarray(trajectories, dtype=np.int64)
         outcomes = np.asarray(rewards, dtype=np.float64)
         if batch.ndim != 2 or batch.shape[1] != self.horizon:
@@ -74,13 +105,30 @@ class GroupOMD:
             raise ValueError("trajectory contains an action outside the action space")
         if not np.all(np.isfinite(outcomes)):
             raise ValueError("rewards must be finite")
+        return batch, outcomes
 
-        old_policy = self.policy
+    def _group_advantages(self, outcomes: FloatArray) -> tuple[FloatArray, float]:
         advantages = outcomes - outcomes.mean()
         reward_std = float(outcomes.std())
         if self.normalize_advantages and reward_std > 1e-12:
             advantages = advantages / reward_std
+        return advantages, reward_std
 
+    def _apply_step_signals(
+        self,
+        trajectories: IntArray,
+        step_signals: FloatArray,
+    ) -> dict[str, float]:
+        batch = np.asarray(trajectories, dtype=np.int64)
+        signals = np.asarray(step_signals, dtype=np.float64)
+        if batch.ndim != 2 or batch.shape[1] != self.horizon:
+            raise ValueError(f"trajectories must have shape (batch, {self.horizon})")
+        if signals.shape != batch.shape:
+            raise ValueError("step_signals must have the same shape as trajectories")
+        if not np.all(np.isfinite(signals)):
+            raise ValueError("step_signals must be finite")
+
+        old_policy = self.policy
         action_scores = np.zeros_like(old_policy)
         group_size = batch.shape[0]
         for position in range(self.horizon):
@@ -93,7 +141,7 @@ class GroupOMD:
                     self.importance_clip,
                 )
                 action_scores[position, action] = (
-                    float(advantages[selected].sum())
+                    float(signals[selected, position].sum())
                     * inverse_propensity
                     / group_size
                 )
@@ -116,9 +164,6 @@ class GroupOMD:
         )
 
         return {
-            "mean_reward": float(outcomes.mean()),
-            "reward_std": reward_std,
-            "zero_variance_group": float(reward_std <= 1e-12),
             "update_norm": float(np.linalg.norm(action_scores)),
             "kl_drift": kl_drift,
         }

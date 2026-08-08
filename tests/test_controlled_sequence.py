@@ -56,6 +56,27 @@ class ControlledSequenceMDPTest(unittest.TestCase):
             np.asarray([1.0, 1.0, 0.0, 0.0]),
         )
 
+    def test_oracle_position_importance_is_zero_for_distractors(self) -> None:
+        policy = np.asarray([[0.5, 0.5], [0.2, 0.8], [0.7, 0.3]])
+        importance = self.environment.oracle_position_importance(policy)
+        self.assertEqual(importance[1], 0.0)
+        self.assertGreater(importance[0], 0.0)
+        self.assertGreater(importance[2], 0.0)
+
+    def test_batch_credit_matches_individual_credit(self) -> None:
+        policy = np.asarray([[0.5, 0.5], [0.2, 0.8], [0.7, 0.3]])
+        trajectories = np.asarray([[1, 1, 0], [0, 0, 0]])
+        expected = np.stack(
+            [
+                self.environment.oracle_step_credit(trajectory, policy)
+                for trajectory in trajectories
+            ]
+        )
+        np.testing.assert_allclose(
+            self.environment.oracle_batch_credit(trajectories, policy),
+            expected,
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

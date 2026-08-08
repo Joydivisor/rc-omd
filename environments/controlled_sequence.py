@@ -164,6 +164,44 @@ class ControlledSequenceMDP:
 
         return credits
 
+    def oracle_batch_credit(self, trajectories: IntArray, policy: FloatArray) -> FloatArray:
+        """Return exact on-trajectory credit for a batch of trajectories."""
+
+        batch = np.asarray(trajectories, dtype=np.int64)
+        if batch.ndim != 2 or batch.shape[1] != self.horizon:
+            raise ValueError(f"trajectories must have shape (batch, {self.horizon})")
+        probabilities = self._validate_policy(policy)
+        return np.stack(
+            [self.oracle_step_credit(trajectory, probabilities) for trajectory in batch],
+            axis=0,
+        )
+
+    def oracle_position_importance(self, policy: FloatArray) -> FloatArray:
+        """Return exact expected absolute credit at every position.
+
+        The expectation is conditioned on reaching the position with a viable
+        prefix. It therefore isolates how much a decision can matter locally,
+        rather than conflating importance with the probability of earlier
+        failures. Distractor positions have exactly zero importance.
+        """
+
+        probabilities = self._validate_policy(policy)
+        importance = np.zeros(self.horizon, dtype=np.float64)
+        for position, target in self._target_by_position.items():
+            future_success = 1.0
+            for future_position, future_target in self._target_by_position.items():
+                if future_position > position:
+                    future_success *= float(probabilities[future_position, future_target])
+
+            target_probability = float(probabilities[position, target])
+            importance[position] = (
+                2.0
+                * target_probability
+                * (1.0 - target_probability)
+                * future_success
+            )
+        return importance
+
     def _validate_trajectory(self, trajectory: IntArray) -> None:
         if trajectory.shape != (self.horizon,):
             raise ValueError(f"trajectory must have shape ({self.horizon},)")
