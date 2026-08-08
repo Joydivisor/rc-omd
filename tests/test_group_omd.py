@@ -4,7 +4,12 @@ import unittest
 
 import numpy as np
 
-from algorithms import EntropyWeightedOMD, GroupOMD, OracleCreditOMD
+from algorithms import (
+    EntropyWeightedOMD,
+    GroupOMD,
+    OracleCreditOMD,
+    ReliabilityCalibratedOMD,
+)
 from environments import ControlledSequenceMDP
 
 
@@ -72,6 +77,36 @@ class GroupOMDTest(unittest.TestCase):
         credits = environment.oracle_batch_credit(trajectories, algorithm.policy)
         algorithm.update_with_credit(trajectories, rewards, credits)
         np.testing.assert_allclose(algorithm.policy[1], old_distractor)
+
+    def test_reliability_calibrated_omd_learns_and_preserves_simplex(self) -> None:
+        environment = ControlledSequenceMDP(
+            horizon=4,
+            n_actions=2,
+            critical_positions=(1, 3),
+            target_actions=(1, 0),
+        )
+        algorithm = ReliabilityCalibratedOMD(
+            horizon=4,
+            n_actions=2,
+            step_size=0.5,
+            bootstrap_samples=24,
+            confidence_multiplier=1.0,
+            estimator_seed=5,
+        )
+        rng = np.random.default_rng(19)
+        initial_success = environment.expected_success_probability(algorithm.policy)
+
+        for _ in range(150):
+            trajectories = environment.sample(algorithm.policy, 64, rng)
+            rewards = environment.batch_rewards(trajectories)
+            algorithm.update(trajectories, rewards)
+
+        np.testing.assert_allclose(algorithm.policy.sum(axis=1), 1.0)
+        self.assertTrue(np.all(algorithm.policy > 0.0))
+        self.assertGreater(
+            environment.expected_success_probability(algorithm.policy),
+            initial_success + 0.5,
+        )
 
 
 if __name__ == "__main__":

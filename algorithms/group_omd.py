@@ -128,6 +128,18 @@ class GroupOMD:
         if not np.all(np.isfinite(signals)):
             raise ValueError("step_signals must be finite")
 
+        action_scores = self._estimate_action_scores(batch, signals)
+        return self._apply_action_scores(action_scores)
+
+    def _estimate_action_scores(
+        self,
+        trajectories: IntArray,
+        step_signals: FloatArray,
+    ) -> FloatArray:
+        """Estimate linearized per-action gains with inverse propensities."""
+
+        batch = np.asarray(trajectories, dtype=np.int64)
+        signals = np.asarray(step_signals, dtype=np.float64)
         old_policy = self.policy
         action_scores = np.zeros_like(old_policy)
         group_size = batch.shape[0]
@@ -145,27 +157,54 @@ class GroupOMD:
                     * inverse_propensity
                     / group_size
                 )
+        return action_scores
 
+    def _apply_action_scores(
+        self,
+        action_scores: FloatArray,
+        local_step_scales: FloatArray | None = None,
+    ) -> dict[str, float]:
+        """Apply a KL-mirror update with optional per-position step scales."""
+
+        scores = np.asarray(action_scores, dtype=np.float64)
+        if scores.shape != (self.horizon, self.n_actions):
+            raise ValueError(
+                f"action_scores must have shape ({self.horizon}, {self.n_actions})"
+            )
+        if not np.all(np.isfinite(scores)):
+            raise ValueError("action_scores must be finite")
+
+        if local_step_scales is None:
+            scales = np.ones(self.horizon, dtype=np.float64)
+        else:
+            scales = np.asarray(local_step_scales, dtype=np.float64)
+            if scales.shape != (self.horizon,):
+                raise ValueError(f"local_step_scales must have shape ({self.horizon},)")
+            if not np.all(np.isfinite(scales)) or np.any(scales < 0.0):
+                raise ValueError("local_step_scales must be finite and non-negative")
+
+        old_policy = self.policy
         self._log_policy = np.log(np.maximum(old_policy, self.min_probability))
-        self._log_policy += self.step_size * action_scores
+        self._log_policy += self.step_size * scales[:, None] * scores
         new_policy = _softmax(self._log_policy)
         new_policy = np.maximum(new_policy, self.min_probability)
         new_policy /= new_policy.sum(axis=1, keepdims=True)
         self._log_policy = np.log(new_policy)
 
-        kl_drift = float(
-            np.sum(
-                new_policy
-                * (
-                    np.log(np.maximum(new_policy, self.min_probability))
-                    - np.log(np.maximum(old_policy, self.min_probability))
-                )
-            )
+        per_position_kl = np.sum(
+            new_policy
+            * (
+                np.log(np.maximum(new_policy, self.min_probability))
+                - np.log(np.maximum(old_policy, self.min_probability))
+            ),
+            axis=1,
         )
+        kl_drift = float(np.sum(per_position_kl))
 
         return {
-            "update_norm": float(np.linalg.norm(action_scores)),
+            "update_norm": float(np.linalg.norm(scales[:, None] * scores)),
             "kl_drift": kl_drift,
+            "max_position_kl": float(np.max(per_position_kl)),
         }
 
     def entropy(self) -> float:

@@ -43,6 +43,8 @@ The first milestone uses only NumPy and Matplotlib:
 python -m unittest discover -s tests -v
 python -m experiments.run_sequence_baseline --config configs/sequence_baseline.json
 python -m experiments.run_credit_diagnostics --config configs/credit_diagnostics.json
+python -m experiments.run_reliability_diagnostics --config configs/reliability_diagnostics.json
+python -m experiments.run_reliability_diagnostics --config configs/reliability_ablation.json
 ```
 
 The experiment writes a CSV history, JSON summary, and learning-curve figure to
@@ -78,8 +80,27 @@ control the local OMD update.
 See `docs/MILESTONE_2_CREDIT_DIAGNOSTICS.md` for the exact setup and preliminary
 measurements.
 
+## Milestone 3: bootstrap reliability and local OMD geometry
+
+RC-OMD v1 bootstraps each group-relative action-score estimate and computes a
+position-level confidence shrinkage factor. That factor controls the local OMD
+step size. A global-reliability ablation applies the strongest position-level
+confidence to every position, isolating local geometry from batch-level
+adaptation.
+
+The first result is a trade-off rather than a dominance claim. Strict confidence
+thresholds substantially reduce policy KL spent on known distractor positions,
+but slow learning. A looser threshold recovers much of the sample efficiency at
+the cost of admitting more distractor drift. The oracle-credit diagnostic shows
+that accurate local credit can preserve learning speed while eliminating
+distractor updates, so estimator calibration is the current bottleneck.
+
+See `docs/MILESTONE_3_BOOTSTRAP_RC_OMD.md` for results, limitations, and the next
+research decision.
+
 ## Status
 
-The controlled environment, Uniform Group OMD, Entropy-weighted OMD, and
-Oracle-credit OMD are implemented and covered by unit tests. The next milestone
-is a reliability estimator and a local trust-region RC-OMD update.
+The controlled environment, four diagnostic baselines, bootstrap credit
+estimator, global reliability ablation, and local RC-OMD are implemented and
+covered by unit tests. The next milestone is to improve reliability calibration
+and reduce bootstrap cost before expanding the environment suite.
