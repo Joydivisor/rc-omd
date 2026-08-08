@@ -16,6 +16,7 @@ from algorithms import (
     EntropyWeightedOMD,
     GlobalReliabilityOMD,
     GroupOMD,
+    OnlineReliabilityOMD,
     OracleCreditOMD,
     ReliabilityCalibratedOMD,
 )
@@ -28,6 +29,7 @@ METHOD_LABELS = {
     "global_reliability_omd": "Global-reliability OMD",
     "rc_omd": "Local RC-OMD",
     "oracle_credit_omd": "Oracle-credit OMD",
+    "online_rc_omd": "Online RC-OMD",
 }
 
 METHOD_COLORS = {
@@ -36,6 +38,7 @@ METHOD_COLORS = {
     "global_reliability_omd": "#7C3AED",
     "rc_omd": "#DC2626",
     "oracle_credit_omd": "#15803D",
+    "online_rc_omd": "#0891B2",
 }
 
 
@@ -66,18 +69,30 @@ def build_algorithm(
     if algorithm_name == "oracle_credit_omd":
         return OracleCreditOMD(**arguments)
 
-    arguments.update(
-        {
-            "bootstrap_samples": int(method_config["bootstrap_samples"]),
-            "confidence_multiplier": float(method_config["confidence_multiplier"]),
-            "reliability_floor": float(method_config["reliability_floor"]),
-            "estimator_seed": seed + 100_000,
-        }
-    )
-    if algorithm_name == "global_reliability_omd":
-        return GlobalReliabilityOMD(**arguments)
-    if algorithm_name == "rc_omd":
+    if algorithm_name in {"global_reliability_omd", "rc_omd"}:
+        arguments.update(
+            {
+                "bootstrap_samples": int(method_config["bootstrap_samples"]),
+                "confidence_multiplier": float(method_config["confidence_multiplier"]),
+                "reliability_floor": float(method_config["reliability_floor"]),
+                "estimator_seed": seed + 100_000,
+            }
+        )
+        if algorithm_name == "global_reliability_omd":
+            return GlobalReliabilityOMD(**arguments)
         return ReliabilityCalibratedOMD(**arguments)
+    if algorithm_name == "online_rc_omd":
+        arguments.update(
+            {
+                "reliability_decay": float(method_config["reliability_decay"]),
+                "confidence_multiplier": float(method_config["confidence_multiplier"]),
+                "warmup_effective_samples": float(
+                    method_config["warmup_effective_samples"]
+                ),
+                "reliability_floor": float(method_config["reliability_floor"]),
+            }
+        )
+        return OnlineReliabilityOMD(**arguments)
     raise ValueError(f"unknown algorithm: {algorithm_name}")
 
 
@@ -97,21 +112,20 @@ def reliability_diagnostics(
     algorithm: GroupOMD,
     environment: ControlledSequenceMDP,
 ) -> dict[str, float]:
-    if not isinstance(algorithm, ReliabilityCalibratedOMD):
-        return {
-            "critical_reliability": float("nan"),
-            "distractor_reliability": float("nan"),
-            "reliability_topk_precision": float("nan"),
-        }
-    if algorithm.last_reward_std is None or algorithm.last_reward_std <= 1e-12:
-        return {
-            "critical_reliability": float("nan"),
-            "distractor_reliability": float("nan"),
-            "reliability_topk_precision": float("nan"),
-        }
-    estimate = algorithm.last_credit_estimate
+    estimate = getattr(algorithm, "last_credit_estimate", None)
+    last_reward_std = getattr(algorithm, "last_reward_std", None)
     if estimate is None:
-        raise RuntimeError("reliability diagnostics requested before an update")
+        return {
+            "critical_reliability": float("nan"),
+            "distractor_reliability": float("nan"),
+            "reliability_topk_precision": float("nan"),
+        }
+    if last_reward_std is None or last_reward_std <= 1e-12:
+        return {
+            "critical_reliability": float("nan"),
+            "distractor_reliability": float("nan"),
+            "reliability_topk_precision": float("nan"),
+        }
     critical = np.asarray(environment.critical_positions, dtype=np.int64)
     distractors = np.asarray(environment.distractor_positions, dtype=np.int64)
     top_positions = set(
@@ -231,6 +245,8 @@ def summarize(
             final_success: list[float] = []
             auc: list[float] = []
             distractor_fraction: list[float] = []
+            critical_kl: list[float] = []
+            distractor_kl: list[float] = []
             harmful_rate: list[float] = []
             runtime: list[float] = []
             critical_reliability: list[float] = []
@@ -246,6 +262,8 @@ def summarize(
                 final_success.append(float(y[-1]))
                 auc.append(float(np.trapezoid(y, x) / max(float(x[-1]), 1.0)))
                 distractor_fraction.append(float(seed_rows[-1]["distractor_kl_fraction"]))
+                critical_kl.append(float(seed_rows[-1]["cumulative_critical_kl"]))
+                distractor_kl.append(float(seed_rows[-1]["cumulative_distractor_kl"]))
                 harmful_rate.append(float(seed_rows[-1]["harmful_update_rate"]))
                 runtime.append(run_metadata[(scenario, method, seed)]["runtime_seconds"])
                 valid = [
@@ -267,7 +285,14 @@ def summarize(
                 "final_success_mean": float(np.mean(final_success)),
                 "final_success_std": float(np.std(final_success)),
                 "success_auc_mean": float(np.mean(auc)),
+                "success_auc_std": float(np.std(auc)),
                 "distractor_kl_fraction_mean": float(np.mean(distractor_fraction)),
+                "cumulative_critical_kl_mean": float(np.mean(critical_kl)),
+                "cumulative_distractor_kl_mean": float(np.mean(distractor_kl)),
+                "cumulative_distractor_kl_std": float(np.std(distractor_kl)),
+                "cumulative_total_kl_mean": float(
+                    np.mean(np.asarray(critical_kl) + np.asarray(distractor_kl))
+                ),
                 "harmful_update_rate_mean": float(np.mean(harmful_rate)),
                 "runtime_seconds_mean": float(np.mean(runtime)),
                 "critical_reliability_mean": (
@@ -358,6 +383,83 @@ def plot_kl_summary(summary: dict[str, Any], output_path: Path) -> None:
     plt.close(figure)
 
 
+def plot_pareto(summary: dict[str, Any], output_stem: Path) -> None:
+    """Plot mean AUC against absolute distractor KL with across-seed SD."""
+
+    scenarios = list(summary)
+    all_values = [value for methods in summary.values() for value in methods.values()]
+    max_x = max(float(value["cumulative_distractor_kl_mean"]) for value in all_values)
+    min_y = min(float(value["success_auc_mean"]) for value in all_values)
+    max_y = max(float(value["success_auc_mean"]) for value in all_values)
+    figure, axes = plt.subplots(
+        1,
+        len(scenarios),
+        figsize=(7 * len(scenarios), 5),
+        layout="constrained",
+        sharex=True,
+        sharey=True,
+    )
+    if len(scenarios) == 1:
+        axes = [axes]
+    for axis, scenario in zip(axes, scenarios, strict=True):
+        for index, (method, values) in enumerate(summary[scenario].items()):
+            if method.startswith("online"):
+                marker, color = "o", "#0891B2"
+            elif method.startswith("uniform"):
+                marker, color = "s", "#2458A6"
+            elif "bootstrap" in method or method.startswith("rc_"):
+                marker, color = "^", "#DC2626"
+            elif "oracle" in method:
+                marker, color = "*", "#15803D"
+            else:
+                marker, color = "D", "#7C3AED"
+            label = METHOD_LABELS.get(method, method.replace("_", " ").title())
+            axis.errorbar(
+                float(values["cumulative_distractor_kl_mean"]),
+                float(values["success_auc_mean"]),
+                xerr=float(values["cumulative_distractor_kl_std"]),
+                yerr=float(values["success_auc_std"]),
+                marker=marker,
+                markersize=6,
+                linestyle="none",
+                color=color,
+                capsize=2,
+                label=label,
+                alpha=0.9,
+            )
+            short_label = label
+            if short_label.startswith("Online Eta"):
+                value = float(short_label.removeprefix("Online Eta")) / 100.0
+                short_label = f"Online eta={value:.2f}"
+            elif short_label.startswith("Uniform Eta"):
+                value = float(short_label.removeprefix("Uniform Eta")) / 100.0
+                short_label = f"Uniform eta={value:.2f}"
+            elif short_label.startswith("Online Decay"):
+                value = float(short_label.removeprefix("Online Decay")) / 100.0
+                short_label = f"decay={value:.2f}"
+            axis.annotate(
+                short_label,
+                (
+                    float(values["cumulative_distractor_kl_mean"]),
+                    float(values["success_auc_mean"]),
+                ),
+                xytext=(4, 4),
+                textcoords="offset points",
+                fontsize=6,
+                color=color,
+            )
+        axis.set_title(scenario.replace("_", " ").title())
+        axis.set_xlabel("Cumulative KL on distractor positions")
+        axis.set_xlim(left=0.0, right=max_x * 1.08 if max_x > 0.0 else 1.0)
+        axis.set_ylim(min_y - 0.01, min(1.0, max_y + 0.01))
+        axis.grid(alpha=0.25)
+    axes[0].set_ylabel("Normalized success AUC")
+    axes[-1].legend(fontsize=7, loc="lower right")
+    figure.savefig(output_stem.with_suffix(".png"), dpi=240, facecolor="white")
+    figure.savefig(output_stem.with_suffix(".pdf"), facecolor="white")
+    plt.close(figure)
+
+
 def write_history(rows: list[dict[str, Any]], path: Path) -> None:
     with path.open("w", encoding="utf-8", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=list(rows[0]))
@@ -395,6 +497,7 @@ def main() -> None:
         json.dump(summary, handle, indent=2)
     plot_success(rows, output_directory / "success_comparison.png")
     plot_kl_summary(summary, output_directory / "distractor_kl_fraction.png")
+    plot_pareto(summary, output_directory / "auc_distractor_kl_pareto")
     print(json.dumps(summary, indent=2))
     print(f"Results written to {output_directory.resolve()}")
 

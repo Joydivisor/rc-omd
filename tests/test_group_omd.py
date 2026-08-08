@@ -7,6 +7,7 @@ import numpy as np
 from algorithms import (
     EntropyWeightedOMD,
     GroupOMD,
+    OnlineReliabilityOMD,
     OracleCreditOMD,
     ReliabilityCalibratedOMD,
 )
@@ -107,6 +108,30 @@ class GroupOMDTest(unittest.TestCase):
             environment.expected_success_probability(algorithm.policy),
             initial_success + 0.5,
         )
+
+    def test_online_reliability_omd_learns(self) -> None:
+        environment = ControlledSequenceMDP(
+            horizon=4,
+            n_actions=2,
+            critical_positions=(1, 3),
+            target_actions=(1, 0),
+        )
+        algorithm = OnlineReliabilityOMD(
+            horizon=4,
+            n_actions=2,
+            step_size=0.5,
+            reliability_decay=0.9,
+            confidence_multiplier=1.0,
+            warmup_effective_samples=6.0,
+            reliability_floor=0.1,
+        )
+        rng = np.random.default_rng(29)
+        for _ in range(180):
+            trajectories = environment.sample(algorithm.policy, 64, rng)
+            rewards = environment.batch_rewards(trajectories)
+            algorithm.update(trajectories, rewards)
+
+        self.assertGreater(environment.expected_success_probability(algorithm.policy), 0.85)
 
 
 if __name__ == "__main__":

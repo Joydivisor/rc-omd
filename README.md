@@ -45,6 +45,8 @@ python -m experiments.run_sequence_baseline --config configs/sequence_baseline.j
 python -m experiments.run_credit_diagnostics --config configs/credit_diagnostics.json
 python -m experiments.run_reliability_diagnostics --config configs/reliability_diagnostics.json
 python -m experiments.run_reliability_diagnostics --config configs/reliability_ablation.json
+python -m experiments.run_reliability_diagnostics --config configs/online_reliability_comparison.json
+python -m experiments.run_reliability_diagnostics --config configs/online_step_size_ablation.json
 ```
 
 The experiment writes a CSV history, JSON summary, and learning-curve figure to
@@ -98,9 +100,26 @@ distractor updates, so estimator calibration is the current bottleneck.
 See `docs/MILESTONE_3_BOOTSTRAP_RC_OMD.md` for results, limitations, and the next
 research decision.
 
+## Milestone 4: low-cost online reliability
+
+The bootstrap estimator is replaced by exponentially weighted running moments of
+the group-relative action scores. Persistent directions receive larger local
+steps, while inconsistent finite-sample directions are suppressed. This requires
+one action-score computation per group and `O(H A)` state.
+
+In the controlled tasks, Online RC-OMD runs within roughly 7--13% of Uniform
+Group OMD's CPU time and uses much less absolute distractor KL. A matched
+step-size sweep shows a Pareto trade-off rather than universal dominance:
+Uniform OMD is faster at the same base step size, while Online RC-OMD achieves
+similar AUC with substantially less distractor drift at a larger base step.
+
+See `docs/MILESTONE_4_ONLINE_RELIABILITY.md` for the complete measurements and
+scope limitations.
+
 ## Status
 
-The controlled environment, four diagnostic baselines, bootstrap credit
-estimator, global reliability ablation, and local RC-OMD are implemented and
-covered by unit tests. The next milestone is to improve reliability calibration
-and reduce bootstrap cost before expanding the environment suite.
+The controlled environment, diagnostic baselines, bootstrap RC-OMD, and low-cost
+Online RC-OMD are implemented and covered by unit tests. The next milestone is
+out-of-distribution validation across reward structures and group sizes, followed
+by a decision on whether the controlled contribution is strong enough to justify
+a small neural or RLVR experiment.

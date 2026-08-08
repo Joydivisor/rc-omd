@@ -7,6 +7,8 @@ from dataclasses import dataclass
 import numpy as np
 from numpy.typing import NDArray
 
+from .scoring import inverse_propensity_action_scores
+
 
 FloatArray = NDArray[np.floating]
 IntArray = NDArray[np.integer]
@@ -128,21 +130,10 @@ class BootstrapCreditEstimator:
         advantages: FloatArray,
         policy: FloatArray,
     ) -> FloatArray:
-        group_size, horizon = trajectories.shape
-        n_actions = policy.shape[1]
-        scores = np.zeros((horizon, n_actions), dtype=np.float64)
-        for position in range(horizon):
-            for action in range(n_actions):
-                selected = trajectories[:, position] == action
-                if not np.any(selected):
-                    continue
-                inverse_propensity = min(
-                    1.0 / max(float(policy[position, action]), self.min_probability),
-                    self.importance_clip,
-                )
-                scores[position, action] = (
-                    float(advantages[selected].sum())
-                    * inverse_propensity
-                    / group_size
-                )
-        return scores
+        return inverse_propensity_action_scores(
+            trajectories,
+            advantages,
+            policy,
+            importance_clip=self.importance_clip,
+            min_probability=self.min_probability,
+        )

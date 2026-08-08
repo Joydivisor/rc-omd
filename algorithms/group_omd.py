@@ -5,6 +5,8 @@ from __future__ import annotations
 import numpy as np
 from numpy.typing import NDArray
 
+from credit_estimators import inverse_propensity_action_scores
+
 
 FloatArray = NDArray[np.floating]
 IntArray = NDArray[np.integer]
@@ -140,24 +142,13 @@ class GroupOMD:
 
         batch = np.asarray(trajectories, dtype=np.int64)
         signals = np.asarray(step_signals, dtype=np.float64)
-        old_policy = self.policy
-        action_scores = np.zeros_like(old_policy)
-        group_size = batch.shape[0]
-        for position in range(self.horizon):
-            for action in range(self.n_actions):
-                selected = batch[:, position] == action
-                if not np.any(selected):
-                    continue
-                inverse_propensity = min(
-                    1.0 / max(float(old_policy[position, action]), self.min_probability),
-                    self.importance_clip,
-                )
-                action_scores[position, action] = (
-                    float(signals[selected, position].sum())
-                    * inverse_propensity
-                    / group_size
-                )
-        return action_scores
+        return inverse_propensity_action_scores(
+            batch,
+            signals,
+            self.policy,
+            importance_clip=self.importance_clip,
+            min_probability=self.min_probability,
+        )
 
     def _apply_action_scores(
         self,

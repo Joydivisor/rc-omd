@@ -1,6 +1,7 @@
 """Policy optimization algorithms used in the RC-OMD study."""
 
 from .group_omd import GroupOMD
+from .online_reliability_omd import OnlineReliabilityOMD
 from .credit_weighted_omd import EntropyWeightedOMD, OracleCreditOMD
 from .reliability_calibrated_omd import (
     GlobalReliabilityOMD,
@@ -12,5 +13,6 @@ __all__ = [
     "GlobalReliabilityOMD",
     "GroupOMD",
     "OracleCreditOMD",
+    "OnlineReliabilityOMD",
     "ReliabilityCalibratedOMD",
 ]
