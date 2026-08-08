@@ -20,7 +20,7 @@ from algorithms import (
     OracleCreditOMD,
     ReliabilityCalibratedOMD,
 )
-from environments import ControlledSequenceMDP
+from environments import ControlledSequenceMDP, StructuredSequenceMDP
 
 
 METHOD_LABELS = {
@@ -45,6 +45,23 @@ METHOD_COLORS = {
 def load_config(path: Path) -> dict[str, Any]:
     with path.open("r", encoding="utf-8") as handle:
         return json.load(handle)
+
+
+def build_environment(scenario: dict[str, Any]) -> Any:
+    if scenario.get("environment", "controlled_all") == "threshold":
+        return StructuredSequenceMDP.from_sequences(
+            horizon=int(scenario["horizon"]),
+            n_actions=int(scenario["n_actions"]),
+            critical_positions=scenario["critical_positions"],
+            target_actions=scenario["target_actions"],
+            minimum_matches=int(scenario["minimum_matches"]),
+        )
+    return ControlledSequenceMDP.from_sequences(
+        horizon=int(scenario["horizon"]),
+        n_actions=int(scenario["n_actions"]),
+        critical_positions=scenario["critical_positions"],
+        target_actions=scenario["target_actions"],
+    )
 
 
 def build_algorithm(
@@ -146,12 +163,7 @@ def run_one(
     seed: int,
     evaluation_interval: int,
 ) -> tuple[list[dict[str, Any]], dict[str, float]]:
-    environment = ControlledSequenceMDP.from_sequences(
-        horizon=int(scenario["horizon"]),
-        n_actions=int(scenario["n_actions"]),
-        critical_positions=scenario["critical_positions"],
-        target_actions=scenario["target_actions"],
-    )
+    environment = build_environment(scenario)
     algorithm = build_algorithm(method, method_config, scenario, seed)
     rng = np.random.default_rng(seed)
     iterations = int(scenario["iterations"])
