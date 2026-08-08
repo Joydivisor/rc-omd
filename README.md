@@ -47,6 +47,7 @@ python -m experiments.run_reliability_diagnostics --config configs/reliability_d
 python -m experiments.run_reliability_diagnostics --config configs/reliability_ablation.json
 python -m experiments.run_reliability_diagnostics --config configs/online_reliability_comparison.json
 python -m experiments.run_reliability_diagnostics --config configs/online_step_size_ablation.json
+python -m experiments.run_reliability_diagnostics --config configs/ood_preregistered.json
 ```
 
 The experiment writes a CSV history, JSON summary, and learning-curve figure to
@@ -116,10 +117,21 @@ similar AUC with substantially less distractor drift at a larger base step.
 See `docs/MILESTONE_4_ONLINE_RELIABILITY.md` for the complete measurements and
 scope limitations.
 
+## Milestone 5: pre-registered OOD validation
+
+Four previously unseen tasks were frozen and committed before execution. They
+change the reward from an all-match rule to threshold rules, include two and
+three actions, vary horizon and group size, and span sparse to dense initial
+success probabilities. The pre-declared Online-vs-Uniform comparison passed all
+four scenarios: Online RC-OMD stayed within 0.0018 AUC of Uniform, used only
+18.9%--24.8% as much absolute distractor KL, and added 6.9%--10.7% runtime.
+
+See `docs/MILESTONE_5_OOD_PROTOCOL.md` for the frozen protocol and
+`docs/MILESTONE_5_OOD_RESULTS.md` for the complete result and limitations.
+
 ## Status
 
-The controlled environment, diagnostic baselines, bootstrap RC-OMD, and low-cost
-Online RC-OMD are implemented and covered by unit tests. The next milestone is
-out-of-distribution validation across reward structures and group sizes, followed
-by a decision on whether the controlled contribution is strong enough to justify
-a small neural or RLVR experiment.
+The controlled environment suite, diagnostic baselines, bootstrap RC-OMD, and
+low-cost Online RC-OMD are implemented and covered by unit tests. Pre-registered
+OOD validation passed its frozen Go criterion. The next milestone is a paper
+draft plus a pre-registered function-approximation experiment.
