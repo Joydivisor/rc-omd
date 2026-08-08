@@ -35,6 +35,30 @@ outputs/              Selected project deliverables
 
 Every experiment should record its configuration, random seed, Git commit, software versions, hardware, runtime, and output path. Large checkpoints and raw experiment dumps should remain outside Git and be referenced by metadata.
 
+## Quick start
+
+The first milestone uses only NumPy and Matplotlib:
+
+```powershell
+python -m unittest discover -s tests -v
+python -m experiments.run_sequence_baseline --config configs/sequence_baseline.json
+```
+
+The experiment writes a CSV history, JSON summary, and learning-curve figure to
+`results/sequence_baseline/`. The results directory is intentionally ignored by
+Git so that generated artifacts do not enter the source history.
+
+## Milestone 1: controlled sequence baseline
+
+The initial environment has a terminal binary reward and a configurable subset
+of pivotal positions. Distractor positions do not affect reward. Because the
+environment is fully specified, it provides exact on-trajectory counterfactual
+credit of the form `Q(s_k, a_k) - V(s_k)`. The Uniform Group OMD baseline
+broadcasts each trajectory's group-relative advantage across all positions and
+applies an exponentiated-gradient KL-mirror update.
+
 ## Status
 
-The repository is being prepared for the Cambridge short-term research project. The first milestone is a controlled sequence MDP with computable ground-truth step credit and verified OMD baselines.
+The first controlled sequence MDP and Uniform Group OMD baseline are implemented
+and covered by unit tests. The next milestone is to add entropy and oracle-credit
+baselines, followed by controlled high-entropy-distractor experiments.
