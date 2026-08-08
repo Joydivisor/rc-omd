@@ -159,6 +159,7 @@ class ProjectedOnlineReliabilityOMD(ProjectedGroupOMD):
             min_probability=self.min_probability,
         )
         self.last_credit_estimate: RunningCreditEstimate | None = None
+        self.last_reward_std: float | None = None
 
     def update(self, trajectories: IntArray, rewards: FloatArray) -> dict[str, float]:
         batch, outcomes = self._validate_group(trajectories, rewards)
@@ -169,6 +170,7 @@ class ProjectedOnlineReliabilityOMD(ProjectedGroupOMD):
         ) * estimate.reliability
         stats = self._apply_action_scores(estimate.action_scores, local_scales)
         reward_std = float(outcomes.std())
+        self.last_reward_std = reward_std
         stats.update(
             {
                 "mean_reward": float(outcomes.mean()),

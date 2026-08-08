@@ -77,6 +77,7 @@ class ProjectedOMDTest(unittest.TestCase):
         after = self.environment.expected_success_probability(optimizer.policy)
         self.assertGreater(after, before + 0.20)
         self.assertIsNotNone(optimizer.last_credit_estimate)
+        self.assertIsNotNone(optimizer.last_reward_std)
         np.testing.assert_allclose(optimizer.policy.sum(axis=1), 1.0)
 
 
