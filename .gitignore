@@ -1,5 +1,9 @@
 # Python
 __pycache__/
+workshop/node_modules/
+workshop/.build/
+workshop/rendered/
+workshop/*.inspect.ndjson
 *.py[cod]
 *.pyd
 .venv/
