@@ -98,10 +98,28 @@ publishes absolute distractor KL and supports absolute statements, but for
 - entropy-misleading: 1 - 0.00304 / 0.02440 = **87.5%**
 - long-sparse-credit: 1 - 0.00346 / 0.02682 = **87.1%**
 
-**Consequence.** Any absolute distractor-KL reduction attributed to the M3
-bootstrap estimator requires the archived per-seed absolute values, which are not
-available. Figures near 90% attributed to M3 should not be used. The M4 figures
-above may be used, attributed to Online RC-OMD.
+**Absolute values for M3, recovered 2026-08-14.** M3 was re-run and its
+deterministic metrics reproduce exactly, so the absolute distractor KL that the
+milestone document omitted is recoverable after all:
+
+| Scenario | Uniform | Local RC-OMD | Absolute reduction |
+|---|---:|---:|---:|
+| Entropy misleading | 0.02440 | 0.00247 | **89.9%** |
+| Long sparse credit | 0.02682 | 0.00261 | **90.3%** |
+
+These figures are genuine and may be cited, attributed to this reanalysis rather
+than to the milestone document. An earlier review concluded they were
+underivable; that was correct with respect to the *published table*, which prints
+fractions only, but the underlying quantity was always well defined and has now
+been reproduced.
+
+With the [E4](#e4-bootstrap-uncertainty-is-computed-outside-the-update-relevant-subspace)
+correction applied, the reductions improve to 91.6% and 92.0%. See
+`docs/MILESTONE_3_CORRECTED_REANALYSIS.md`.
+
+**Consequence.** The published 81%--83% remains a fraction reduction and must be
+labelled as such. Absolute reductions must be quoted from the table above, with
+the estimator version stated, because corrected and uncorrected differ.
 
 ## E3. Reliability separation under feature aliasing
 
@@ -140,16 +158,33 @@ actions at a position, so the shared component contributes to `uncertainty_norm`
 while being excluded from `signal_norm`. The reliability ratio is therefore
 inflated in the conservative direction.
 
-**Status.** The defect is confirmed by reading the source. Its magnitude is **not**
-established, because M3 cannot be re-run here.
+**Status: fixed and measured.** The paired re-run is complete. See
+`docs/MILESTONE_3_CORRECTED_REANALYSIS.md`.
 
-**What may be said now.** M3 reliability estimates may have been more conservative
-than the update geometry justifies, because uncertainty was measured partly
-outside the action-difference subspace that the update acts on.
+The correction is a **Pareto improvement** for local RC-OMD: every local variant
+gained AUC *and* reduced distractor KL simultaneously.
 
-**What may not be said.** That the M3 estimator conclusion is invalidated, or that
-corrected reliability would change the M3 trade-off. Both require the paired
-re-run recorded under "Deferred".
+| Scenario | AUC before | AUC after | KL frac before | KL frac after |
+|---|---:|---:|---:|---:|
+| Entropy misleading, `z=1.96` | 0.8842 | 0.8992 | 0.0170 | 0.0132 |
+| Long sparse credit, `z=1.96` | 0.8409 | 0.8494 | 0.0206 | 0.0156 |
+
+The gain is largest at the strictest confidence multiplier, which is what the
+mechanism predicts: inflating `u_k` matters most where `z` is largest.
+Non-bootstrap methods are bitwise unchanged, confirming the fix is correctly
+scoped.
+
+**The M3 conclusion does not change.** Corrected local RC-OMD still reaches only
+0.8992 against Uniform's 0.9582, and 0.8494 against 0.9445. RC-OMD v1 does not
+outperform Uniform Group OMD, and estimator calibration remains the bottleneck.
+What changes is that part of the conservatism blamed on the estimator was an
+artifact of measuring uncertainty outside the update-relevant subspace. The
+estimator is better than Milestone 3 reported, and still not good enough.
+
+The global-reliability ablation does **not** inherit the improvement: its AUC
+rose but its distractor KL fraction rose too in the entropy-misleading task
+(0.0758 to 0.0810), because a single strongest-position confidence applied
+everywhere also loosens the distractor positions.
 
 ## E5. Method-dependent random seeding in Milestone 2
 
@@ -254,16 +289,13 @@ execution. `docs/PARETO_V1_PROTOCOL.md` already requires this.
 These are **not** asserted. They are recorded so that the required experiment is
 defined before it is run, rather than after.
 
-1. **Corrected-bootstrap paired re-run.** Center the bootstrap scores across
-   actions before taking the standard deviation, then re-run M3 primary, the `z`
-   ablation, the reliability-floor ablation, the global/local comparison, runtime,
-   and calibration diagnostics. Report old versus corrected as a paired
-   comparison. State explicitly whether the M3 trade-off conclusion changes.
+1. ~~**Corrected-bootstrap paired re-run.**~~ **Done**, see E4 and
+   `docs/MILESTONE_3_CORRECTED_REANALYSIS.md`.
 2. **Common-random-number M2 reanalysis.** Remove `method_index` from the seed,
    re-run, and publish as a separate corrected reanalysis. Do not overwrite the
    original M2 table.
-3. **Absolute distractor KL for M3.** Recoverable only by re-running M3 and
-   recording absolute values alongside fractions.
+3. ~~**Absolute distractor KL for M3.**~~ **Done**, recovered by re-running M3;
+   values recorded under E2.
 
 Each must be a separate change with its own record. They must not be combined
 into one re-run, because their effects on the published numbers would then be
