@@ -32,16 +32,17 @@ comparison.
 ## Supported only by exploratory development experiments
 
 - Entropy can hurt when its alignment with positional importance is reversed
-  (M2 entropy-misleading, AUC gap -0.0157).
+  (M2 entropy-misleading, AUC gap -0.0148 under common random numbers).
+- Entropy can help when aligned (M2 entropy-aligned, gap +0.0029 under common
+  random numbers). The direction survives paired re-sampling, but the magnitude
+  is small and no interval has been computed.
 - Online moments are much cheaper than the implemented per-group bootstrap
   estimator.
 - Reliability decay changes a ranking-lag trade-off.
 
-Provisional within this category, per [E5](../docs/ERRATA.md):
-
-- That entropy *helps* when aligned. The measured gap is 0.0028 AUC, and M2 used
-  method-dependent seeding, so the comparison was not paired. Pending a
-  common-random-number re-run.
+Both entropy claims were re-run after the M2 seeding defect was fixed and both
+kept their sign; see [E5](../docs/ERRATA.md) and
+`docs/MILESTONE_2_CORRECTED_REANALYSIS.md`.
 
 ## Tested and not supported
 

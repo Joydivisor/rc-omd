@@ -205,20 +205,30 @@ the position in the config's method list, so reordering methods in
 uses `np.random.default_rng(seed)` with no method index, so M3 through M6 already
 use common random numbers across methods and are unaffected.
 
-**Consequence for the M2 conclusion.** The two M2 findings are not equally robust
-to this defect. From the published M2 table:
+**Status: fixed and measured.** See `docs/MILESTONE_2_CORRECTED_REANALYSIS.md`.
 
-- entropy-aligned: entropy-weighted 0.9892 vs uniform 0.9864, gap **0.0028**
-- entropy-misleading: entropy-weighted 0.9462 vs uniform 0.9619, gap **-0.0157**
+**Both M2 conclusions survive with the same sign:**
 
-The misleading-scenario effect is roughly 5.6x the aligned-scenario effect. The
-"entropy hurts when misaligned" direction is unlikely to be an artifact of
-unpaired sampling. The "entropy helps when aligned" direction rests on a 0.0028
-AUC gap measured without common random numbers and should be treated as
-provisional until re-run.
+| Claim | Gap before | Gap after | Verdict |
+|---|---:|---:|---|
+| Entropy helps when aligned | +0.0028 | +0.0029 | holds |
+| Entropy hurts when misaligned | -0.0157 | -0.0148 | holds |
 
-This asymmetry matters because the aligned-scenario result is the weaker half of
-the claim that motivates the whole reliability programme.
+The provisional downgrade previously recorded here is therefore **lifted**: the
+aligned-scenario direction is not an artifact of unpaired sampling.
+
+**A sharper form of the defect than first described.** NumPy treats a trailing
+zero in a `SeedSequence` entropy list as a no-op, so `[seed, scenario, 0]` and
+`[seed, scenario]` are the same stream. The method at index 0 was already on the
+stream the correction adopts and reproduces bitwise; only methods at later
+indices moved. The defect silently privileged whichever method was listed first
+in the config, and the distortion applied to every other method depended on
+nothing more principled than list order.
+
+**What is still weak.** The aligned effect is +0.0029 AUC against an across-seed
+SD of about 0.0004, with no confidence interval and no pre-declared test. The
+direction is real and no longer confounded; the magnitude is not established.
+M2 remains exploratory.
 
 ## E6. Unreachable clamp
 
