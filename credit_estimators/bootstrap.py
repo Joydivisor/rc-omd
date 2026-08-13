@@ -126,7 +126,6 @@ class BootstrapCreditEstimator:
             ),
             0.0,
         )
-        reliability = np.minimum(reliability, 1.0)
         return BootstrapCreditEstimate(
             action_scores=full_scores,
             action_score_std=score_std,

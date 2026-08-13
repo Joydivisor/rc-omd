@@ -232,11 +232,19 @@ M2 remains exploratory.
 
 ## E6. Unreachable clamp
 
-[`credit_estimators/bootstrap.py:118`](../credit_estimators/bootstrap.py) applies
+**Status: removed.**
+
+[`credit_estimators/bootstrap.py`](../credit_estimators/bootstrap.py) applied
 `reliability = np.minimum(reliability, 1.0)`. With `confidence_multiplier >= 0`
-and `uncertainty_norm >= 0` (both enforced), `1 - z * u / max(s, eps)` never
-exceeds 1, and the `np.where` false branch yields 0.0. The clamp is dead code.
-Cosmetic; no numerical effect.
+and `uncertainty_norm >= 0` (both enforced at construction), the expression
+`1 - z * u / max(s, eps)` never exceeds 1, and the `np.where` false branch yields
+0.0. The clamp could not fire.
+
+Removed as a separate change from E4, even though both touch the same function,
+so that the numerically inert edit cannot be confused with the one that moves
+results. Verified inert: re-running `configs/reliability_diagnostics.json`
+compared 140 deterministic values against the pre-removal run and found **0
+differences**.
 
 ## E7. Published runtime ratios do not reproduce
 
