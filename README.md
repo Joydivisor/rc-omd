@@ -129,6 +129,13 @@ four scenarios: Online RC-OMD stayed within 0.0018 AUC of Uniform, used only
 See `docs/MILESTONE_5_OOD_PROTOCOL.md` for the frozen protocol and
 `docs/MILESTONE_5_OOD_RESULTS.md` for the complete result and limitations.
 
+## Corrections
+
+`docs/ERRATA.md` records corrections to claims in this README and in the
+milestone documents, together with two confirmed code defects that affect
+Milestone 2 and Milestone 3 numbers. `paper/CLAIMS.md` carries the current
+evidence boundary. Read both before quoting any figure from this repository.
+
 ## Status
 
 The controlled environment suite, diagnostic baselines, bootstrap RC-OMD, and
