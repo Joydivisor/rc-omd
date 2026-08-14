@@ -29,6 +29,39 @@ The primary pair uses different base steps for the two methods, selected on
 development tasks. This is a Pareto-matched comparison, not a same-step
 comparison.
 
+## Supported by the frozen Pareto V1 protocol
+
+Protocol `pareto-v1-2026-08-14`, execution commit `751c3f6`, 4 scenarios, 20
+seeds, 7-point step grid (`{0.50, 0.75, 1.00, 1.25, 1.50, 1.75, 2.00}`).
+Original execution; there is no earlier published table to reproduce against.
+Golden record: `paper/frozen/pareto-v1-2026-08-14.json`; full per-point
+breakdown in `results/pareto_v1/protocol_evaluation.json`.
+
+This protocol exists because the OOD result above used one hand-picked step
+pair per method, selected on development data -- see
+`docs/PARETO_V1_PROTOCOL.md` for the loophole this closes.
+
+- **GO.** All 4 scenarios passed; every one of the 28 Uniform grid points
+  tested (7 steps x 4 scenarios) was covered by the deterministic
+  smallest-qualifying-step matching rule.
+- At every covered point, Online RC-OMD's success AUC was within the 0.01
+  non-inferiority margin of the matched Uniform step (paired 95% t-CI lower
+  bound, `df=19`), and its distractor KL was at most 75% of the matched
+  Uniform step's, with a 95% upper confidence bound on the log-scale ratio.
+- The matched Online step never sat at the grid maximum (2.00) in any
+  scenario, so the frontier claim is not truncated by the grid's edge.
+- Systems feasibility passed: median matched-pair runtime ratio was well
+  under the frozen 1.5 threshold in every scenario. **No specific runtime
+  interval may be quoted**, for the same reason as [E7](../docs/ERRATA.md).
+
+This upgrades the OOD claim above from "holds at one selected step pair" to
+"holds across a pre-declared step-size frontier, with step size as a swept
+nuisance parameter rather than a selected one." It is **not** a new
+generalization test: it reuses the four `ood-v1` scenarios and says nothing
+about task families outside them, nor about reward improvement at equal
+nominal step size ([E1](../docs/ERRATA.md)), nor about shared-parameter
+function approximation, which remains NO-GO below.
+
 ## Supported only by exploratory development experiments
 
 - Entropy can hurt when its alignment with positional importance is reversed

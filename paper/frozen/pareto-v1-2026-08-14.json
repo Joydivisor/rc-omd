@@ -1,0 +1,77 @@
+{
+  "record_type": "golden_record",
+  "record_status": "ORIGINAL",
+  "provenance": "This is the first and only execution of pareto-v1-2026-08-14. Unlike the ood-v1 and function-approx-v1 golden records, there is no earlier published table to reproduce against: the protocol, its config, its evaluator, and its pairing test were committed together at protocol_commit, and this run was executed immediately afterward at the same commit with no code changes in between (git status was clean). This file is the original, canonical record.",
+  "protocol_id": "pareto-v1-2026-08-14",
+  "protocol_commit": "751c3f6540cb3b640ccdbfe3d7e7ea6ae016b950",
+  "execution_commit": "751c3f6540cb3b640ccdbfe3d7e7ea6ae016b950",
+  "results_commit": "PENDING",
+  "executed_on": "2026-08-15",
+  "config": {
+    "path": "configs/pareto_v1.json",
+    "sha256": "66e6a01623b43c10898ca63aa29a6f9e24b60729ffbb10b4dbdacaa98e6d8e22",
+    "bytes": 5666
+  },
+  "environment": {
+    "python": "3.12.10",
+    "numpy": "2.5.2",
+    "matplotlib": "3.11.1",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "processor": "Intel64 Family 6 Model 198 Stepping 2, GenuineIntel"
+  },
+  "command": [
+    "python -m unittest discover -s tests -v",
+    "python -m experiments.run_reliability_diagnostics --config configs/pareto_v1.json",
+    "python -m experiments.evaluate_pareto_protocol --config configs/pareto_v1.json --summary results/pareto_v1/summary.json --output results/pareto_v1/protocol_evaluation.json"
+  ],
+  "non_reproducible_metrics": {
+    "runtime_seconds_per_seed": {
+      "status": "MACHINE_DEPENDENT",
+      "note": "Wall-clock runtimes do not reproduce across machines (see E7 in docs/ERRATA.md, recorded against ood-v1). The median matched-pair runtime ratios observed on this machine were 1.098 (dense_2_of_6_tiny_group), 1.098 (needle_5_of_5_long_horizon), 1.074 (threshold_3_of_5_small_group), and 1.080 (threshold_4_of_6_three_actions), all comfortably under the frozen 1.5 feasibility threshold. Only the pass/fail outcome against that threshold should be treated as reproducible, not the ratios themselves."
+    }
+  },
+  "decision": {
+    "scenario_pass_count": 4,
+    "scenario_inconclusive": false,
+    "decision": "GO",
+    "systems_feasibility_decision": "PASS",
+    "coverage_by_scenario": {
+      "dense_2_of_6_tiny_group": "7/7",
+      "needle_5_of_5_long_horizon": "7/7",
+      "threshold_3_of_5_small_group": "7/7",
+      "threshold_4_of_6_three_actions": "7/7"
+    }
+  },
+  "interpretation": "On the four ood-v1 scenarios, across the pre-declared step grid {0.50, 0.75, 1.00, 1.25, 1.50, 1.75, 2.00} and the deterministic smallest-qualifying-step matching rule, Online RC-OMD attained Uniform Group OMD's success AUC within 0.01 while using at most 75% of its absolute distractor KL, at every one of the 28 Uniform step-size settings tested (7 steps x 4 scenarios). This does not support reward improvement at equal nominal step size (separately measured and not supported, E1), generalization to task families outside ood-v1, any claim about shared-parameter function approximation (function-approx-v1 returned NO-GO), or causal credit identification.",
+  "generated_files": {
+    "summary.json": {
+      "sha256": "0022cd6293ffd630679fab43e59e329d83647a0b510cb35bef53d4e53c2d0373",
+      "bytes": 168583
+    },
+    "protocol_evaluation.json": {
+      "sha256": "06dab6eb35fa90f3d7b9b9e0f75adcfcf86ef6b9f40974e300eb85e6b1191aae",
+      "bytes": 28694
+    },
+    "history.csv": {
+      "sha256": "03357f3c6762b68ee9228e54bde3ec3c4fe3275c93d4f69ae35c6b8efa50fab0",
+      "bytes": 19621742
+    },
+    "auc_distractor_kl_pareto.pdf": {
+      "sha256": "aeedbb8a746220bd216020fe8eb0cffaf675913028c4170e376dd8df3a7335ac",
+      "bytes": 33583
+    },
+    "auc_distractor_kl_pareto.png": {
+      "sha256": "275f2c41f308eca8bf8916c36b29283b468e90ca3b1c66a805466f16be161d11",
+      "bytes": 403180
+    },
+    "distractor_kl_fraction.png": {
+      "sha256": "80b0701054b3b47f5bc18294ac627b02d8443ef4bd2f46251c0e1162b69796d7",
+      "bytes": 94260
+    },
+    "success_comparison.png": {
+      "sha256": "73d551762091b4eaff41e3d80cbf77649d3110788874fa02822b97d0c51f90cf",
+      "bytes": 269972
+    }
+  },
+  "note_on_full_evaluation": "The complete per-point breakdown (matched step, paired d_AUC with its 95% CI, distractor-KL log-ratio CI, frontier-truncation flag) for all 28 Uniform grid points is in protocol_evaluation.json, referenced above by hash, and is not duplicated in this summary record."
+}

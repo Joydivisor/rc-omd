@@ -242,6 +242,17 @@ python -m experiments.evaluate_pareto_protocol `
   --output results/pareto_v1/protocol_evaluation.json
 ```
 
+## Result
+
+Executed 2026-08-15 at execution commit `751c3f6540cb3b640ccdbfe3d7e7ea6ae016b950`
+(same commit as the protocol freeze; no code changed in between). **Decision:
+GO.** All 4 scenarios passed with full 7/7 coverage; systems feasibility
+passed in every scenario. Golden record:
+`paper/frozen/pareto-v1-2026-08-14.json`. Full per-point breakdown:
+`results/pareto_v1/protocol_evaluation.json`. See
+[`paper/CLAIMS.md`](../paper/CLAIMS.md) for the claim this licenses and its
+stated limits.
+
 `experiments/evaluate_pareto_protocol.py` does not exist yet. It must implement
 the statistical rules above and must be committed with this protocol, so that the
 decision procedure is fixed in code before any result is produced.
