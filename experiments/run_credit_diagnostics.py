@@ -99,7 +99,11 @@ def train_run(
         target_actions=scenario["target_actions"],
     )
     algorithm = build_algorithm(method, config["methods"][method], scenario)
-    rng = np.random.default_rng(np.random.SeedSequence([seed, scenario_index, method_index]))
+    # Common random numbers: the stream depends on the seed and scenario only.
+    # Including method_index gave each method a different trajectory stream at
+    # the same nominal seed, making the comparison unpaired and dependent on the
+    # order methods happen to appear in the config.
+    rng = np.random.default_rng(np.random.SeedSequence([seed, scenario_index]))
 
     iterations = int(config["training"]["iterations"])
     group_size = int(config["training"]["group_size"])

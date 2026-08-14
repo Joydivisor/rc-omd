@@ -35,6 +35,13 @@ class BootstrapCreditEstimator:
     where s_k is the norm of the full-batch action score and u_k is the norm
     of its bootstrap standard error. A position receives a non-zero local step
     only when its estimated signal exceeds the configured uncertainty margin.
+
+    Both norms are taken in the action-centered subspace. The exponentiated-
+    gradient update is invariant to a constant shift applied across actions at
+    a position, so a shared component carries no information about where the
+    policy will move. Measuring signal centered but uncertainty uncentered
+    inflates the ratio and makes reliability conservative for reasons the
+    update geometry does not justify.
     """
 
     def __init__(
@@ -100,7 +107,11 @@ class BootstrapCreditEstimator:
                 probabilities,
             )
 
-        score_std = bootstrap_scores.std(axis=0, ddof=1)
+        centered_bootstrap_scores = bootstrap_scores - bootstrap_scores.mean(
+            axis=2,
+            keepdims=True,
+        )
+        score_std = centered_bootstrap_scores.std(axis=0, ddof=1)
         centered_scores = full_scores - full_scores.mean(axis=1, keepdims=True)
         signal_norm = np.linalg.norm(centered_scores, axis=1)
         uncertainty_norm = np.linalg.norm(score_std, axis=1)
@@ -115,7 +126,6 @@ class BootstrapCreditEstimator:
             ),
             0.0,
         )
-        reliability = np.minimum(reliability, 1.0)
         return BootstrapCreditEstimate(
             action_scores=full_scores,
             action_score_std=score_std,

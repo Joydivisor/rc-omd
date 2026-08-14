@@ -1,0 +1,361 @@
+{
+  "record_type": "golden_record",
+  "record_status": "REPRODUCTION",
+  "provenance_warning": "These artifacts were regenerated on 2026-08-14 on a different machine from the one that produced the published milestone tables. The original results/ directory was never tracked in Git (verified: no commit in the repository history ever added results/ or any summary.json) and is unrecoverable. This record is canonical going forward because its deterministic metrics reproduce the published values exactly, but it is not the original byte stream.",
+  "protocol_id": "function-approx-v1-2026-08-09",
+  "protocol_commit": "f7797820e7a40466c0f4632c5f10cee8938cb2af",
+  "execution_commit": "2c91c69e3a0ebad71654833e9f7814050325fab5",
+  "results_commit": "de435763db85368f1b939937509f9504b009cb8b",
+  "regenerated_on": "2026-08-14",
+  "config": {
+    "path": "configs/function_approx_preregistered.json",
+    "sha256": "53368003e991b1cacdcc63423de16e8f1ec6b195f338533bbaf90957e29c639b",
+    "bytes": 3621
+  },
+  "environment": {
+    "python": "3.12.10",
+    "numpy": "2.5.2",
+    "matplotlib": "3.11.1",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "processor": "Intel64 Family 6 Model 198 Stepping 2, GenuineIntel"
+  },
+  "reproduction_check": {
+    "method": "Regenerated at the execution commit in a detached worktree, then compared against the values published in the milestone document.",
+    "deterministic_metrics_status": "EXACT",
+    "note": "All AUC, KL, and KL-ratio values match the published table to the precision at which the table was published (<= 5e-7 absolute)."
+  },
+  "non_reproducible_metrics": {
+    "runtime_ratio": {
+      "status": "MACHINE_DEPENDENT",
+      "published": {
+        "separable_shared_features": 0.999,
+        "partial_feature_aliasing": 1.055,
+        "complete_feature_aliasing_negative_control": 1.048
+      },
+      "observed_on_this_machine": {
+        "complete_feature_aliasing_negative_control": 1.0550410264260794,
+        "partial_feature_aliasing": 1.0816642118816588,
+        "separable_shared_features": 1.0396478972955767
+      },
+      "note": "Runtime ratios are wall-clock measurements and do not reproduce across machines. Any published runtime range must be labelled machine-specific. The systems-feasibility threshold of 1.5 is met by a wide margin in both the published and observed values, so the decision is unaffected."
+    }
+  },
+  "decision": {
+    "scenario_pass_count": 1,
+    "runtime_pass_count": 3,
+    "transfer_decision": "NO-GO",
+    "systems_feasibility_decision": "PASS"
+  },
+  "frozen_thresholds": {
+    "primary_uniform": "projected_uniform_eta075",
+    "primary_online": "projected_online_eta125",
+    "max_auc_deficit": 0.02,
+    "max_distractor_kl_ratio": 0.75,
+    "max_runtime_ratio": 1.5,
+    "required_scenario_passes": 2,
+    "required_runtime_passes": 3
+  },
+  "generated_files": {
+    "auc_distractor_kl_pareto.pdf": {
+      "sha256": "f907b57971ec60dacbed5f429eb8511c99fd84c5fe95cd48c875becfe2440915",
+      "bytes": 20082
+    },
+    "auc_distractor_kl_pareto.png": {
+      "sha256": "42bfcd8c9985bfd722776842e31694c5ca7b0072c88f3b2a199413656342e5fb",
+      "bytes": 200094
+    },
+    "distractor_kl_fraction.png": {
+      "sha256": "5f3d55c39db3aa9e850196f8f648aebe1e68614c7b58dc2a00b9aef5a1933b09",
+      "bytes": 73248
+    },
+    "history.csv": {
+      "sha256": "e8e6621fee01bb35c492c54268b641fffcfb62aad074a87530383f48adfce59a",
+      "bytes": 2219576
+    },
+    "protocol_evaluation.json": {
+      "sha256": "9da502be6e9e35e19b5751525480fa846d2242e6315839591ec0fa51e9bdc043",
+      "bytes": 2096
+    },
+    "success_comparison.png": {
+      "sha256": "929526f9eda8b93437661af5c3c160277a7f0e4b3990b59fbcaed91c55399a25",
+      "bytes": 134593
+    },
+    "summary.json": {
+      "sha256": "c369ba138a570283585732b852fcf72fd50edc996d7012a5f0a93af8fa79b186",
+      "bytes": 10072
+    }
+  },
+  "summary": {
+    "complete_feature_aliasing_negative_control": {
+      "projected_online_eta125": {
+        "final_success_mean": 0.9980236977825367,
+        "final_success_std": 0.0002274477137835081,
+        "success_auc_mean": 0.9727222310438595,
+        "success_auc_std": 0.0010550222385858636,
+        "distractor_kl_fraction_mean": 0.5,
+        "cumulative_critical_kl_mean": 0.20963812847618737,
+        "cumulative_distractor_kl_mean": 0.20963812847618737,
+        "cumulative_distractor_kl_std": 0.007222800737370994,
+        "cumulative_total_kl_mean": 0.41927625695237475,
+        "harmful_update_rate_mean": 0.0,
+        "runtime_seconds_mean": 0.28437675000022866,
+        "cumulative_projection_kl_mean": 0.06850688822730856,
+        "critical_reliability_mean": 0.43235286230952613,
+        "distractor_reliability_mean": 0.16664848808810712,
+        "reliability_topk_precision_mean": 0.7043545911297877
+      },
+      "projected_uniform_eta075": {
+        "final_success_mean": 0.9982052418474281,
+        "final_success_std": 0.00021105620070834485,
+        "success_auc_mean": 0.9715131681285338,
+        "success_auc_std": 0.0010155462915225379,
+        "distractor_kl_fraction_mean": 0.5,
+        "cumulative_critical_kl_mean": 0.1782608342906042,
+        "cumulative_distractor_kl_mean": 0.1782608342906042,
+        "cumulative_distractor_kl_std": 0.007480563121595447,
+        "cumulative_total_kl_mean": 0.3565216685812084,
+        "harmful_update_rate_mean": 0.0,
+        "runtime_seconds_mean": 0.2695409399988421,
+        "cumulative_projection_kl_mean": 0.06649999750600946,
+        "critical_reliability_mean": null,
+        "distractor_reliability_mean": null,
+        "reliability_topk_precision_mean": null
+      },
+      "tabular_online_eta125": {
+        "final_success_mean": 0.9996998820213043,
+        "final_success_std": 7.805859151721735e-05,
+        "success_auc_mean": 0.9855123926095773,
+        "success_auc_std": 0.000510486595529212,
+        "distractor_kl_fraction_mean": 0.03079620581573675,
+        "cumulative_critical_kl_mean": 0.493503247957323,
+        "cumulative_distractor_kl_mean": 0.015732057535328553,
+        "cumulative_distractor_kl_std": 0.005828867322392321,
+        "cumulative_total_kl_mean": 0.5092353054926516,
+        "harmful_update_rate_mean": 0.0,
+        "runtime_seconds_mean": 0.18816862999883596,
+        "cumulative_projection_kl_mean": 0.0,
+        "critical_reliability_mean": 0.4837775245664896,
+        "distractor_reliability_mean": 0.11396873728088634,
+        "reliability_topk_precision_mean": 0.8290873015873016
+      },
+      "tabular_uniform_eta075": {
+        "final_success_mean": 0.9997613238407203,
+        "final_success_std": 8.010214677177041e-05,
+        "success_auc_mean": 0.987428492513995,
+        "success_auc_std": 0.0010660564265856333,
+        "distractor_kl_fraction_mean": 0.18159208280722464,
+        "cumulative_critical_kl_mean": 0.4199707004762067,
+        "cumulative_distractor_kl_mean": 0.09327200224242246,
+        "cumulative_distractor_kl_std": 0.007623891154794806,
+        "cumulative_total_kl_mean": 0.5132427027186293,
+        "harmful_update_rate_mean": 0.0,
+        "runtime_seconds_mean": 0.17013854000033463,
+        "cumulative_projection_kl_mean": 0.0,
+        "critical_reliability_mean": null,
+        "distractor_reliability_mean": null,
+        "reliability_topk_precision_mean": null
+      }
+    },
+    "partial_feature_aliasing": {
+      "projected_online_eta125": {
+        "final_success_mean": 0.9980822862786184,
+        "final_success_std": 0.00019460424396145162,
+        "success_auc_mean": 0.9770328809214549,
+        "success_auc_std": 0.00081934942428691,
+        "distractor_kl_fraction_mean": 0.3428828000895106,
+        "cumulative_critical_kl_mean": 0.2539812805226803,
+        "cumulative_distractor_kl_mean": 0.13254270244774422,
+        "cumulative_distractor_kl_std": 0.0042937649087904815,
+        "cumulative_total_kl_mean": 0.38652398297042445,
+        "harmful_update_rate_mean": 0.0,
+        "runtime_seconds_mean": 0.28721365999954285,
+        "cumulative_projection_kl_mean": 0.04662736614160825,
+        "critical_reliability_mean": 0.4243622948787761,
+        "distractor_reliability_mean": 0.15386946330596488,
+        "reliability_topk_precision_mean": 0.712187017355232
+      },
+      "projected_uniform_eta075": {
+        "final_success_mean": 0.9982693293415423,
+        "final_success_std": 0.00019846079414721912,
+        "success_auc_mean": 0.9775618913973843,
+        "success_auc_std": 0.0012689957204895775,
+        "distractor_kl_fraction_mean": 0.3905563905700538,
+        "cumulative_critical_kl_mean": 0.2135933394157668,
+        "cumulative_distractor_kl_mean": 0.13707709770565701,
+        "cumulative_distractor_kl_std": 0.009698948861702222,
+        "cumulative_total_kl_mean": 0.3506704371214238,
+        "harmful_update_rate_mean": 0.0,
+        "runtime_seconds_mean": 0.26552941000045394,
+        "cumulative_projection_kl_mean": 0.04708405106630226,
+        "critical_reliability_mean": null,
+        "distractor_reliability_mean": null,
+        "reliability_topk_precision_mean": null
+      },
+      "tabular_online_eta125": {
+        "final_success_mean": 0.9996998820213043,
+        "final_success_std": 7.805859151721735e-05,
+        "success_auc_mean": 0.9855123926095773,
+        "success_auc_std": 0.000510486595529212,
+        "distractor_kl_fraction_mean": 0.03079620581573675,
+        "cumulative_critical_kl_mean": 0.493503247957323,
+        "cumulative_distractor_kl_mean": 0.015732057535328553,
+        "cumulative_distractor_kl_std": 0.005828867322392321,
+        "cumulative_total_kl_mean": 0.5092353054926516,
+        "harmful_update_rate_mean": 0.0,
+        "runtime_seconds_mean": 0.18598417999892264,
+        "cumulative_projection_kl_mean": 0.0,
+        "critical_reliability_mean": 0.4837775245664896,
+        "distractor_reliability_mean": 0.11396873728088634,
+        "reliability_topk_precision_mean": 0.8290873015873016
+      },
+      "tabular_uniform_eta075": {
+        "final_success_mean": 0.9997613238407203,
+        "final_success_std": 8.010214677177041e-05,
+        "success_auc_mean": 0.987428492513995,
+        "success_auc_std": 0.0010660564265856333,
+        "distractor_kl_fraction_mean": 0.18159208280722464,
+        "cumulative_critical_kl_mean": 0.4199707004762067,
+        "cumulative_distractor_kl_mean": 0.09327200224242246,
+        "cumulative_distractor_kl_std": 0.007623891154794806,
+        "cumulative_total_kl_mean": 0.5132427027186293,
+        "harmful_update_rate_mean": 0.0,
+        "runtime_seconds_mean": 0.17183918000082485,
+        "cumulative_projection_kl_mean": 0.0,
+        "critical_reliability_mean": null,
+        "distractor_reliability_mean": null,
+        "reliability_topk_precision_mean": null
+      }
+    },
+    "separable_shared_features": {
+      "projected_online_eta125": {
+        "final_success_mean": 0.9981316350271954,
+        "final_success_std": 0.00018675746338805011,
+        "success_auc_mean": 0.9809426804463431,
+        "success_auc_std": 0.0007161812686593979,
+        "distractor_kl_fraction_mean": 0.043225778825890314,
+        "cumulative_critical_kl_mean": 0.31293589372334085,
+        "cumulative_distractor_kl_mean": 0.01417394830252689,
+        "cumulative_distractor_kl_std": 0.003051478814066063,
+        "cumulative_total_kl_mean": 0.3271098420258677,
+        "harmful_update_rate_mean": 0.0,
+        "runtime_seconds_mean": 0.2769121199991787,
+        "cumulative_projection_kl_mean": 0.025141036562048268,
+        "critical_reliability_mean": 0.4005951588213323,
+        "distractor_reliability_mean": 0.1369102451503638,
+        "reliability_topk_precision_mean": 0.7247827463895127
+      },
+      "projected_uniform_eta075": {
+        "final_success_mean": 0.9983220813212166,
+        "final_success_std": 0.00018833761030016794,
+        "success_auc_mean": 0.9825502721813242,
+        "success_auc_std": 0.0010255464386060115,
+        "distractor_kl_fraction_mean": 0.21577926407502632,
+        "cumulative_critical_kl_mean": 0.2668270514116006,
+        "cumulative_distractor_kl_mean": 0.07349126320288729,
+        "cumulative_distractor_kl_std": 0.006607159709460623,
+        "cumulative_total_kl_mean": 0.3403183146144879,
+        "harmful_update_rate_mean": 0.0,
+        "runtime_seconds_mean": 0.2663518299988937,
+        "cumulative_projection_kl_mean": 0.0282803907561708,
+        "critical_reliability_mean": null,
+        "distractor_reliability_mean": null,
+        "reliability_topk_precision_mean": null
+      },
+      "tabular_online_eta125": {
+        "final_success_mean": 0.9996998820213043,
+        "final_success_std": 7.805859151721735e-05,
+        "success_auc_mean": 0.9855123926095773,
+        "success_auc_std": 0.000510486595529212,
+        "distractor_kl_fraction_mean": 0.03079620581573675,
+        "cumulative_critical_kl_mean": 0.493503247957323,
+        "cumulative_distractor_kl_mean": 0.015732057535328553,
+        "cumulative_distractor_kl_std": 0.005828867322392321,
+        "cumulative_total_kl_mean": 0.5092353054926516,
+        "harmful_update_rate_mean": 0.0,
+        "runtime_seconds_mean": 0.18293056000184152,
+        "cumulative_projection_kl_mean": 0.0,
+        "critical_reliability_mean": 0.4837775245664896,
+        "distractor_reliability_mean": 0.11396873728088634,
+        "reliability_topk_precision_mean": 0.8290873015873016
+      },
+      "tabular_uniform_eta075": {
+        "final_success_mean": 0.9997613238407203,
+        "final_success_std": 8.010214677177041e-05,
+        "success_auc_mean": 0.987428492513995,
+        "success_auc_std": 0.0010660564265856333,
+        "distractor_kl_fraction_mean": 0.18159208280722464,
+        "cumulative_critical_kl_mean": 0.4199707004762067,
+        "cumulative_distractor_kl_mean": 0.09327200224242246,
+        "cumulative_distractor_kl_std": 0.007623891154794806,
+        "cumulative_total_kl_mean": 0.5132427027186293,
+        "harmful_update_rate_mean": 0.0,
+        "runtime_seconds_mean": 0.16804201000049943,
+        "cumulative_projection_kl_mean": 0.0,
+        "critical_reliability_mean": null,
+        "distractor_reliability_mean": null,
+        "reliability_topk_precision_mean": null
+      }
+    }
+  },
+  "protocol_evaluation": {
+    "protocol_id": "function-approx-v1-2026-08-09",
+    "primary_pair": {
+      "uniform": "projected_uniform_eta075",
+      "online": "projected_online_eta125"
+    },
+    "frozen_thresholds": {
+      "primary_uniform": "projected_uniform_eta075",
+      "primary_online": "projected_online_eta125",
+      "max_auc_deficit": 0.02,
+      "max_distractor_kl_ratio": 0.75,
+      "max_runtime_ratio": 1.5,
+      "required_scenario_passes": 2,
+      "required_runtime_passes": 3
+    },
+    "scenario_results": {
+      "complete_feature_aliasing_negative_control": {
+        "uniform_auc": 0.9715131681285338,
+        "online_auc": 0.9727222310438595,
+        "auc_difference": 0.0012090629153256316,
+        "uniform_distractor_kl": 0.1782608342906042,
+        "online_distractor_kl": 0.20963812847618737,
+        "distractor_kl_ratio": 1.176019002213528,
+        "runtime_ratio": 1.0550410264260794,
+        "auc_pass": true,
+        "kl_pass": false,
+        "runtime_pass": true,
+        "scenario_pass": false
+      },
+      "partial_feature_aliasing": {
+        "uniform_auc": 0.9775618913973843,
+        "online_auc": 0.9770328809214549,
+        "auc_difference": -0.0005290104759293479,
+        "uniform_distractor_kl": 0.13707709770565701,
+        "online_distractor_kl": 0.13254270244774422,
+        "distractor_kl_ratio": 0.9669208399228775,
+        "runtime_ratio": 1.0816642118816588,
+        "auc_pass": true,
+        "kl_pass": false,
+        "runtime_pass": true,
+        "scenario_pass": false
+      },
+      "separable_shared_features": {
+        "uniform_auc": 0.9825502721813242,
+        "online_auc": 0.9809426804463431,
+        "auc_difference": -0.0016075917349810398,
+        "uniform_distractor_kl": 0.07349126320288729,
+        "online_distractor_kl": 0.01417394830252689,
+        "distractor_kl_ratio": 0.19286575961277028,
+        "runtime_ratio": 1.0396478972955767,
+        "auc_pass": true,
+        "kl_pass": true,
+        "runtime_pass": true,
+        "scenario_pass": true
+      }
+    },
+    "scenario_pass_count": 1,
+    "runtime_pass_count": 3,
+    "transfer_decision": "NO-GO",
+    "systems_feasibility_decision": "PASS"
+  }
+}
