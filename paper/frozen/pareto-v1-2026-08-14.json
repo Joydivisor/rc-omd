@@ -5,7 +5,7 @@
   "protocol_id": "pareto-v1-2026-08-14",
   "protocol_commit": "751c3f6540cb3b640ccdbfe3d7e7ea6ae016b950",
   "execution_commit": "751c3f6540cb3b640ccdbfe3d7e7ea6ae016b950",
-  "results_commit": "PENDING",
+  "results_commit": "98a04fd",
   "executed_on": "2026-08-15",
   "config": {
     "path": "configs/pareto_v1.json",
