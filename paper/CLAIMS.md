@@ -81,15 +81,23 @@ current algorithm is known not to deliver.
 
 ## Known defects affecting published numbers
 
-Recorded in [`docs/ERRATA.md`](../docs/ERRATA.md); none are corrected in the
-numbers above, because the corrected runs have not been executed.
+Recorded in [`docs/ERRATA.md`](../docs/ERRATA.md).
 
-- Bootstrap uncertainty is measured partly outside the update-relevant
+- Bootstrap uncertainty was measured partly outside the update-relevant
   action-difference subspace, making M3 reliability more conservative than the
-  update geometry justifies ([E4](../docs/ERRATA.md)).
-- M2 seeds trajectories per method, so its comparisons are unpaired and depend on
-  config method order ([E5](../docs/ERRATA.md)). M3--M6 are unaffected.
+  update geometry justifies ([E4](../docs/ERRATA.md)). **Status: fixed and
+  measured.** The paired re-run is complete; for local RC-OMD the correction is
+  a Pareto improvement (every variant gained AUC and reduced distractor KL). See
+  `docs/MILESTONE_3_CORRECTED_REANALYSIS.md`. The M3 headline conclusion is
+  unchanged: RC-OMD v1 still does not outperform Uniform Group OMD overall.
+- M2 seeded trajectories per method, so its comparisons were unpaired and
+  depended on config method order ([E5](../docs/ERRATA.md)). M3--M6 are
+  unaffected. **Status: fixed and measured**; the M2 gap figures quoted above
+  (`+0.0029`, `-0.0148`) are already the corrected, paired values. See
+  `docs/MILESTONE_2_CORRECTED_REANALYSIS.md`.
 - M3's "81%--83% distractor reduction" is a reduction in KL *fraction*, not
-  absolute KL ([E2](../docs/ERRATA.md)).
+  absolute KL ([E2](../docs/ERRATA.md)). This is a labelling distinction, not a
+  re-run: absolute values (89.9%--92.0%, post-E4) are recorded in
+  `docs/MILESTONE_3_CORRECTED_REANALYSIS.md`.
 
 Any abstract, presentation, or submission must preserve these distinctions.
