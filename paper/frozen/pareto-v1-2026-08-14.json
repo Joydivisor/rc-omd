@@ -73,5 +73,11 @@
       "bytes": 269972
     }
   },
-  "note_on_full_evaluation": "The complete per-point breakdown (matched step, paired d_AUC with its 95% CI, distractor-KL log-ratio CI, frontier-truncation flag) for all 28 Uniform grid points is in protocol_evaluation.json, referenced above by hash, and is not duplicated in this summary record."
+  "archived_evaluation": {
+    "path": "paper/frozen/pareto-v1-2026-08-14-evaluation.json",
+    "sha256": "06dab6eb35fa90f3d7b9b9e0f75adcfcf86ef6b9f40974e300eb85e6b1191aae",
+    "bytes": 28694,
+    "note": "Byte-identical copy of results/pareto_v1/protocol_evaluation.json, whose hash is recorded under generated_files. results/ is gitignored, so this archived copy is the version-controlled record."
+  },
+  "note_on_full_evaluation": "The complete per-point breakdown (matched step, paired d_AUC with its 95% CI, distractor-KL log-ratio CI, frontier-truncation flag) for all 28 Uniform grid points is archived at paper/frozen/pareto-v1-2026-08-14-evaluation.json rather than embedded here. This differs from the ood-v1 and function-approx-v1 golden records, which embed their protocol_evaluation inline; the breakdown is kept as a sibling file because it is an order of magnitude larger than those."
 }
