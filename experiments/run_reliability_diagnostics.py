@@ -361,6 +361,18 @@ def summarize(
                 "reliability_topk_precision_mean": (
                     float(np.mean(topk_precision)) if topk_precision else None
                 ),
+                # Per-seed values, ordered by the sorted `seeds` list above. Every
+                # method within a scenario is run against the same seed list (see
+                # `main`), and `run_one` seeds its environment RNG from `seed`
+                # alone (no method or step-size component), so index i in every
+                # per-seed array below refers to the same seed across methods.
+                # This is what makes paired, same-seed comparisons (e.g. the
+                # Pareto V1 protocol) valid without re-deriving pairing from
+                # `history.csv`.
+                "seeds": [int(seed) for seed in seeds],
+                "success_auc_per_seed": auc,
+                "cumulative_distractor_kl_per_seed": distractor_kl,
+                "runtime_seconds_per_seed": runtime,
             }
     return summary
 

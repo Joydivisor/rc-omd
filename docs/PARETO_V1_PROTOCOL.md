@@ -2,10 +2,12 @@
 
 Protocol ID: `pareto-v1-2026-08-14`
 
-Status: **drafted, not frozen.** This protocol is not pre-registered until it is
-committed and pushed with its config and tests. The working copy it was written
-in has no Git repository, so the freeze step has not occurred. Any execution
-before that commit is exploratory and must be labelled as such.
+Status: **frozen.** This commit adds this protocol document together with
+`configs/pareto_v1.json`, `experiments/evaluate_pareto_protocol.py`, and the
+pairing assertion tests (`tests/test_pareto_pairing.py`), satisfying the
+pre-registration requirement below. Execution must happen at or after this
+commit; any result produced before it is exploratory and must be labelled as
+such.
 
 ## Purpose
 
@@ -214,13 +216,20 @@ paper's central Pareto claim must be narrowed accordingly.
 7. Any later change to grid, margin, bound, or matching rule requires a new
    protocol ID and is post-hoc.
 
-## Prerequisites not yet met
+## Prerequisites (met as of this commit)
 
-- No Python interpreter is installed in the working environment.
-- No Git repository is present, so steps 1, 2, and 5 cannot be performed.
-- `configs/pareto_v1.json` does not exist yet and must be written and frozen with
-  this document.
-- The pairing assertion test named in "Frozen design" does not exist yet.
+- `configs/pareto_v1.json` implements the scenarios, methods, and step grid
+  above.
+- The pairing assertion in "Frozen design" is checked by
+  `tests/test_pareto_pairing.py`
+  (`test_first_batch_identical_across_methods_and_step_sizes_at_fixed_seed`).
+- `experiments/evaluate_pareto_protocol.py` implements the statistical rules
+  below and is covered by `tests/test_evaluate_pareto_protocol.py`.
+- `experiments/run_reliability_diagnostics.py`'s summary output now includes
+  per-seed arrays (`seeds`, `success_auc_per_seed`,
+  `cumulative_distractor_kl_per_seed`, `runtime_seconds_per_seed`) so the
+  evaluator can form paired differences directly from `summary.json` without
+  re-deriving pairing from `history.csv`.
 
 ## Command to be run after the protocol commit
 
@@ -232,6 +241,17 @@ python -m experiments.evaluate_pareto_protocol `
   --summary results/pareto_v1/summary.json `
   --output results/pareto_v1/protocol_evaluation.json
 ```
+
+## Result
+
+Executed 2026-08-15 at execution commit `751c3f6540cb3b640ccdbfe3d7e7ea6ae016b950`
+(same commit as the protocol freeze; no code changed in between). **Decision:
+GO.** All 4 scenarios passed with full 7/7 coverage; systems feasibility
+passed in every scenario. Golden record:
+`paper/frozen/pareto-v1-2026-08-14.json`. Full per-point breakdown:
+`results/pareto_v1/protocol_evaluation.json`. See
+[`paper/CLAIMS.md`](../paper/CLAIMS.md) for the claim this licenses and its
+stated limits.
 
 `experiments/evaluate_pareto_protocol.py` does not exist yet. It must implement
 the statistical rules above and must be committed with this protocol, so that the
