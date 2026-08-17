@@ -35,7 +35,7 @@ Protocol `pareto-v1-2026-08-14`, execution commit `751c3f6`, 4 scenarios, 20
 seeds, 7-point step grid (`{0.50, 0.75, 1.00, 1.25, 1.50, 1.75, 2.00}`).
 Original execution; there is no earlier published table to reproduce against.
 Golden record: `paper/frozen/pareto-v1-2026-08-14.json`; full per-point
-breakdown in `results/pareto_v1/protocol_evaluation.json`.
+breakdown in `paper/frozen/pareto-v1-2026-08-14-evaluation.json`.
 
 This protocol exists because the OOD result above used one hand-picked step
 pair per method, selected on development data -- see

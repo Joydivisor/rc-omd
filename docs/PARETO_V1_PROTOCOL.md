@@ -224,7 +224,7 @@ paper's central Pareto claim must be narrowed accordingly.
   `tests/test_pareto_pairing.py`
   (`test_first_batch_identical_across_methods_and_step_sizes_at_fixed_seed`).
 - `experiments/evaluate_pareto_protocol.py` implements the statistical rules
-  below and is covered by `tests/test_evaluate_pareto_protocol.py`.
+  above and is covered by `tests/test_evaluate_pareto_protocol.py`.
 - `experiments/run_reliability_diagnostics.py`'s summary output now includes
   per-seed arrays (`seeds`, `success_auc_per_seed`,
   `cumulative_distractor_kl_per_seed`, `runtime_seconds_per_seed`) so the
@@ -248,11 +248,12 @@ Executed 2026-08-15 at execution commit `751c3f6540cb3b640ccdbfe3d7e7ea6ae016b95
 (same commit as the protocol freeze; no code changed in between). **Decision:
 GO.** All 4 scenarios passed with full 7/7 coverage; systems feasibility
 passed in every scenario. Golden record:
-`paper/frozen/pareto-v1-2026-08-14.json`. Full per-point breakdown:
-`results/pareto_v1/protocol_evaluation.json`. See
+`paper/frozen/pareto-v1-2026-08-14.json`. Full per-point breakdown, archived
+under version control because `results/` is gitignored:
+`paper/frozen/pareto-v1-2026-08-14-evaluation.json`. See
 [`paper/CLAIMS.md`](../paper/CLAIMS.md) for the claim this licenses and its
 stated limits.
 
-`experiments/evaluate_pareto_protocol.py` does not exist yet. It must implement
-the statistical rules above and must be committed with this protocol, so that the
-decision procedure is fixed in code before any result is produced.
+Per execution-discipline item 7, the grid, margin, bound, and matching rule are
+now closed under this protocol ID. Any change to them requires a new protocol ID
+and is post-hoc with respect to this result.
