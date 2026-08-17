@@ -6,7 +6,7 @@
   "protocol_commit": "181b637fe7a397b69b8c1a652b9ec7674ab4da34",
   "hyperparameter_freeze_commit": "63145da",
   "execution_commit": "63145da",
-  "results_commit": "PENDING",
+  "results_commit": "6f52cb8",
   "executed_on": "2026-08-17",
   "provenance": "Single execution of the frozen test config at the hyperparameter-freeze commit with a clean working tree. lambda*=3.0 and mu*=0.0 were selected beforehand on development scenarios only and committed before any test scenario ran.",
   "environment": {

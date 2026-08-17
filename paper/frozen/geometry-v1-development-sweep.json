@@ -5,7 +5,7 @@
   "phase": "development",
   "protocol_commit": "181b637fe7a397b69b8c1a652b9ec7674ab4da34",
   "execution_commit": "181b637fe7a397b69b8c1a652b9ec7674ab4da34",
-  "results_commit": "PENDING",
+  "results_commit": "6f52cb8",
   "executed_on": "2026-08-17",
   "purpose": "Selects lambda* and mu* on development scenarios only, by the deterministic rule frozen in docs/GEOMETRY_V1_PROTOCOL.md. No test or diagnostic scenario was executed in this phase, and no Go/No-Go decision is made or implied here.",
   "environment": {

@@ -62,6 +62,46 @@ about task families outside them, nor about reward improvement at equal
 nominal step size ([E1](../docs/ERRATA.md)), nor about shared-parameter
 function approximation, which remains NO-GO below.
 
+## Supported by the frozen geometry-v1 protocol
+
+Protocol `geometry-v1-2026-08-15`, execution commit `63145da`, 5 scenarios,
+20 seeds, `lambda*=3.0` and `mu*=0.0` selected on separate development
+scenarios and frozen before any test scenario ran. Golden record:
+`paper/frozen/geometry-v1-2026-08-15.json`; per-scenario breakdown in
+`paper/frozen/geometry-v1-2026-08-15-evaluation.json`.
+
+The algorithm is **RWP-OMD**, a reliability-weighted forward cross-entropy
+projection. It is *not* Online RC-OMD and inherits nothing from `ood-v1` or
+`pareto-v1`; see `docs/PARAMETER_SPACE_GEOMETRY_DESIGN.md` Section 10.
+
+- **GO.** All 4 required scenarios passed and the complete-aliasing invariant
+  held exactly.
+- `partial_feature_aliasing`, the scenario that produced the M6 NO-GO, passed
+  with a distractor-KL upper bound of **0.597** against the 0.75 bound. The v1
+  algorithm measured **1.030** on the same run.
+- Both held-out scenarios passed (**0.433**, **0.397**); v1 measured 0.841 and
+  0.790 on the same run, i.e. would have failed.
+- `separable_shared_features` did not regress (0.080).
+- **Mechanism.** Under partial aliasing RWP-OMD cut distractor KL to 0.575 of
+  baseline while cutting critical KL only to 0.709 -- selective protection,
+  not merely smaller steps. v1 did the reverse, raising critical KL to 1.198
+  while leaving distractor KL at 1.000.
+
+Limits, all fixed before execution:
+
+- **`eta` was held fixed** (candidate 1.25, baseline 0.75). This does **not**
+  establish that RWP-OMD beats a step-size-matched projected uniform baseline.
+  No step frontier was swept. This is the single largest open confound and is
+  the deferred `geometry-v2` question. The result **may not be described as
+  step-robust**.
+- **AUC is uniformly below baseline**, by 0.0114 to 0.0176 against a 0.020
+  non-inferiority margin. This is a Pareto trade-off with little headroom, not
+  a reward improvement.
+- The three M6 scenarios are **seen data**; only the two held-out scenarios
+  carry generalization evidence.
+- Complete aliasing is a negative control and contributed nothing to the
+  decision.
+
 ## Supported only by exploratory development experiments
 
 - Entropy can hurt when its alignment with positional importance is reversed
@@ -93,6 +133,10 @@ These were measured. They are not open questions.
   in the declared distractor-KL condition. Reproduction confirmed at execution
   commit `2c91c69`; golden record
   `paper/frozen/function-approx-v1-2026-08-09.json`.
+  **This NO-GO stands unchanged.** It is a statement about Projected Online
+  RC-OMD, the v1 algorithm. A different algorithm (RWP-OMD) later passed on
+  these scenarios under `geometry-v1`, below; that does not retroactively
+  change what v1 did, and the two must not be conflated.
 
 Neither result refutes the general statement. Both bound the region where the
 current algorithm is known not to deliver.
@@ -110,7 +154,9 @@ current algorithm is known not to deliver.
 - Causal identification of step credit.
 - Robustness under persistent confounding or nonstationarity.
 - Benefits for language-model RLVR.
-- Reliability expressed in parameter space rather than as per-position scalars.
+- Whether RWP-OMD's advantage survives step-size matching (deferred
+  `geometry-v2` frontier test).
+- Reliability geometry beyond shared *linear* features.
 
 ## Known defects affecting published numbers
 
