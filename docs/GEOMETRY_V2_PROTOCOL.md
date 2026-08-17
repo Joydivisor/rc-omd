@@ -61,9 +61,9 @@ equal. For tie-group `g` write `c(g)` for the number of critical positions in
 - a group is **critical-bearing** iff `c(g) > 0`
 - the **yield ratio** of a critical-bearing group is `c(g)/d(g)`, taken as
   `+inf` when `d(g) = 0`
-- a scenario is **ratio-homogeneous** iff all critical-bearing groups share one
-  finite yield ratio, and **ratio-heterogeneous** iff at least two distinct
-  finite yield ratios occur
+- a scenario is **ratio-homogeneous** iff all critical-bearing groups share a
+  single yield ratio value, with `+inf` admitted as a value, and
+  **ratio-heterogeneous** iff at least two distinct values occur
 
 ## Theory
 
