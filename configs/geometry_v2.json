@@ -1,0 +1,1922 @@
+{
+  "protocol_id": "geometry-v2-2026-08-18",
+  "phase": "test",
+  "generated_from": "docs/GEOMETRY_V2_PROTOCOL.md; A3 arms from experiments/geometry_v2_scenarios.py; the five inherited scenarios copied verbatim from configs/geometry_v1.json",
+  "scenario_structure": {
+    "geom_v2_a3_pure_ge1": {
+      "name": "geom_v2_a3_pure_ge1",
+      "horizon": 12,
+      "n_actions": 3,
+      "n_critical": 4,
+      "n_distractor": 8,
+      "n_groups": 4,
+      "group_sizes": [
+        2,
+        3,
+        3,
+        4
+      ],
+      "group_counts": [
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          2
+        ]
+      ],
+      "critical_counts": [
+        2,
+        2
+      ],
+      "spread": 8,
+      "alpha": 0.33333333333333337,
+      "pure_crit": 1,
+      "yield_ratios": [
+        "inf",
+        "1"
+      ],
+      "ratio_class": "heterogeneous"
+    },
+    "geom_v2_a3_pure0_homog": {
+      "name": "geom_v2_a3_pure0_homog",
+      "horizon": 12,
+      "n_actions": 3,
+      "n_critical": 4,
+      "n_distractor": 8,
+      "n_groups": 4,
+      "group_sizes": [
+        2,
+        3,
+        3,
+        4
+      ],
+      "group_counts": [
+        [
+          0,
+          2
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          1
+        ]
+      ],
+      "critical_counts": [
+        2,
+        2
+      ],
+      "spread": 8,
+      "alpha": 0.33333333333333337,
+      "pure_crit": 0,
+      "yield_ratios": [
+        "2",
+        "2"
+      ],
+      "ratio_class": "homogeneous"
+    },
+    "geom_v2_a3_pure0_hetero": {
+      "name": "geom_v2_a3_pure0_hetero",
+      "horizon": 12,
+      "n_actions": 3,
+      "n_critical": 4,
+      "n_distractor": 8,
+      "n_groups": 4,
+      "group_sizes": [
+        2,
+        3,
+        3,
+        4
+      ],
+      "group_counts": [
+        [
+          0,
+          2
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          3,
+          1
+        ]
+      ],
+      "critical_counts": [
+        1,
+        3
+      ],
+      "spread": 8,
+      "alpha": 0.33333333333333337,
+      "pure_crit": 0,
+      "yield_ratios": [
+        "1/2",
+        "3"
+      ],
+      "ratio_class": "heterogeneous"
+    },
+    "separable_shared_features": {
+      "name": "separable_shared_features",
+      "horizon": 12,
+      "n_actions": 2,
+      "n_critical": 6,
+      "n_distractor": 6,
+      "n_groups": 6,
+      "group_sizes": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "group_counts": [
+        [
+          0,
+          2
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          0
+        ]
+      ],
+      "critical_counts": [
+        2,
+        2,
+        2
+      ],
+      "spread": 12,
+      "alpha": 0.0,
+      "pure_crit": 3,
+      "yield_ratios": [
+        "inf",
+        "inf",
+        "inf"
+      ],
+      "ratio_class": "homogeneous"
+    },
+    "geom_holdout_a": {
+      "name": "geom_holdout_a",
+      "horizon": 14,
+      "n_actions": 2,
+      "n_critical": 6,
+      "n_distractor": 8,
+      "n_groups": 6,
+      "group_sizes": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        4
+      ],
+      "group_counts": [
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          2,
+          0
+        ]
+      ],
+      "critical_counts": [
+        1,
+        1,
+        1,
+        1,
+        2
+      ],
+      "spread": 6,
+      "alpha": 0.5714285714285714,
+      "pure_crit": 1,
+      "yield_ratios": [
+        "1",
+        "1",
+        "1",
+        "1",
+        "inf"
+      ],
+      "ratio_class": "heterogeneous"
+    },
+    "geom_holdout_b": {
+      "name": "geom_holdout_b",
+      "horizon": 8,
+      "n_actions": 4,
+      "n_critical": 4,
+      "n_distractor": 4,
+      "n_groups": 5,
+      "group_sizes": [
+        1,
+        1,
+        2,
+        2,
+        2
+      ],
+      "group_counts": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "critical_counts": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "spread": 2,
+      "alpha": 0.75,
+      "pure_crit": 1,
+      "yield_ratios": [
+        "1",
+        "1",
+        "1",
+        "inf"
+      ],
+      "ratio_class": "heterogeneous"
+    },
+    "partial_feature_aliasing": {
+      "name": "partial_feature_aliasing",
+      "horizon": 12,
+      "n_actions": 2,
+      "n_critical": 6,
+      "n_distractor": 6,
+      "n_groups": 4,
+      "group_sizes": [
+        3,
+        3,
+        3,
+        3
+      ],
+      "group_counts": [
+        [
+          0,
+          3
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          1
+        ]
+      ],
+      "critical_counts": [
+        2,
+        2,
+        2
+      ],
+      "spread": 6,
+      "alpha": 0.5,
+      "pure_crit": 0,
+      "yield_ratios": [
+        "2",
+        "2",
+        "2"
+      ],
+      "ratio_class": "homogeneous"
+    },
+    "complete_feature_aliasing_negative_control": {
+      "name": "complete_feature_aliasing_negative_control",
+      "horizon": 12,
+      "n_actions": 2,
+      "n_critical": 6,
+      "n_distractor": 6,
+      "n_groups": 3,
+      "group_sizes": [
+        4,
+        4,
+        4
+      ],
+      "group_counts": [
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          2
+        ]
+      ],
+      "critical_counts": [
+        2,
+        2,
+        2
+      ],
+      "spread": 0,
+      "alpha": 1.0,
+      "pure_crit": 0,
+      "yield_ratios": [
+        "1",
+        "1",
+        "1"
+      ],
+      "ratio_class": "homogeneous"
+    }
+  },
+  "scenario_roles": {
+    "geom_v2_a3_pure_ge1": "a3_positive",
+    "geom_v2_a3_pure0_homog": "a3_null",
+    "geom_v2_a3_pure0_hetero": "a3_discriminator",
+    "separable_shared_features": "positive_anchor",
+    "geom_holdout_a": "positive_anchor",
+    "geom_holdout_b": "positive_anchor",
+    "partial_feature_aliasing": "null_anchor",
+    "complete_feature_aliasing_negative_control": "invariant_control"
+  },
+  "a3_validation": {
+    "horizon": true,
+    "n_actions": true,
+    "alpha": true,
+    "n_critical": true,
+    "n_distractor": true,
+    "n_groups": true,
+    "group_sizes": true
+  },
+  "scenarios": [
+    {
+      "name": "geom_v2_a3_pure_ge1",
+      "environment": "threshold",
+      "horizon": 12,
+      "n_actions": 3,
+      "critical_positions": [
+        6,
+        7,
+        8,
+        9
+      ],
+      "target_actions": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "minimum_matches": 2,
+      "initial_policy": [
+        [
+          0.3333333333333333,
+          0.3333333333333333,
+          0.3333333333333333
+        ],
+        [
+          0.3333333333333333,
+          0.3333333333333333,
+          0.3333333333333333
+        ],
+        [
+          0.3333333333333333,
+          0.3333333333333333,
+          0.3333333333333333
+        ],
+        [
+          0.3333333333333333,
+          0.3333333333333333,
+          0.3333333333333333
+        ],
+        [
+          0.3333333333333333,
+          0.3333333333333333,
+          0.3333333333333333
+        ],
+        [
+          0.3333333333333333,
+          0.3333333333333333,
+          0.3333333333333333
+        ],
+        [
+          0.3333333333333333,
+          0.3333333333333333,
+          0.3333333333333333
+        ],
+        [
+          0.3333333333333333,
+          0.3333333333333333,
+          0.3333333333333333
+        ],
+        [
+          0.3333333333333333,
+          0.3333333333333333,
+          0.3333333333333333
+        ],
+        [
+          0.3333333333333333,
+          0.3333333333333333,
+          0.3333333333333333
+        ],
+        [
+          0.3333333333333333,
+          0.3333333333333333,
+          0.3333333333333333
+        ],
+        [
+          0.3333333333333333,
+          0.3333333333333333,
+          0.3333333333333333
+        ]
+      ],
+      "features": [
+        [
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ]
+      ],
+      "iterations": 400,
+      "group_size": 48
+    },
+    {
+      "name": "geom_v2_a3_pure0_homog",
+      "environment": "threshold",
+      "horizon": 12,
+      "n_actions": 3,
+      "critical_positions": [
+        6,
+        7,
+        9,
+        10
+      ],
+      "target_actions": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "minimum_matches": 2,
+      "initial_policy": [
+        [
+          0.3333333333333333,
+          0.3333333333333333,
+          0.3333333333333333
+        ],
+        [
+          0.3333333333333333,
+          0.3333333333333333,
+          0.3333333333333333
+        ],
+        [
+          0.3333333333333333,
+          0.3333333333333333,
+          0.3333333333333333
+        ],
+        [
+          0.3333333333333333,
+          0.3333333333333333,
+          0.3333333333333333
+        ],
+        [
+          0.3333333333333333,
+          0.3333333333333333,
+          0.3333333333333333
+        ],
+        [
+          0.3333333333333333,
+          0.3333333333333333,
+          0.3333333333333333
+        ],
+        [
+          0.3333333333333333,
+          0.3333333333333333,
+          0.3333333333333333
+        ],
+        [
+          0.3333333333333333,
+          0.3333333333333333,
+          0.3333333333333333
+        ],
+        [
+          0.3333333333333333,
+          0.3333333333333333,
+          0.3333333333333333
+        ],
+        [
+          0.3333333333333333,
+          0.3333333333333333,
+          0.3333333333333333
+        ],
+        [
+          0.3333333333333333,
+          0.3333333333333333,
+          0.3333333333333333
+        ],
+        [
+          0.3333333333333333,
+          0.3333333333333333,
+          0.3333333333333333
+        ]
+      ],
+      "features": [
+        [
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ]
+      ],
+      "iterations": 400,
+      "group_size": 48
+    },
+    {
+      "name": "geom_v2_a3_pure0_hetero",
+      "environment": "threshold",
+      "horizon": 12,
+      "n_actions": 3,
+      "critical_positions": [
+        5,
+        8,
+        9,
+        10
+      ],
+      "target_actions": [
+        0,
+        1,
+        1,
+        1
+      ],
+      "minimum_matches": 2,
+      "initial_policy": [
+        [
+          0.3333333333333333,
+          0.3333333333333333,
+          0.3333333333333333
+        ],
+        [
+          0.3333333333333333,
+          0.3333333333333333,
+          0.3333333333333333
+        ],
+        [
+          0.3333333333333333,
+          0.3333333333333333,
+          0.3333333333333333
+        ],
+        [
+          0.3333333333333333,
+          0.3333333333333333,
+          0.3333333333333333
+        ],
+        [
+          0.3333333333333333,
+          0.3333333333333333,
+          0.3333333333333333
+        ],
+        [
+          0.3333333333333333,
+          0.3333333333333333,
+          0.3333333333333333
+        ],
+        [
+          0.3333333333333333,
+          0.3333333333333333,
+          0.3333333333333333
+        ],
+        [
+          0.3333333333333333,
+          0.3333333333333333,
+          0.3333333333333333
+        ],
+        [
+          0.3333333333333333,
+          0.3333333333333333,
+          0.3333333333333333
+        ],
+        [
+          0.3333333333333333,
+          0.3333333333333333,
+          0.3333333333333333
+        ],
+        [
+          0.3333333333333333,
+          0.3333333333333333,
+          0.3333333333333333
+        ],
+        [
+          0.3333333333333333,
+          0.3333333333333333,
+          0.3333333333333333
+        ]
+      ],
+      "features": [
+        [
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ]
+      ],
+      "iterations": 400,
+      "group_size": 48
+    },
+    {
+      "name": "separable_shared_features",
+      "environment": "threshold",
+      "horizon": 12,
+      "n_actions": 2,
+      "critical_positions": [
+        0,
+        2,
+        4,
+        6,
+        8,
+        10
+      ],
+      "target_actions": [
+        1,
+        0,
+        1,
+        1,
+        0,
+        1
+      ],
+      "minimum_matches": 5,
+      "initial_policy": [
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ]
+      ],
+      "features": [
+        [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          1
+        ]
+      ],
+      "iterations": 500,
+      "group_size": 48
+    },
+    {
+      "name": "geom_holdout_a",
+      "environment": "threshold",
+      "horizon": 14,
+      "n_actions": 2,
+      "critical_positions": [
+        1,
+        3,
+        6,
+        8,
+        11,
+        13
+      ],
+      "target_actions": [
+        1,
+        0,
+        1,
+        0,
+        1,
+        1
+      ],
+      "minimum_matches": 4,
+      "initial_policy": [
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ]
+      ],
+      "features": [
+        [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          1
+        ]
+      ],
+      "iterations": 400,
+      "group_size": 48
+    },
+    {
+      "name": "geom_holdout_b",
+      "environment": "threshold",
+      "horizon": 8,
+      "n_actions": 4,
+      "critical_positions": [
+        0,
+        3,
+        5,
+        6
+      ],
+      "target_actions": [
+        3,
+        1,
+        2,
+        0
+      ],
+      "minimum_matches": 2,
+      "initial_policy": [
+        [
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        [
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        [
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        [
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        [
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        [
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        [
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        [
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ]
+      ],
+      "features": [
+        [
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1
+        ]
+      ],
+      "iterations": 400,
+      "group_size": 48
+    },
+    {
+      "name": "partial_feature_aliasing",
+      "environment": "threshold",
+      "horizon": 12,
+      "n_actions": 2,
+      "critical_positions": [
+        0,
+        2,
+        4,
+        6,
+        8,
+        10
+      ],
+      "target_actions": [
+        1,
+        0,
+        1,
+        1,
+        0,
+        1
+      ],
+      "minimum_matches": 5,
+      "initial_policy": [
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ]
+      ],
+      "features": [
+        [
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0
+        ]
+      ],
+      "iterations": 500,
+      "group_size": 48
+    },
+    {
+      "name": "complete_feature_aliasing_negative_control",
+      "environment": "threshold",
+      "horizon": 12,
+      "n_actions": 2,
+      "critical_positions": [
+        0,
+        2,
+        4,
+        6,
+        8,
+        10
+      ],
+      "target_actions": [
+        1,
+        0,
+        1,
+        1,
+        0,
+        1
+      ],
+      "minimum_matches": 5,
+      "initial_policy": [
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ]
+      ],
+      "features": [
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          1
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          1
+        ]
+      ],
+      "iterations": 500,
+      "group_size": 48
+    }
+  ],
+  "methods": {
+    "uniform_eta002500": {
+      "algorithm": "projected_group_omd",
+      "step_size": 0.025,
+      "projection_ridge": 0.0,
+      "projection_steps": 60,
+      "projection_learning_rate": 0.5,
+      "projection_tolerance": 1e-09
+    },
+    "uniform_eta003125": {
+      "algorithm": "projected_group_omd",
+      "step_size": 0.03125,
+      "projection_ridge": 0.0,
+      "projection_steps": 60,
+      "projection_learning_rate": 0.5,
+      "projection_tolerance": 1e-09
+    },
+    "uniform_eta003750": {
+      "algorithm": "projected_group_omd",
+      "step_size": 0.0375,
+      "projection_ridge": 0.0,
+      "projection_steps": 60,
+      "projection_learning_rate": 0.5,
+      "projection_tolerance": 1e-09
+    },
+    "uniform_eta005000": {
+      "algorithm": "projected_group_omd",
+      "step_size": 0.05,
+      "projection_ridge": 0.0,
+      "projection_steps": 60,
+      "projection_learning_rate": 0.5,
+      "projection_tolerance": 1e-09
+    },
+    "uniform_eta006250": {
+      "algorithm": "projected_group_omd",
+      "step_size": 0.0625,
+      "projection_ridge": 0.0,
+      "projection_steps": 60,
+      "projection_learning_rate": 0.5,
+      "projection_tolerance": 1e-09
+    },
+    "uniform_eta007500": {
+      "algorithm": "projected_group_omd",
+      "step_size": 0.075,
+      "projection_ridge": 0.0,
+      "projection_steps": 60,
+      "projection_learning_rate": 0.5,
+      "projection_tolerance": 1e-09
+    },
+    "uniform_eta010000": {
+      "algorithm": "projected_group_omd",
+      "step_size": 0.1,
+      "projection_ridge": 0.0,
+      "projection_steps": 60,
+      "projection_learning_rate": 0.5,
+      "projection_tolerance": 1e-09
+    },
+    "uniform_eta012500": {
+      "algorithm": "projected_group_omd",
+      "step_size": 0.125,
+      "projection_ridge": 0.0,
+      "projection_steps": 60,
+      "projection_learning_rate": 0.5,
+      "projection_tolerance": 1e-09
+    },
+    "uniform_eta015000": {
+      "algorithm": "projected_group_omd",
+      "step_size": 0.15,
+      "projection_ridge": 0.0,
+      "projection_steps": 60,
+      "projection_learning_rate": 0.5,
+      "projection_tolerance": 1e-09
+    },
+    "uniform_eta020000": {
+      "algorithm": "projected_group_omd",
+      "step_size": 0.2,
+      "projection_ridge": 0.0,
+      "projection_steps": 60,
+      "projection_learning_rate": 0.5,
+      "projection_tolerance": 1e-09
+    },
+    "uniform_eta025000": {
+      "algorithm": "projected_group_omd",
+      "step_size": 0.25,
+      "projection_ridge": 0.0,
+      "projection_steps": 60,
+      "projection_learning_rate": 0.5,
+      "projection_tolerance": 1e-09
+    },
+    "uniform_eta030000": {
+      "algorithm": "projected_group_omd",
+      "step_size": 0.3,
+      "projection_ridge": 0.0,
+      "projection_steps": 60,
+      "projection_learning_rate": 0.5,
+      "projection_tolerance": 1e-09
+    },
+    "uniform_eta040000": {
+      "algorithm": "projected_group_omd",
+      "step_size": 0.4,
+      "projection_ridge": 0.0,
+      "projection_steps": 60,
+      "projection_learning_rate": 0.5,
+      "projection_tolerance": 1e-09
+    },
+    "uniform_eta050000": {
+      "algorithm": "projected_group_omd",
+      "step_size": 0.5,
+      "projection_ridge": 0.0,
+      "projection_steps": 60,
+      "projection_learning_rate": 0.5,
+      "projection_tolerance": 1e-09
+    },
+    "uniform_eta062500": {
+      "algorithm": "projected_group_omd",
+      "step_size": 0.625,
+      "projection_ridge": 0.0,
+      "projection_steps": 60,
+      "projection_learning_rate": 0.5,
+      "projection_tolerance": 1e-09
+    },
+    "uniform_eta075000": {
+      "algorithm": "projected_group_omd",
+      "step_size": 0.75,
+      "projection_ridge": 0.0,
+      "projection_steps": 60,
+      "projection_learning_rate": 0.5,
+      "projection_tolerance": 1e-09
+    },
+    "uniform_eta100000": {
+      "algorithm": "projected_group_omd",
+      "step_size": 1.0,
+      "projection_ridge": 0.0,
+      "projection_steps": 60,
+      "projection_learning_rate": 0.5,
+      "projection_tolerance": 1e-09
+    },
+    "uniform_eta125000": {
+      "algorithm": "projected_group_omd",
+      "step_size": 1.25,
+      "projection_ridge": 0.0,
+      "projection_steps": 60,
+      "projection_learning_rate": 0.5,
+      "projection_tolerance": 1e-09
+    },
+    "rwp_eta125_lam3": {
+      "algorithm": "rwp_omd",
+      "step_size": 1.25,
+      "projection_lambda": 3.0,
+      "projection_ridge": 0.0,
+      "projection_steps": 60,
+      "projection_learning_rate": 0.5,
+      "projection_tolerance": 1e-09,
+      "reliability_decay": 0.9,
+      "confidence_multiplier": 1.0,
+      "warmup_effective_samples": 8.0,
+      "reliability_floor": 0.1
+    },
+    "projected_online_eta125": {
+      "algorithm": "projected_online_rc_omd",
+      "step_size": 1.25,
+      "projection_ridge": 0.0,
+      "projection_steps": 60,
+      "projection_learning_rate": 0.5,
+      "projection_tolerance": 1e-09,
+      "reliability_decay": 0.9,
+      "confidence_multiplier": 1.0,
+      "warmup_effective_samples": 8.0,
+      "reliability_floor": 0.1
+    }
+  },
+  "training": {
+    "evaluation_interval": 5,
+    "seeds": [
+      500,
+      501,
+      502,
+      503,
+      504,
+      505,
+      506,
+      507,
+      508,
+      509,
+      510,
+      511,
+      512,
+      513,
+      514,
+      515,
+      516,
+      517,
+      518,
+      519
+    ]
+  },
+  "decision_rule": {
+    "candidate_method": "rwp_eta125_lam3",
+    "v1_reference_method": "projected_online_eta125",
+    "grid_prefix": "uniform_eta",
+    "eta_grid": [
+      0.025,
+      0.03125,
+      0.0375,
+      0.05,
+      0.0625,
+      0.075,
+      0.1,
+      0.125,
+      0.15,
+      0.2,
+      0.25,
+      0.3,
+      0.4,
+      0.5,
+      0.625,
+      0.75,
+      1.0,
+      1.25
+    ],
+    "max_dropped_seeds": 2,
+    "invariant_scenario": "complete_feature_aliasing_negative_control",
+    "invariant_tolerance": 1e-09,
+    "predictions_h_pure": {
+      "geom_v2_a3_pure_ge1": "positive",
+      "geom_v2_a3_pure0_homog": "null",
+      "geom_v2_a3_pure0_hetero": "null",
+      "separable_shared_features": "positive",
+      "geom_holdout_a": "positive",
+      "geom_holdout_b": "positive",
+      "partial_feature_aliasing": "null",
+      "complete_feature_aliasing_negative_control": "null_or_negative"
+    },
+    "predictions_h_hetero": {
+      "geom_v2_a3_pure_ge1": "positive",
+      "geom_v2_a3_pure0_homog": "null",
+      "geom_v2_a3_pure0_hetero": "positive",
+      "separable_shared_features": "positive",
+      "geom_holdout_a": "positive",
+      "geom_holdout_b": "positive",
+      "partial_feature_aliasing": "null",
+      "complete_feature_aliasing_negative_control": "null_or_negative"
+    },
+    "discriminating_scenario": "geom_v2_a3_pure0_hetero",
+    "no_spurious_pass_scenarios": [
+      "geom_v2_a3_pure0_homog",
+      "partial_feature_aliasing"
+    ]
+  },
+  "output_directory": "results/geometry_v2"
+}
