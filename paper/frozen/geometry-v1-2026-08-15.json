@@ -1,0 +1,205 @@
+{
+  "record_type": "golden_record",
+  "record_status": "ORIGINAL",
+  "protocol_id": "geometry-v1-2026-08-15",
+  "phase": "test",
+  "protocol_commit": "181b637fe7a397b69b8c1a652b9ec7674ab4da34",
+  "hyperparameter_freeze_commit": "63145da",
+  "execution_commit": "63145da",
+  "results_commit": "PENDING",
+  "executed_on": "2026-08-17",
+  "provenance": "Single execution of the frozen test config at the hyperparameter-freeze commit with a clean working tree. lambda*=3.0 and mu*=0.0 were selected beforehand on development scenarios only and committed before any test scenario ran.",
+  "environment": {
+    "python": "3.12.10",
+    "numpy": "2.5.2",
+    "matplotlib": "3.11.1",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "processor": "Intel64 Family 6 Model 198 Stepping 2, GenuineIntel"
+  },
+  "config": {
+    "path": "configs/geometry_v1.json",
+    "sha256": "dba2fb15e878208c28648f00fe85f0e9c51fd4d5bf93b21f15aa3183278274f3",
+    "bytes": 13526
+  },
+  "selected_hyperparameters": {
+    "lambda": 3.0,
+    "mu": 0.0
+  },
+  "decision": {
+    "decision": "GO",
+    "pass_count": 4,
+    "required_scenarios": [
+      "separable_shared_features",
+      "partial_feature_aliasing",
+      "geom_holdout_a",
+      "geom_holdout_b"
+    ],
+    "invariant_holds": true
+  },
+  "headline": "The partial-aliasing scenario that returned NO-GO under function-approx-v1 passes: distractor-KL upper bound 0.597 against the 0.75 bound, where the v1 algorithm measured 1.030 on the same run. Both held-out scenarios also pass, where v1 would have failed at 0.841 and 0.790.",
+  "mechanism": "Under partial aliasing RWP-OMD reduces distractor KL to 0.575 of baseline while reducing critical KL only to 0.709, i.e. it protects distractors selectively. The v1 algorithm instead raised critical KL to 1.198 while leaving distractor KL at 1.000. Under complete aliasing critical and distractor KL are numerically identical for every method, as the design spec proves they must be; RWP-OMD's 0.644 ratio there reflects smaller overall movement, not decoupling.",
+  "interpretation_limits": [
+    "eta is fixed at the M6 values (candidate 1.25, baseline 0.75). This protocol does NOT establish that RWP-OMD beats a step-size-matched projected uniform baseline; no step frontier was swept. That is the deferred geometry-v2 question and is the single largest open confound in this result.",
+    "The three M6 scenarios are seen data. Only geom_holdout_a and geom_holdout_b carry generalization evidence.",
+    "AUC is uniformly lower than baseline (-0.0114 to -0.0176 against a -0.020 margin). The result is a Pareto trade-off, not a reward improvement, and headroom on the AUC condition was small.",
+    "Complete aliasing is a negative control and contributed nothing to the decision.",
+    "Nothing here supports any claim about language-model RLVR."
+  ],
+  "generated_files": {
+    "geometry_v1.json": {
+      "sha256": "dba2fb15e878208c28648f00fe85f0e9c51fd4d5bf93b21f15aa3183278274f3",
+      "bytes": 13526
+    },
+    "summary.json": {
+      "sha256": "c68512a651881216365374739a55ef08874382f453e29eb24a2f3e954acede5a",
+      "bytes": 55752
+    },
+    "protocol_evaluation.json": {
+      "sha256": "1c2c19f54e525be57cfa4b8c406036ffaae0fe3196930f5ad0cc1e2d76cbd393",
+      "bytes": 4367
+    },
+    "history.csv": {
+      "sha256": "5cdc627b0a4943797b7d44a67b8a085c66bc5978bc3b8e7b1c1885ef78078882",
+      "bytes": 5247009
+    },
+    "auc_distractor_kl_pareto.pdf": {
+      "sha256": "af9e1af2b3e27f3b4f110f68cadbed911dbcb5c1592bd0724b47dc65bb3df15c",
+      "bytes": 22330
+    },
+    "auc_distractor_kl_pareto.png": {
+      "sha256": "ac02ed2062af52a2a1afb345a747abcfe35f7d64a766626c17c5c08aa9ee7e38",
+      "bytes": 261949
+    },
+    "distractor_kl_fraction.png": {
+      "sha256": "5e6b97e291e212931a24c177d0cb628a69a29a337e6e33034594dd4e680c0e9d",
+      "bytes": 71813
+    },
+    "success_comparison.png": {
+      "sha256": "2ee8e0770558d042ba4573b94a21c082323ad2844eb3cce52d5c23c97beb1b06",
+      "bytes": 234267
+    }
+  },
+  "protocol_evaluation_archive": "paper/frozen/geometry-v1-2026-08-15-evaluation.json",
+  "scenario_results": {
+    "separable_shared_features": {
+      "scenario": "separable_shared_features",
+      "auc": {
+        "d_auc": {
+          "n": 20,
+          "mean": -0.011475489484611023,
+          "half_width": 0.00042841496480020794,
+          "ci_lower": -0.011903904449411232,
+          "ci_upper": -0.011047074519810815
+        },
+        "auc_pass": true
+      },
+      "kl": {
+        "dropped_seeds": 0,
+        "degenerate": false,
+        "log_ratio": {
+          "n": 20,
+          "mean": -2.688221659297354,
+          "half_width": 0.15996047168065997,
+          "ci_lower": -2.8481821309780138,
+          "ci_upper": -2.5282611876166943
+        },
+        "upper_ratio": 0.07979765286991078,
+        "kl_pass": true
+      },
+      "status": "pass"
+    },
+    "partial_feature_aliasing": {
+      "scenario": "partial_feature_aliasing",
+      "auc": {
+        "d_auc": {
+          "n": 20,
+          "mean": -0.014384799858255188,
+          "half_width": 0.0007861296637117613,
+          "ci_lower": -0.015170929521966948,
+          "ci_upper": -0.013598670194543427
+        },
+        "auc_pass": true
+      },
+      "kl": {
+        "dropped_seeds": 0,
+        "degenerate": false,
+        "log_ratio": {
+          "n": 20,
+          "mean": -0.552893893520378,
+          "half_width": 0.03782903145128423,
+          "ci_lower": -0.5907229249716622,
+          "ci_upper": -0.5150648620690937
+        },
+        "upper_ratio": 0.5974618407502275,
+        "kl_pass": true
+      },
+      "status": "pass"
+    },
+    "geom_holdout_a": {
+      "scenario": "geom_holdout_a",
+      "auc": {
+        "d_auc": {
+          "n": 20,
+          "mean": -0.011403196295390421,
+          "half_width": 0.00042467282967010526,
+          "ci_lower": -0.011827869125060526,
+          "ci_upper": -0.010978523465720317
+        },
+        "auc_pass": true
+      },
+      "kl": {
+        "dropped_seeds": 0,
+        "degenerate": false,
+        "log_ratio": {
+          "n": 20,
+          "mean": -0.8641153650753903,
+          "half_width": 0.027603022024681702,
+          "ci_lower": -0.891718387100072,
+          "ci_upper": -0.8365123430507087
+        },
+        "upper_ratio": 0.43321881030092585,
+        "kl_pass": true
+      },
+      "status": "pass"
+    },
+    "geom_holdout_b": {
+      "scenario": "geom_holdout_b",
+      "auc": {
+        "d_auc": {
+          "n": 20,
+          "mean": -0.01760729563468868,
+          "half_width": 0.0004984703242178871,
+          "ci_lower": -0.018105765958906565,
+          "ci_upper": -0.017108825310470793
+        },
+        "auc_pass": true
+      },
+      "kl": {
+        "dropped_seeds": 0,
+        "degenerate": false,
+        "log_ratio": {
+          "n": 20,
+          "mean": -0.9513719848996681,
+          "half_width": 0.027722526877896003,
+          "ci_lower": -0.9790945117775641,
+          "ci_upper": -0.9236494580217721
+        },
+        "upper_ratio": 0.3970673131944377,
+        "kl_pass": true
+      },
+      "status": "pass"
+    }
+  },
+  "invariants": [
+    {
+      "scenario": "complete_feature_aliasing_negative_control",
+      "methods": {
+        "rwp_omd_eta125": {
+          "max_abs_difference": 0.0,
+          "holds": true
+        }
+      },
+      "invariant_holds": true
+    }
+  ]
+}
