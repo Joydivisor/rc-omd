@@ -21,6 +21,7 @@ from algorithms import (
     ProjectedGroupOMD,
     ProjectedOnlineReliabilityOMD,
     ReliabilityCalibratedOMD,
+    ReliabilityWeightedProjectionOMD,
 )
 from environments import ControlledSequenceMDP, StructuredSequenceMDP
 
@@ -34,6 +35,7 @@ METHOD_LABELS = {
     "online_rc_omd": "Online RC-OMD",
     "projected_group_omd": "Projected Group OMD",
     "projected_online_rc_omd": "Projected Online RC-OMD",
+    "rwp_omd": "RWP-OMD",
 }
 
 METHOD_COLORS = {
@@ -45,6 +47,7 @@ METHOD_COLORS = {
     "online_rc_omd": "#0891B2",
     "projected_group_omd": "#2458A6",
     "projected_online_rc_omd": "#0891B2",
+    "rwp_omd": "#DC2626",
 }
 
 
@@ -91,7 +94,11 @@ def build_algorithm(
         return EntropyWeightedOMD(**arguments)
     if algorithm_name == "oracle_credit_omd":
         return OracleCreditOMD(**arguments)
-    if algorithm_name in {"projected_group_omd", "projected_online_rc_omd"}:
+    if algorithm_name in {
+        "projected_group_omd",
+        "projected_online_rc_omd",
+        "rwp_omd",
+    }:
         arguments.update(
             {
                 "features": np.asarray(scenario["features"], dtype=np.float64),
@@ -117,6 +124,11 @@ def build_algorithm(
                 "reliability_floor": float(method_config["reliability_floor"]),
             }
         )
+        if algorithm_name == "rwp_omd":
+            arguments["projection_lambda"] = float(
+                method_config["projection_lambda"]
+            )
+            return ReliabilityWeightedProjectionOMD(**arguments)
         return ProjectedOnlineReliabilityOMD(**arguments)
 
     if algorithm_name in {"global_reliability_omd", "rc_omd"}:
@@ -372,6 +384,7 @@ def summarize(
                 "seeds": [int(seed) for seed in seeds],
                 "success_auc_per_seed": auc,
                 "cumulative_distractor_kl_per_seed": distractor_kl,
+                "cumulative_critical_kl_per_seed": critical_kl,
                 "runtime_seconds_per_seed": runtime,
             }
     return summary
