@@ -207,7 +207,20 @@ r_KL(s)  = distractorKL_rwp(s) / distractorKL_uniform(s)
 - **Degenerate seeds.** If `distractorKL_uniform(s) < 1e-9`, `r_KL(s)` is
   undefined and that seed is dropped from the KL test only, with the count
   reported. More than 2 of 20 dropped makes the cell's KL test
-  **inconclusive**, which counts as a failure.
+  **inconclusive**, and the scenario is then **inconclusive** rather than
+  failed.
+
+  > **Amendment, freeze stage 2.** As first written this clause ended "which
+  > counts as a failure", inherited from `pareto-v1` where an inconclusive KL
+  > test had to resolve to something for coverage counting. That is
+  > inconsistent with the power clause below, which was rewritten in the same
+  > document to route imprecise *failures* to `inconclusive`. Discarding more
+  > than a tenth of the sample and then reporting "the algorithm failed" is
+  > precisely the misreading the power clause exists to prevent, so the two
+  > are reconciled in favour of `inconclusive`. Recorded here rather than
+  > resolved silently in the evaluator, per the stage-2 rule that a defective
+  > stated rule must be amended in its own commit before any sweep is run. No
+  > sweep had been run when this was written.
 A scenario **passes** when the AUC and KL conditions both hold.
 
 ### Power clause
