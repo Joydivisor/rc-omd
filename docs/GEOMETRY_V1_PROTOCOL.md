@@ -2,14 +2,27 @@
 
 Protocol ID: `geometry-v1-2026-08-15`
 
-Status: **drafted, not frozen.** Freezing requires two commits, in order:
+Status: **reviewed; document frozen as of this commit.** The scenarios, grids,
+statistics, selection rule, decision rule, and failure semantics below are
+closed. They may not be altered under this protocol ID; a change requires a new
+one and is post-hoc with respect to anything already observed.
 
-1. this document, the scenario configs, the evaluator, and its tests
-   (structure frozen: scenarios, grids, statistics, selection rule, criteria);
-2. the selected `lambda*` and `mu*` together with the full development-sweep
-   record (values frozen).
+Freezing completes in three stages, of which the first is done:
 
-Only after commit 2 may any test scenario be executed. Any result produced
+1. **Document frozen (this commit).** Review items resolved: strict GO rule
+   retained; `eta` scope fixed with `geometry-v2` named as the conditional
+   frontier successor; power clause rewritten and given both an AUC and a KL
+   precision floor; scenario counts disambiguated; per-condition failure
+   semantics defined.
+2. **Structure frozen.** Scenario configs, the algorithm, the evaluator, and
+   its tests are committed, implementing this document verbatim. Those
+   artifacts may not introduce or relax any rule stated here; if implementation
+   shows a rule to be wrong, it must be amended in an explicit commit *before*
+   any sweep is run, never silently in code.
+3. **Values frozen.** The selected `lambda*` and `mu*` are committed together
+   with the complete development-sweep record.
+
+Only after stage 3 may any test scenario be executed. Any result produced
 before that is exploratory and must be labelled as such.
 
 The algorithm under test is specified in
@@ -49,8 +62,15 @@ Fixed in advance so it cannot be revisited afterwards.
   must be re-earned here.
 - **This is not a step-size frontier test.** `eta` is held fixed at the M6
   values precisely so that the comparison isolates the change of projection
-  objective. A `pareto-v1`-style frontier version is deferred to a later
-  protocol ID.
+  objective. **Scope decision, confirmed before freezing:** the frontier
+  version is a named successor, `geometry-v2`, modelled on
+  `pareto-v1-2026-08-14`, and it is **conditional on `geometry-v1` returning
+  GO**. Running a step-size frontier over an objective that does not work at
+  its own operating point would measure nothing, so a `geometry-v1` NO-GO
+  sends the work back to design rather than on to `geometry-v2`. Consequently
+  every `geometry-v1` claim is conditional on the selected step pair, exactly
+  the limitation `pareto-v1` was created to remove from `ood-v1`, and it may
+  not be described as step-robust.
 - **Nothing about language models.** GSM8K and every other LM experiment
   remain out of scope regardless of outcome.
 
@@ -110,12 +130,27 @@ unchanged: `separable_shared_features` (`alpha = 0.000`),
 Horizons `{10, 14, 8}` and action counts `{3, 2, 4}` are all distinct from M6's
 `(12, 2)`.
 
-**Held-out validation disclosure.** Before freezing, every scenario above was
-checked for learnability using the **projected uniform baseline only**, over 3
-seeds, to confirm the task is well posed. Baseline success gains were +0.79
-(all four dev), +0.66 (`geom_holdout_a`), +0.74 (`geom_holdout_b`). No
-candidate-algorithm result informed any scenario's design, and no tuning
-decision may cite these numbers.
+### Scenario count and what was validated
+
+The protocol involves **nine** scenarios in total: **six new** ones introduced
+here (four development, two held-out) and **three pre-existing** M6 diagnostic
+scenarios carried over unchanged from `configs/function_approx_preregistered.json`.
+
+Only the **six new** scenarios were designed and validated in this work. The
+three M6 scenarios are reused verbatim and were not re-validated: they were
+already executed under `function-approx-v1-2026-08-09`, and modifying or
+re-screening them would break comparability with that recorded NO-GO.
+
+**Validation disclosure (six new scenarios only).** Before freezing, each new
+scenario was checked for (a) realizability, mechanically, and (b) learnability,
+using the **projected uniform baseline only**, over 3 seeds, to confirm the task
+is well posed. Baseline success gains were +0.79 for each of the four
+development scenarios, +0.66 for `geom_holdout_a`, and +0.74 for
+`geom_holdout_b`. No candidate-algorithm result informed any scenario's design,
+and no tuning decision may cite these numbers.
+
+Of the nine, **five** are executed in the test phase (three M6 diagnostic plus
+two held-out); the four development scenarios appear only in the tuning sweep.
 
 ## Methods
 
@@ -173,12 +208,43 @@ r_KL(s)  = distractorKL_rwp(s) / distractorKL_uniform(s)
   undefined and that seed is dropped from the KL test only, with the count
   reported. More than 2 of 20 dropped makes the cell's KL test
   **inconclusive**, which counts as a failure.
-- **Power failure is not a pass.** If the 95% CI half-width on `d_AUC` exceeds
-  `delta` in a scenario, that scenario is **inconclusive**, not a pass. The
-  protocol result is then incomplete and the seed count must be raised under a
-  new protocol ID.
-
 A scenario **passes** when the AUC and KL conditions both hold.
+
+### Power clause
+
+`pareto-v1` phrased its power clause as preventing a *pass* produced by
+confidence intervals too wide to exclude anything. That rationale does not
+transfer to this protocol and is not reused. Both conditions here are
+**conservative under widening**: a wider CI lowers the AUC lower limit and
+raises the KL upper limit, so widening can only ever make a scenario harder to
+pass. A pass is therefore a pass regardless of CI width, and no precision
+requirement is imposed on passing scenarios.
+
+The real hazard is the opposite one: reading a *failure* caused by insufficient
+precision as evidence that the effect is absent. The clause therefore applies
+**only to failing scenarios**. A failing scenario is declared **inconclusive**
+rather than failed when it was not measured precisely enough to have detected
+the effect under test:
+
+| Condition that failed | Declared inconclusive when |
+|---|---|
+| AUC non-inferiority | 95% CI half-width on `d_AUC` exceeds `delta` (0.02) |
+| Distractor KL bound | 95% CI half-width on `mean(log r_KL)` exceeds `log 2` (0.693), i.e. the ratio is uncertain by more than a factor of two |
+
+Both thresholds are fixed here and may not be adjusted after any result is
+observed. An inconclusive scenario is neither a pass nor a failure; it makes
+the overall protocol result inconclusive and requires a higher seed count under
+a new protocol ID.
+
+**This clause is expected to be inactive.** Measured on the M6 scenarios at
+`n = 10` and projected to the protocol's `n = 20`, achievable half-widths are
+0.00035--0.00039 on `d_AUC` against `delta = 0.02`, and 0.017--0.100 on
+`log r_KL` against `log 2`. That is roughly 50x margin on the AUC condition and
+7--40x on the KL condition. These tasks are measured far more precisely than the
+margins require, so the clause is a safety net rather than an operating
+constraint, and any failure it does not catch should be read as a real failure.
+The measurement used only the baseline and the already-published v1 algorithm;
+no candidate result informed it.
 
 ## Selection rule (development set only)
 
@@ -219,8 +285,31 @@ Evaluated on the diagnostic and held-out sets after `lambda*`, `mu*` are frozen.
 Any scenario **inconclusive** makes the overall result **inconclusive**, not a
 pass. Anything else is **NO-GO**.
 
-This is deliberately strict. The claim being attempted is positive, made after
-a recorded NO-GO, so a majority-vote rule would be too weak to support it.
+**Decision confirmed before freezing: the strict conjunction is retained.** A
+relaxation to 3-of-4 was considered and rejected. The claim being attempted is
+positive and follows a recorded NO-GO, so a majority-vote rule would be too
+weak to support it; and the usual objection to strict conjunctions -- that
+accumulated noise across four tests produces spurious failures -- does not
+apply at the precision measured here (roughly 50x margin on the AUC condition,
+7--40x on the KL condition; see the power clause). The binding quantity is the
+KL point estimate, not sampling noise: M6-partial currently sits at a
+distractor-KL ratio near 0.97 and must reach 0.75, a reduction of roughly a
+quarter that no plausible noise realization will supply by accident.
+
+### What each failure means
+
+Fixed in advance so that a NO-GO cannot be reinterpreted after the fact. Every
+row is a NO-GO unless stated otherwise; the rows differ in what should happen
+next.
+
+| Failing condition | Reading | Required next action |
+|---|---|---|
+| **M6 partial fails**, both held-out pass | The objective does not fix the specific failure it was designed for, yet generalizes elsewhere. Treat as suspicious rather than encouraging: the M6 partial structure (`alpha = 0.500`, critical-dominant mixed groups) has some property the held-out structures lack. | Characterize that structural difference before any further algorithm work. Do not scale up. |
+| **One or both held-out fail**, M6 partial passes | The fix is specific to seen data and does not generalize. Most likely `lambda*` is overfit to the development set despite the disjointness discipline. | Reconsider the parameter-space formulation. A wider development set alone is not a sufficient response. |
+| **Separable regresses** | The objective damages the case v1 already handled, meaning reliability weighting is harmful where there is no conflict to arbitrate. Most likely sources: the mean-normalized weights, or the arithmetic-vs-geometric target change. | Diagnose and fix before any other result is interpreted. A GO on other scenarios does not offset this. |
+| **Complete-aliasing invariant violated** | Not a research result. `alpha = 1` forces equal critical and distractor realized KL as a theorem (design spec, Section 14), so a violation is an implementation defect. | Halt the protocol. Do not report any other scenario until resolved. |
+| **No development grid point survives the regression gate** | The objective cannot preserve the separable case at any `(lambda, mu)` in the grid. The formulation is wrong, not merely untuned. | Terminate at NO-GO **without running any test scenario**, and return to the design specification. |
+| **Any scenario inconclusive** | Insufficient precision, not evidence of absence. This is **not** a NO-GO. | Raise the seed count under a new protocol ID. The existing result may not be quoted as a negative finding. |
 
 ## Negative controls
 
@@ -255,8 +344,10 @@ a recorded NO-GO, so a majority-vote rule would be too weak to support it.
 
 ## Execution discipline
 
-1. Commit this protocol, the scenario configs, the algorithm, the evaluator,
-   and all tests. **Until this happens nothing is frozen.**
+1. Commit the scenario configs, the algorithm, the evaluator, and all tests,
+   implementing this document verbatim (freeze stage 2; this document itself
+   was frozen at stage 1). **Until this happens the structure is not frozen
+   and no sweep may be run.**
 2. Run the development sweep once. Apply the selection rule mechanically.
 3. Commit `lambda*`, `mu*`, and the complete development-sweep record,
    including every grid point and both negative checks.
