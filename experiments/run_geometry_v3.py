@@ -69,9 +69,12 @@ def main() -> None:
             print(f"[{index}/{len(selected)}] {name}: shard present, skipping",
                   flush=True)
             continue
+        # A scenario may carry its own seed list; stage-b uses disjoint seed
+        # sets for discovery and confirmation instances.
+        scenario_seeds = [int(s) for s in scenario.get("seeds", seeds)]
         print(f"[{index}/{len(selected)}] {name}: running "
-              f"{len(methods)}x{len(seeds)} ...", flush=True)
-        result = run_scenario(scenario, methods, seeds, interval)
+              f"{len(methods)}x{len(scenario_seeds)} ...", flush=True)
+        result = run_scenario(scenario, methods, scenario_seeds, interval)
         # Write to a temporary path first so an interrupted write cannot leave
         # a truncated shard that a later resume would trust.
         temporary = shard.with_suffix(".json.tmp")
