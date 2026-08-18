@@ -4,6 +4,11 @@ from .group_omd import GroupOMD
 from .geometry_omd import ReliabilityWeightedProjectionOMD
 from .online_reliability_omd import OnlineReliabilityOMD
 from .projected_omd import ProjectedGroupOMD, ProjectedOnlineReliabilityOMD
+from .mlp_projected_omd import (
+    MLPHead,
+    MLPProjectedGroupOMD,
+    MLPReliabilityWeightedProjectionOMD,
+)
 from .credit_weighted_omd import EntropyWeightedOMD, OracleCreditOMD
 from .reliability_calibrated_omd import (
     GlobalReliabilityOMD,
@@ -20,4 +25,7 @@ __all__ = [
     "ProjectedOnlineReliabilityOMD",
     "ReliabilityCalibratedOMD",
     "ReliabilityWeightedProjectionOMD",
+    "MLPHead",
+    "MLPProjectedGroupOMD",
+    "MLPReliabilityWeightedProjectionOMD",
 ]

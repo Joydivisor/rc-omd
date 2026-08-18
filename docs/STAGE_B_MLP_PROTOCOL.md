@@ -58,8 +58,19 @@ logits_k = W2 @ tanh(W1 @ f_k + b1) + b2
 - Hidden width **32**, single hidden layer, `tanh`.
 - `W1, b1, W2, b2` are shared across all positions; there are no
   position-private parameters.
-- Initialization: `W1, W2 ~ N(0, 1/sqrt(fan_in))`, biases zero, seeded by the
-  run seed.
+- Initialization: `W1 ~ N(0, 1/sqrt(fan_in))`, `b1 = 0`, **`W2 = 0`**, `b2 = 0`,
+  seeded by the run seed.
+
+  **Amended before any code was written.** The original wording drew `W2` from
+  the same normal, which produces a non-uniform initial policy. Every scenario
+  in this repository declares a uniform `initial_policy`, and the projection
+  base class rejects anything else, so the original initialization was
+  unusable. Zeroing the output layer makes the initial policy exactly uniform,
+  which also matches the linear model's zero-weight initialization and so keeps
+  the MLP and (M1) comparisons starting from the same policy. `W1` gradients
+  are zero at the first projection step and become non-zero once `W2` moves,
+  which is the ordinary behaviour of a zero-initialized output layer and not a
+  training defect.
 - The softmax-linear model of (M1) is the special case obtained by deleting the
   hidden layer, which is what makes the comparison meaningful.
 
@@ -158,9 +169,31 @@ floor is lowered **before** any confirmation scenario runs.
 
 ## Decision rules
 
-**Calibration gate (stage 3, blocking).** At `eps = 0`, measured `alpha` must
-match the discrete `alpha` to within `1e-6` on every scenario. Failure means the
-estimator is wrong and halts the protocol; it is not a result about `alpha`.
+**Calibration gate (stage 3, blocking).** The estimator applied to the
+**linear** parameterization at `eps = 0` must match the discrete `alpha` to
+within `1e-6` on every scenario. Failure means the estimator is wrong and halts
+the protocol; it is not a result about `alpha`.
+
+**Amended before any scenario was executed.** The gate originally required the
+measured `alpha` to match the discrete `alpha` under the **MLP** at `eps = 0`.
+That is false by construction, and implementation showed it immediately: with
+one-hot features the MLP produces identical *policies* within a tie-group, but
+its per-position *Jacobians* are not orthogonal across groups. Two mechanisms
+cause this and neither is a defect. The output bias `b2` has derivative
+`delta_{a,a'}` at every position, identical for all `k`. The hidden activations
+`h_k = tanh(W1 f_k + b1)` differ across groups but are not orthogonal. Measured
+cross-group cosine similarity is **0.45 to 0.60** on a representative
+configuration where the linear model gives exactly `0`.
+
+The gate therefore validates the *estimator*, against the parameterization where
+the discrete answer is defined, and the MLP measurement is the experiment rather
+than a check. Restricting the Jacobian to a parameter subset chosen to recover
+orthogonality was rejected: it contradicts the frozen "all trainable parameters"
+choice and would be tuning the instrument toward a desired reading.
+
+This makes the test **more** faithful to the Qwen case, not less. On a
+transformer there is no discrete `alpha` to recover either, and `alpha` will
+have to be measured exactly as it is here.
 
 **Discovery.** Spearman `rho` between measured `alpha` and the bias-corrected
 frontier advantage across the 42 discovery instances. Reported, not decisive.
