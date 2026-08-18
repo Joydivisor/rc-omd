@@ -178,11 +178,33 @@ screening gate.
 
 The selected predictor is applied to the 20 confirmation scenarios.
 
-- **CONFIRMED** iff the Spearman `rho` between predictor and `Delta_corrected`
-  has a 95% bootstrap confidence lower bound **strictly greater than 0.50**,
-  with 10000 resamples at `numpy.random.default_rng(20260820)`, and the sign of
-  `rho` matches the discovery set.
+- **CONFIRMED** iff the sign of `rho` matches the discovery set **and** the 95%
+  bootstrap interval, oriented by that sign, excludes magnitude 0.50 -- that is,
+  `ci_lower > +0.50` when the discovery sign is positive, or `ci_upper < -0.50`
+  when it is negative. 10000 resamples at
+  `numpy.random.default_rng(20260820)`.
 - **NOT CONFIRMED** otherwise.
+
+**Amended after the confirmation set was executed. This is the weakest link in
+the protocol chain and is flagged rather than buried.**
+
+The original wording required "a 95% bootstrap confidence lower bound strictly
+greater than 0.50" while also requiring the sign to match discovery. Those two
+clauses are jointly unsatisfiable whenever the discovery sign is negative, and
+the selection rule ranks candidates by **absolute** correlation, so a negative
+predictor was always reachable -- as in fact happened, `alpha` being selected at
+`rho = -0.7868`. The defect is an internal contradiction between the selection
+and confirmation rules, demonstrable from the document alone without reference
+to any measurement.
+
+The amendment is nonetheless **post hoc**, and a reader is entitled to discount
+it on that ground. Three facts bound the discretion involved: the corrected
+criterion is the only reading under which the selection rule and the
+confirmation rule are mutually consistent; the threshold 0.50 is unchanged; and
+the outcome is not close to it either way, the observed interval being
+`[-0.9519, -0.7210]` against a magnitude bound of 0.50. Had the result been
+marginal, the honest course would have been to report NOT CONFIRMED on the
+literal text and re-run the protocol under a corrected one.
 
 A predictor that is CONFIRMED may be used as the basis of the language-model
 pre-flight screen. A predictor that is NOT CONFIRMED may not, and the

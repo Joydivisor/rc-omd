@@ -227,7 +227,17 @@ def run_discovery(config, summary) -> dict[str, Any]:
     }
 
 
-def run_confirmation(config, summary, predictor: str) -> dict[str, Any]:
+def run_confirmation(
+    config, summary, predictor: str, discovery_sign: int
+) -> dict[str, Any]:
+    """Confirm the frozen predictor, oriented by the discovery-set sign.
+
+    The interval test is on magnitude in the discovery direction: the selection
+    rule ranks by absolute correlation, so a negative predictor is reachable and
+    a bound stated only as "lower bound > 0.50" could never be met by one. See
+    the amendment in `docs/GEOMETRY_V3_PROTOCOL.md`.
+    """
+
     rule = config["decision_rule"]
     confirmation = list(config["split"]["confirmation"])
     metrics = metrics_for(config, summary, confirmation)
@@ -240,17 +250,28 @@ def run_confirmation(config, summary, predictor: str) -> dict[str, Any]:
         int(rule["bootstrap_seed"]),
     )
     bound = float(rule["confirmation_rho_lower_bound"])
-    confirmed = interval["ci_lower"] > bound
+
+    sign_matches = (
+        interval["rho"] > 0 if discovery_sign > 0 else interval["rho"] < 0
+    )
+    if discovery_sign > 0:
+        magnitude_clears = interval["ci_lower"] > bound
+    else:
+        magnitude_clears = interval["ci_upper"] < -bound
+    confirmed = sign_matches and magnitude_clears
 
     return {
         "protocol_id": PROTOCOL_ID,
         "phase": "confirmation",
         "predictor": predictor,
+        "discovery_sign": discovery_sign,
         "scenarios": confirmation,
         "usable_scenarios": usable,
         "metrics": metrics,
         "spearman": interval,
-        "required_ci_lower_bound": bound,
+        "required_magnitude_bound": bound,
+        "sign_matches_discovery": sign_matches,
+        "magnitude_clears_bound": magnitude_clears,
         "outcome": "CONFIRMED" if confirmed else "NOT_CONFIRMED",
     }
 
@@ -263,6 +284,10 @@ def main() -> None:
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--predictor", default=None,
                         help="required in confirmation mode; must be the frozen one")
+    parser.add_argument("--discovery-sign", type=int, default=None,
+                        choices=[-1, 1],
+                        help="required in confirmation mode; sign of the frozen "
+                             "predictor's discovery-set correlation")
     arguments = parser.parse_args()
 
     config = json.loads(arguments.config.read_text(encoding="utf-8"))
@@ -277,14 +302,20 @@ def main() -> None:
         for entry in result["correlations"]:
             print(f"  {entry['predictor']:<30}rho {entry['rho']:+.4f}")
     else:
-        if not arguments.predictor:
-            raise SystemExit("--predictor is required in confirmation mode")
-        result = run_confirmation(config, summary, arguments.predictor)
+        if not arguments.predictor or arguments.discovery_sign is None:
+            raise SystemExit(
+                "--predictor and --discovery-sign are required in confirmation mode"
+            )
+        result = run_confirmation(
+            config, summary, arguments.predictor, arguments.discovery_sign
+        )
         interval = result["spearman"]
         print(f"outcome: {result['outcome']}")
         print(f"  {result['predictor']}: rho {interval['rho']:+.4f} "
-              f"[{interval['ci_lower']:+.4f}, {interval['ci_upper']:+.4f}] "
-              f"vs required lower bound {result['required_ci_lower_bound']}")
+              f"[{interval['ci_lower']:+.4f}, {interval['ci_upper']:+.4f}]")
+        print(f"  sign matches discovery: {result['sign_matches_discovery']} | "
+              f"magnitude clears {result['required_magnitude_bound']}: "
+              f"{result['magnitude_clears_bound']}")
 
     arguments.output.parent.mkdir(parents=True, exist_ok=True)
     arguments.output.write_text(json.dumps(result, indent=2), encoding="utf-8")

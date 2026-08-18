@@ -246,10 +246,34 @@ class SyntheticDecisionTest(unittest.TestCase):
     def test_confirmation_reports_an_interval_and_a_verdict(self) -> None:
         config = self._config()
         deltas = [0.01 * i for i in range(11)]
-        result = run_confirmation(config, self._summary(config, deltas), "good")
+        result = run_confirmation(config, self._summary(config, deltas), "good", 1)
         self.assertIn(result["outcome"], ("CONFIRMED", "NOT_CONFIRMED"))
         self.assertEqual(set(result["metrics"]), set(config["split"]["confirmation"]))
         self.assertIn("ci_lower", result["spearman"])
+
+    def test_a_negative_predictor_can_confirm(self) -> None:
+        """Regression for the amended criterion.
+
+        The selection rule ranks by absolute correlation, so a negative
+        predictor is reachable. Under the original wording -- a bound stated
+        only as "lower bound > 0.50" -- such a predictor could never confirm
+        however strong it was. The bound is on magnitude in the discovery
+        direction.
+        """
+
+        config = self._config()
+        # response decreasing in the predictor index => rho is strongly negative
+        deltas = [0.10 - 0.01 * i for i in range(11)]
+        summary = self._summary(config, deltas)
+        negative = run_confirmation(config, summary, "good", -1)
+        self.assertLess(negative["spearman"]["rho"], 0.0)
+        self.assertTrue(negative["sign_matches_discovery"])
+        self.assertEqual(negative["outcome"], "CONFIRMED")
+
+        # The same data must NOT confirm if discovery had said positive.
+        wrong_sign = run_confirmation(config, summary, "good", 1)
+        self.assertFalse(wrong_sign["sign_matches_discovery"])
+        self.assertEqual(wrong_sign["outcome"], "NOT_CONFIRMED")
 
 
 if __name__ == "__main__":
