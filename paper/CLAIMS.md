@@ -82,10 +82,14 @@ projection. It is *not* Online RC-OMD and inherits nothing from `ood-v1` or
 - Both held-out scenarios passed (**0.433**, **0.397**); v1 measured 0.841 and
   0.790 on the same run, i.e. would have failed.
 - `separable_shared_features` did not regress (0.080).
-- **Mechanism.** Under partial aliasing RWP-OMD cut distractor KL to 0.575 of
-  baseline while cutting critical KL only to 0.709 -- selective protection,
-  not merely smaller steps. v1 did the reverse, raising critical KL to 1.198
-  while leaving distractor KL at 1.000.
+- **Mechanism, as measured against the fixed baseline step.** Under partial
+  aliasing RWP-OMD cut distractor KL to 0.575 of baseline while cutting
+  critical KL only to 0.709. v1 did the reverse, raising critical KL to 1.198
+  while leaving distractor KL at 1.000. **This may not be read as "not merely
+  smaller steps"** for that scenario: against a step-swept uniform frontier the
+  effect is null, and RWP-OMD is indistinguishable from v1 on allocation there.
+  See [E9](../docs/ERRATA.md). The selective-protection reading does survive on
+  the two held-out scenarios.
 
 Limits, all fixed before execution:
 
@@ -101,6 +105,46 @@ Limits, all fixed before execution:
   carry generalization evidence.
 - Complete aliasing is a negative control and contributed nothing to the
   decision.
+
+## Tested under the frozen geometry-v2 protocol
+
+Protocol `geometry-v2-2026-08-18`, execution commit `c5384a5`, 8 scenarios, 20
+seeds, 18-point step grid (`0.025` to `1.25`). Golden record:
+`paper/frozen/geometry-v2-2026-08-18.json`.
+
+This protocol swept the step size that `geometry-v1` held fixed, closing the
+confound named as that protocol's largest limitation. Its primary metric is the
+AUC advantage over the uniform frontier interpolated at RWP-OMD's own distractor
+KL.
+
+- **Frontier advantage exists and is not a step-size artifact.** RWP-OMD lies
+  above the step-swept uniform frontier on 6 of 8 scenarios, by +0.0036 to
+  +0.1228 after bias correction. This is the claim `geometry-v1` could not make.
+- **NO-GO on the mechanism.** The protocol's pre-registered hypothesis -- that a
+  pure-critical tie-group is what produces the advantage -- is **refuted**. In an
+  exactly-matched triple (`H=12`, `alpha=1/3`, matched on group sizes, critical
+  counts, and every declared quantity), the arm with `pure_crit = 0` and
+  homogeneous yield ratios still showed +0.00494 [+0.00418, +0.00570], where both
+  pre-registered hypotheses predicted null.
+- **The advantage is graded, not binary.** Bias-corrected, inside the matched
+  triple: `pure_ge1` +0.01209, `pure0_hetero` +0.00594, `pure0_homog` +0.00398.
+  Pure-criticality and ratio heterogeneity each contribute; neither is necessary.
+- **`partial_feature_aliasing` remains null**, consistent with [E9](../docs/ERRATA.md).
+- **Complete aliasing** returned -0.00297 on the primary metric and **exactly
+  1.000000** on the secondary allocation invariant.
+
+Limits:
+
+- The primary metric has a measured positive bias of +0.00136 from interpolating
+  a concave curve linearly ([E10](../docs/ERRATA.md)). Effects below roughly
+  +0.002 are not resolvable. The NO-GO survives on both raw and corrected values.
+- **No replacement law is asserted.** The graded pattern above is post-hoc on data
+  now spent for hypothesis testing. Any successor hypothesis must be tested on
+  new scenarios.
+- Softmax-linear one-hot tie-group features only. Nothing transfers to non-linear
+  function approximation or to language-model RLVR.
+- `lambda*` and `mu*` were inherited frozen and not re-selected; this says nothing
+  about their optimality.
 
 ## Supported only by exploratory development experiments
 
@@ -154,8 +198,11 @@ current algorithm is known not to deliver.
 - Causal identification of step credit.
 - Robustness under persistent confounding or nonstationarity.
 - Benefits for language-model RLVR.
-- Whether RWP-OMD's advantage survives step-size matching (deferred
-  `geometry-v2` frontier test).
+- ~~Whether RWP-OMD's advantage survives step-size matching.~~ **Tested**; it
+  does, on 6 of 8 scenarios. See the geometry-v2 section above.
+- **What structural property produces the frontier advantage.** The pure-critical
+  hypothesis is refuted; no replacement is asserted, and the current scenario set
+  is spent.
 - Reliability geometry beyond shared *linear* features.
 
 ## Known defects affecting published numbers

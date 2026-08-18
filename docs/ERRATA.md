@@ -302,6 +302,70 @@ added in the protocol commit `f779782`, two commits before the results commit
 **Forward rule.** The evaluator must be committed with the protocol, before
 execution. `docs/PARETO_V1_PROTOCOL.md` already requires this.
 
+## E9. The geometry-v1 mechanism claim does not survive step-size matching
+
+**Published claim.** `paper/CLAIMS.md` states, under the frozen geometry-v1
+protocol, that "under partial aliasing RWP-OMD cut distractor KL to 0.575 of
+baseline while cutting critical KL only to 0.709 -- selective protection, **not
+merely smaller steps**."
+
+**Correction.** The emphasised inference does not follow from that measurement,
+and is not supported when the comparison is made against a step-swept uniform
+frontier rather than the single baseline step. Re-analysing the frozen
+geometry-v1 test seeds (200--219) with a paired uniform sweep gives, under
+`partial_feature_aliasing`:
+
+| quantity | RWP-OMD | v1 algorithm |
+|---|---|---|
+| distractor KL at matched critical KL | 0.8185 [0.8039, 0.8333] | 0.8227 [0.8020, 0.8439] |
+| frontier AUC advantage | +0.00033 [-0.00037, +0.00102] | +0.00011 [-0.00046, +0.00068] |
+
+The two algorithms are statistically indistinguishable on allocation, and
+RWP-OMD's frontier advantage is null. Under `geometry-v2` on fresh seeds
+(500--519) with a finer grid the same scenario measured +0.00067 with a
+confidence lower bound of +0.00002, which is **-0.00147 after correcting for
+the interpolation bias recorded in E10** -- consistent with the null.
+
+**Consequence.** For `partial_feature_aliasing`, the ratio 0.575 versus 0.709 is
+a description of what RWP-OMD did, not evidence that it did something a smaller
+uniform step could not. The phrase "not merely smaller steps" is withdrawn for
+that scenario. It is **not** withdrawn for `geom_holdout_a` and `geom_holdout_b`,
+where the frontier advantage is positive and separates from the v1 algorithm.
+
+**The geometry-v1 GO is unaffected.** Its decision rule compared against a fixed
+baseline step and every declared condition was met. The golden record
+`paper/frozen/geometry-v1-2026-08-15.json` is accurate as a record of that
+protocol and is **not** modified; the protocol itself recorded the fixed-`eta`
+confound as its largest open limitation. What is corrected here is a mechanism
+sentence in `CLAIMS.md` that read more strongly than the protocol licensed.
+
+## E10. The frontier metric carries a systematic positive bias
+
+**Affected.** The `geometry-v2` primary metric, `Delta_frontier`, and any figure
+derived from it.
+
+**Defect.** The metric interpolates the uniform frontier's success AUC at the
+candidate's distractor KL, linearly in log KL. Success AUC is **concave** in log
+distractor KL, so linear interpolation lies below the true frontier and the
+difference is inflated.
+
+**Measurement.** Removing one uniform grid point and interpolating its own AUC
+from the remaining points, where the true value is exactly zero by construction,
+returns positive in **99.2%** of cases across all eight `geometry-v2` scenarios,
+mean **+0.00136**, per-scenario range +0.00092 to +0.00214.
+
+**Consequence.** Effects smaller than roughly +0.002 cannot be distinguished from
+this artifact, and a zero decision margin is not safe at that scale. The
+`geometry-v2` NO-GO is unaffected: `geom_v2_a3_pure0_homog` measured +0.00494
+against a local bias of +0.00096, so the refutation holds on both the raw and the
+corrected metric. What the bias does invalidate is any reading of the marginal
+positives, `partial_feature_aliasing` in particular.
+
+**Forward rule.** A successor protocol must either declare a margin above the
+measured bias, apply the leave-one-out correction as a pre-registered step, or
+interpolate on a scale where the frontier is not concave. The leave-one-out test
+should be run as a standard control, since it needs no new data.
+
 ## Deferred: corrections that require re-running
 
 These are **not** asserted. They are recorded so that the required experiment is
