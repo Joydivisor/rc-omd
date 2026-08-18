@@ -195,10 +195,21 @@ predictor that merely correlates weakly is not.
 
 ## Negative controls
 
-1. **Complete aliasing.** At least one family member must have `alpha = 1`.
-   Its secondary allocation ratio must equal `1.0` to within `1e-9`, as the
-   parameterization requires. Violation is an implementation defect and forces
-   **HALT**.
+1. **Complete aliasing.** A designated complete-aliasing scenario
+   (`gv3_control_complete`, every tie-group satisfying `c(g) = d(g)`) is
+   executed alongside the family. Its secondary allocation ratio must equal
+   `1.0` to within `1e-9`, as the parameterization requires. Violation is an
+   implementation defect and forces **HALT**.
+
+   **Amended before execution.** This control sits **outside** the 50-member
+   family and **outside** the discovery/confirmation split, and contributes to
+   no correlation. Rejection sampling under the family constraints produced no
+   `alpha = 1` member -- it requires `c(g) = d(g)` in every group
+   simultaneously, which random profiles essentially never satisfy -- so the
+   original wording could not be met. Force-injecting a designed scenario into
+   the random family would also have contaminated the correlation set with a
+   non-random member. Holding it out as a pure invariant check preserves both
+   the control and the randomness of the family.
 2. **Bias-correction validity.** The pooled leave-one-out bias across the family
    must be positive, consistent with [E10](ERRATA.md). If it is not, the
    concavity account is wrong and the correction is unjustified; the protocol
