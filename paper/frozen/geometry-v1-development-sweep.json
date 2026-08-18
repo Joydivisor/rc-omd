@@ -1,0 +1,1617 @@
+{
+  "record_type": "development_sweep",
+  "record_status": "ORIGINAL",
+  "protocol_id": "geometry-v1-2026-08-15",
+  "phase": "development",
+  "protocol_commit": "181b637fe7a397b69b8c1a652b9ec7674ab4da34",
+  "execution_commit": "181b637fe7a397b69b8c1a652b9ec7674ab4da34",
+  "results_commit": "6f52cb8",
+  "executed_on": "2026-08-17",
+  "purpose": "Selects lambda* and mu* on development scenarios only, by the deterministic rule frozen in docs/GEOMETRY_V1_PROTOCOL.md. No test or diagnostic scenario was executed in this phase, and no Go/No-Go decision is made or implied here.",
+  "environment": {
+    "python": "3.12.10",
+    "numpy": "2.5.2",
+    "matplotlib": "3.11.1",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "processor": "Intel64 Family 6 Model 198 Stepping 2, GenuineIntel"
+  },
+  "config": {
+    "path": "configs/geometry_dev.json",
+    "sha256": "b1b13de41db8de209883dac579053bc689010dfd5d32a04c71457ad4d583a799",
+    "bytes": 20254
+  },
+  "generated_files": {
+    "geometry_dev.json": {
+      "sha256": "b1b13de41db8de209883dac579053bc689010dfd5d32a04c71457ad4d583a799",
+      "bytes": 20254
+    },
+    "summary.json": {
+      "sha256": "61a2fecebb3b27ea77b98a2d303530347753795aa9a57ff1e7abaa917dcfd524",
+      "bytes": 265724
+    },
+    "selection.json": {
+      "sha256": "fd96b7bbf3c6a1a6e6fee0020a4afe14c2f6e7f496ee65892a1651626b7bd869",
+      "bytes": 48709
+    },
+    "history.csv": {
+      "sha256": "634129cfc6d2554aa0be6ee3132bffae02e0b92370f4e7061cacee8d8cc547db",
+      "bytes": 20802801
+    }
+  },
+  "selected": {
+    "method": "rwp_lam300_mu0",
+    "lambda": 3.0,
+    "mu": 0.0,
+    "pass_count": 3,
+    "mean_kl_upper_bound": 0.2816874548169588
+  },
+  "negative_check": {
+    "method": "rwp_lam050_mu0",
+    "pass_count": 1,
+    "outperformed_grid": false
+  },
+  "invariant_holds": true,
+  "eligible_count": 15,
+  "outcome": "SELECTED",
+  "selection": {
+    "protocol_id": "geometry-v1-2026-08-15",
+    "phase": "development",
+    "invariants": [
+      {
+        "scenario": "geom_dev_complete",
+        "methods": {
+          "rwp_lam100_mu0": {
+            "max_abs_difference": 0.0,
+            "holds": true
+          },
+          "rwp_lam100_mu1e3": {
+            "max_abs_difference": 0.0,
+            "holds": true
+          },
+          "rwp_lam100_mu1e2": {
+            "max_abs_difference": 0.0,
+            "holds": true
+          },
+          "rwp_lam150_mu0": {
+            "max_abs_difference": 0.0,
+            "holds": true
+          },
+          "rwp_lam150_mu1e3": {
+            "max_abs_difference": 0.0,
+            "holds": true
+          },
+          "rwp_lam150_mu1e2": {
+            "max_abs_difference": 0.0,
+            "holds": true
+          },
+          "rwp_lam200_mu0": {
+            "max_abs_difference": 0.0,
+            "holds": true
+          },
+          "rwp_lam200_mu1e3": {
+            "max_abs_difference": 0.0,
+            "holds": true
+          },
+          "rwp_lam200_mu1e2": {
+            "max_abs_difference": 0.0,
+            "holds": true
+          },
+          "rwp_lam300_mu0": {
+            "max_abs_difference": 0.0,
+            "holds": true
+          },
+          "rwp_lam300_mu1e3": {
+            "max_abs_difference": 0.0,
+            "holds": true
+          },
+          "rwp_lam300_mu1e2": {
+            "max_abs_difference": 0.0,
+            "holds": true
+          },
+          "rwp_lam500_mu0": {
+            "max_abs_difference": 0.0,
+            "holds": true
+          },
+          "rwp_lam500_mu1e3": {
+            "max_abs_difference": 0.0,
+            "holds": true
+          },
+          "rwp_lam500_mu1e2": {
+            "max_abs_difference": 0.0,
+            "holds": true
+          }
+        },
+        "invariant_holds": true
+      }
+    ],
+    "invariant_holds": true,
+    "candidates": [
+      {
+        "name": "rwp_lam100_mu0",
+        "lambda": 1.0,
+        "mu": 0.0,
+        "is_negative_check": false,
+        "scenarios": {
+          "geom_dev_separable": {
+            "scenario": "geom_dev_separable",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": -0.0033308442586101996,
+                "half_width": 0.00021185041007940652,
+                "ci_lower": -0.003542694668689606,
+                "ci_upper": -0.003118993848530793
+              },
+              "auc_pass": true
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": -1.7063682746401299,
+                "half_width": 0.10705208906321122,
+                "ci_lower": -1.813420363703341,
+                "ci_upper": -1.5993161855769187
+              },
+              "upper_ratio": 0.20203462496001587,
+              "kl_pass": true
+            },
+            "status": "pass"
+          },
+          "geom_dev_partial_040": {
+            "scenario": "geom_dev_partial_040",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": -0.0026478295371321846,
+                "half_width": 0.00024176007352837123,
+                "ci_lower": -0.0028895896106605557,
+                "ci_upper": -0.0024060694636038136
+              },
+              "auc_pass": true
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": -0.5548444613963206,
+                "half_width": 0.05217034491048708,
+                "ci_lower": -0.6070148063068077,
+                "ci_upper": -0.5026741164858335
+              },
+              "upper_ratio": 0.6049108927643146,
+              "kl_pass": true
+            },
+            "status": "pass"
+          },
+          "geom_dev_partial_080": {
+            "scenario": "geom_dev_partial_080",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": -0.0014164300218456217,
+                "half_width": 0.00031391140922082427,
+                "ci_lower": -0.0017303414310664458,
+                "ci_upper": -0.0011025186126247975
+              },
+              "auc_pass": true
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": -0.07054777006229095,
+                "half_width": 0.01794743255646586,
+                "ci_lower": -0.0884952026187568,
+                "ci_upper": -0.05260033750582509
+              },
+              "upper_ratio": 0.9487591201560255,
+              "kl_pass": false
+            },
+            "status": "fail"
+          }
+        },
+        "pass_count": 2,
+        "mean_kl_upper_bound": 0.585234879293452,
+        "passes_regression_gate": true
+      },
+      {
+        "name": "rwp_lam100_mu1e3",
+        "lambda": 1.0,
+        "mu": 0.001,
+        "is_negative_check": false,
+        "scenarios": {
+          "geom_dev_separable": {
+            "scenario": "geom_dev_separable",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": -0.003428906024871242,
+                "half_width": 0.00020209996900017583,
+                "ci_lower": -0.003631005993871418,
+                "ci_upper": -0.003226806055871066
+              },
+              "auc_pass": true
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": -1.6978310277225053,
+                "half_width": 0.11437281048156432,
+                "ci_lower": -1.8122038382040695,
+                "ci_upper": -1.583458217240941
+              },
+              "upper_ratio": 0.20526402180606038,
+              "kl_pass": true
+            },
+            "status": "pass"
+          },
+          "geom_dev_partial_040": {
+            "scenario": "geom_dev_partial_040",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": -0.0028187711449273014,
+                "half_width": 0.0002459867613526501,
+                "ci_lower": -0.0030647579062799517,
+                "ci_upper": -0.002572784383574651
+              },
+              "auc_pass": true
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": -0.5670608421030223,
+                "half_width": 0.05293416652749575,
+                "ci_lower": -0.619995008630518,
+                "ci_upper": -0.5141266755755266
+              },
+              "upper_ratio": 0.5980226344030225,
+              "kl_pass": true
+            },
+            "status": "pass"
+          },
+          "geom_dev_partial_080": {
+            "scenario": "geom_dev_partial_080",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": -0.0016379456657268532,
+                "half_width": 0.00029614076574240294,
+                "ci_lower": -0.0019340864314692562,
+                "ci_upper": -0.0013418048999844503
+              },
+              "auc_pass": true
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": -0.0832586345683002,
+                "half_width": 0.01729005186767467,
+                "ci_lower": -0.10054868643597487,
+                "ci_upper": -0.06596858270062553
+              },
+              "upper_ratio": 0.9361602754572432,
+              "kl_pass": false
+            },
+            "status": "fail"
+          }
+        },
+        "pass_count": 2,
+        "mean_kl_upper_bound": 0.5798156438887754,
+        "passes_regression_gate": true
+      },
+      {
+        "name": "rwp_lam100_mu1e2",
+        "lambda": 1.0,
+        "mu": 0.01,
+        "is_negative_check": false,
+        "scenarios": {
+          "geom_dev_separable": {
+            "scenario": "geom_dev_separable",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": -0.004257075934723309,
+                "half_width": 0.0002215135007558172,
+                "ci_lower": -0.0044785894354791266,
+                "ci_upper": -0.004035562433967492
+              },
+              "auc_pass": true
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": -1.8015632203731495,
+                "half_width": 0.14888585130593232,
+                "ci_lower": -1.9504490716790819,
+                "ci_upper": -1.6526773690672172
+              },
+              "upper_ratio": 0.19153640785832382,
+              "kl_pass": true
+            },
+            "status": "pass"
+          },
+          "geom_dev_partial_040": {
+            "scenario": "geom_dev_partial_040",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": -0.004249924985865561,
+                "half_width": 0.0002490907625988759,
+                "ci_lower": -0.004499015748464437,
+                "ci_upper": -0.004000834223266685
+              },
+              "auc_pass": true
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": -0.6353558625636123,
+                "half_width": 0.04813792598281807,
+                "ci_lower": -0.6834937885464304,
+                "ci_upper": -0.5872179365807942
+              },
+              "upper_ratio": 0.5558716055988557,
+              "kl_pass": true
+            },
+            "status": "pass"
+          },
+          "geom_dev_partial_080": {
+            "scenario": "geom_dev_partial_080",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": -0.003324469921302431,
+                "half_width": 0.00034553838906324207,
+                "ci_lower": -0.003670008310365673,
+                "ci_upper": -0.002978931532239189
+              },
+              "auc_pass": true
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": -0.16264745709202696,
+                "half_width": 0.018940190613327457,
+                "ci_lower": -0.18158764770535443,
+                "ci_upper": -0.1437072664786995
+              },
+              "upper_ratio": 0.8661412595325881,
+              "kl_pass": false
+            },
+            "status": "fail"
+          }
+        },
+        "pass_count": 2,
+        "mean_kl_upper_bound": 0.5378497576632558,
+        "passes_regression_gate": true
+      },
+      {
+        "name": "rwp_lam150_mu0",
+        "lambda": 1.5,
+        "mu": 0.0,
+        "is_negative_check": false,
+        "scenarios": {
+          "geom_dev_separable": {
+            "scenario": "geom_dev_separable",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": -0.0056535882977923725,
+                "half_width": 0.00023130400521395388,
+                "ci_lower": -0.005884892303006327,
+                "ci_upper": -0.005422284292578418
+              },
+              "auc_pass": true
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": -2.074361244110153,
+                "half_width": 0.1615909851399742,
+                "ci_lower": -2.2359522292501275,
+                "ci_upper": -1.912770258970179
+              },
+              "upper_ratio": 0.14767073326108562,
+              "kl_pass": true
+            },
+            "status": "pass"
+          },
+          "geom_dev_partial_040": {
+            "scenario": "geom_dev_partial_040",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": -0.006102576256313252,
+                "half_width": 0.0003149952310652996,
+                "ci_lower": -0.006417571487378552,
+                "ci_upper": -0.005787581025247952
+              },
+              "auc_pass": true
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": -0.7845654175119752,
+                "half_width": 0.05182108946649363,
+                "ci_lower": -0.8363865069784688,
+                "ci_upper": -0.7327443280454815
+              },
+              "upper_ratio": 0.4805882867837783,
+              "kl_pass": true
+            },
+            "status": "pass"
+          },
+          "geom_dev_partial_080": {
+            "scenario": "geom_dev_partial_080",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": -0.00626888490210512,
+                "half_width": 0.0004702311153971114,
+                "ci_lower": -0.006739116017502232,
+                "ci_upper": -0.005798653786708009
+              },
+              "auc_pass": true
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": -0.2869849261830145,
+                "half_width": 0.02277116673806414,
+                "ci_lower": -0.30975609292107864,
+                "ci_upper": -0.2642137594449504
+              },
+              "upper_ratio": 0.7678093956034284,
+              "kl_pass": false
+            },
+            "status": "fail"
+          }
+        },
+        "pass_count": 2,
+        "mean_kl_upper_bound": 0.46535613854943075,
+        "passes_regression_gate": true
+      },
+      {
+        "name": "rwp_lam150_mu1e3",
+        "lambda": 1.5,
+        "mu": 0.001,
+        "is_negative_check": false,
+        "scenarios": {
+          "geom_dev_separable": {
+            "scenario": "geom_dev_separable",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": -0.005756751030308838,
+                "half_width": 0.0002354873376207715,
+                "ci_lower": -0.005992238367929609,
+                "ci_upper": -0.005521263692688067
+              },
+              "auc_pass": true
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": -2.07568671429207,
+                "half_width": 0.16707522272720113,
+                "ci_lower": -2.2427619370192713,
+                "ci_upper": -1.9086114915648689
+              },
+              "upper_ratio": 0.14828614027362957,
+              "kl_pass": true
+            },
+            "status": "pass"
+          },
+          "geom_dev_partial_040": {
+            "scenario": "geom_dev_partial_040",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": -0.006281617919653049,
+                "half_width": 0.00031736824552120265,
+                "ci_lower": -0.006598986165174251,
+                "ci_upper": -0.005964249674131846
+              },
+              "auc_pass": true
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": -0.7893720803226749,
+                "half_width": 0.049041381412836205,
+                "ci_lower": -0.8384134617355111,
+                "ci_upper": -0.7403306989098387
+              },
+              "upper_ratio": 0.476956160555438,
+              "kl_pass": true
+            },
+            "status": "pass"
+          },
+          "geom_dev_partial_080": {
+            "scenario": "geom_dev_partial_080",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": -0.006530905413381682,
+                "half_width": 0.0004316665881882164,
+                "ci_lower": -0.006962572001569899,
+                "ci_upper": -0.0060992388251934655
+              },
+              "auc_pass": true
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": -0.2943781508264566,
+                "half_width": 0.021152270306398678,
+                "ci_lower": -0.31553042113285523,
+                "ci_upper": -0.2732258805200579
+              },
+              "upper_ratio": 0.7609208910090322,
+              "kl_pass": false
+            },
+            "status": "fail"
+          }
+        },
+        "pass_count": 2,
+        "mean_kl_upper_bound": 0.46205439727936654,
+        "passes_regression_gate": true
+      },
+      {
+        "name": "rwp_lam150_mu1e2",
+        "lambda": 1.5,
+        "mu": 0.01,
+        "is_negative_check": false,
+        "scenarios": {
+          "geom_dev_separable": {
+            "scenario": "geom_dev_separable",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": -0.006664726887054296,
+                "half_width": 0.0002700193144108426,
+                "ci_lower": -0.006934746201465138,
+                "ci_upper": -0.006394707572643453
+              },
+              "auc_pass": true
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": -2.1995347881433327,
+                "half_width": 0.15985039680735358,
+                "ci_lower": -2.3593851849506864,
+                "ci_upper": -2.039684391335979
+              },
+              "upper_ratio": 0.13006975554283579,
+              "kl_pass": true
+            },
+            "status": "pass"
+          },
+          "geom_dev_partial_040": {
+            "scenario": "geom_dev_partial_040",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": -0.008006062236516436,
+                "half_width": 0.0003164113910378852,
+                "ci_lower": -0.008322473627554321,
+                "ci_upper": -0.007689650845478551
+              },
+              "auc_pass": true
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": -0.8688790818304554,
+                "half_width": 0.05032959072597529,
+                "ci_lower": -0.9192086725564307,
+                "ci_upper": -0.81854949110448
+              },
+              "upper_ratio": 0.4410709680916586,
+              "kl_pass": true
+            },
+            "status": "pass"
+          },
+          "geom_dev_partial_080": {
+            "scenario": "geom_dev_partial_080",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": -0.008608122496700421,
+                "half_width": 0.0004784995299110883,
+                "ci_lower": -0.009086622026611509,
+                "ci_upper": -0.008129622966789334
+              },
+              "auc_pass": true
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": -0.3734829870895538,
+                "half_width": 0.0197474067741608,
+                "ci_lower": -0.3932303938637146,
+                "ci_upper": -0.353735580315393
+              },
+              "upper_ratio": 0.7020605814518247,
+              "kl_pass": true
+            },
+            "status": "pass"
+          }
+        },
+        "pass_count": 3,
+        "mean_kl_upper_bound": 0.42440043502877306,
+        "passes_regression_gate": true
+      },
+      {
+        "name": "rwp_lam200_mu0",
+        "lambda": 2.0,
+        "mu": 0.0,
+        "is_negative_check": false,
+        "scenarios": {
+          "geom_dev_separable": {
+            "scenario": "geom_dev_separable",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": -0.0076114281388205305,
+                "half_width": 0.00029612426998414717,
+                "ci_lower": -0.007907552408804678,
+                "ci_upper": -0.0073153038688363835
+              },
+              "auc_pass": true
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": -2.4367275974837037,
+                "half_width": 0.14918023543912867,
+                "ci_lower": -2.585907832922832,
+                "ci_upper": -2.287547362044575
+              },
+              "upper_ratio": 0.10151513665180459,
+              "kl_pass": true
+            },
+            "status": "pass"
+          },
+          "geom_dev_partial_040": {
+            "scenario": "geom_dev_partial_040",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": -0.009387410887699505,
+                "half_width": 0.0003199482472885175,
+                "ci_lower": -0.009707359134988023,
+                "ci_upper": -0.009067462640410986
+              },
+              "auc_pass": true
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": -0.9624105284282575,
+                "half_width": 0.0547952231067416,
+                "ci_lower": -1.017205751534999,
+                "ci_upper": -0.9076153053215159
+              },
+              "upper_ratio": 0.40348526685005937,
+              "kl_pass": true
+            },
+            "status": "pass"
+          },
+          "geom_dev_partial_080": {
+            "scenario": "geom_dev_partial_080",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": -0.010961653877299854,
+                "half_width": 0.000491327737851519,
+                "ci_lower": -0.011452981615151374,
+                "ci_upper": -0.010470326139448335
+              },
+              "auc_pass": true
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": -0.4692491900630519,
+                "half_width": 0.022963367304594615,
+                "ci_lower": -0.4922125573676465,
+                "ci_upper": -0.44628582275845724
+              },
+              "upper_ratio": 0.6400008191173,
+              "kl_pass": true
+            },
+            "status": "pass"
+          }
+        },
+        "pass_count": 3,
+        "mean_kl_upper_bound": 0.38166707420638796,
+        "passes_regression_gate": true
+      },
+      {
+        "name": "rwp_lam200_mu1e3",
+        "lambda": 2.0,
+        "mu": 0.001,
+        "is_negative_check": false,
+        "scenarios": {
+          "geom_dev_separable": {
+            "scenario": "geom_dev_separable",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": -0.007694066256103194,
+                "half_width": 0.0002850173018450725,
+                "ci_lower": -0.007979083557948265,
+                "ci_upper": -0.007409048954258121
+              },
+              "auc_pass": true
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": -2.4582731117408327,
+                "half_width": 0.1459804371733435,
+                "ci_lower": -2.6042535489141763,
+                "ci_upper": -2.312292674567489
+              },
+              "upper_ratio": 0.09903393848967477,
+              "kl_pass": true
+            },
+            "status": "pass"
+          },
+          "geom_dev_partial_040": {
+            "scenario": "geom_dev_partial_040",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": -0.00959106820129973,
+                "half_width": 0.0003294736980941628,
+                "ci_lower": -0.009920541899393892,
+                "ci_upper": -0.009261594503205567
+              },
+              "auc_pass": true
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": -0.9683084688121053,
+                "half_width": 0.05251165132360248,
+                "ci_lower": -1.0208201201357079,
+                "ci_upper": -0.9157968174885028
+              },
+              "upper_ratio": 0.4001976145525787,
+              "kl_pass": true
+            },
+            "status": "pass"
+          },
+          "geom_dev_partial_080": {
+            "scenario": "geom_dev_partial_080",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": -0.011172170755654737,
+                "half_width": 0.0005403316773002414,
+                "ci_lower": -0.011712502432954979,
+                "ci_upper": -0.010631839078354495
+              },
+              "auc_pass": true
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": -0.47877929321921897,
+                "half_width": 0.0236287226388338,
+                "ci_lower": -0.5024080158580527,
+                "ci_upper": -0.45515057058038516
+              },
+              "upper_ratio": 0.6343524459410526,
+              "kl_pass": true
+            },
+            "status": "pass"
+          }
+        },
+        "pass_count": 3,
+        "mean_kl_upper_bound": 0.37786133299443536,
+        "passes_regression_gate": true
+      },
+      {
+        "name": "rwp_lam200_mu1e2",
+        "lambda": 2.0,
+        "mu": 0.01,
+        "is_negative_check": false,
+        "scenarios": {
+          "geom_dev_separable": {
+            "scenario": "geom_dev_separable",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": -0.008830268567999334,
+                "half_width": 0.00029383268660165357,
+                "ci_lower": -0.009124101254600987,
+                "ci_upper": -0.00853643588139768
+              },
+              "auc_pass": true
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": -2.568109127462511,
+                "half_width": 0.14818103634468582,
+                "ci_lower": -2.716290163807197,
+                "ci_upper": -2.419928091117825
+              },
+              "upper_ratio": 0.08892801194340638,
+              "kl_pass": true
+            },
+            "status": "pass"
+          },
+          "geom_dev_partial_040": {
+            "scenario": "geom_dev_partial_040",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": -0.01140935212426567,
+                "half_width": 0.0003782235785616802,
+                "ci_lower": -0.01178757570282735,
+                "ci_upper": -0.01103112854570399
+              },
+              "auc_pass": true
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": -1.035221650940667,
+                "half_width": 0.056041818724472746,
+                "ci_lower": -1.0912634696651398,
+                "ci_upper": -0.9791798322161943
+              },
+              "upper_ratio": 0.37561904318933254,
+              "kl_pass": true
+            },
+            "status": "pass"
+          },
+          "geom_dev_partial_080": {
+            "scenario": "geom_dev_partial_080",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": -0.013707172103851728,
+                "half_width": 0.0006142562083158098,
+                "ci_lower": -0.014321428312167537,
+                "ci_upper": -0.013092915895535918
+              },
+              "auc_pass": true
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": -0.5619984004852865,
+                "half_width": 0.023692102433941188,
+                "ci_lower": -0.5856905029192276,
+                "ci_upper": -0.5383062980513453
+              },
+              "upper_ratio": 0.5837360905401793,
+              "kl_pass": true
+            },
+            "status": "pass"
+          }
+        },
+        "pass_count": 3,
+        "mean_kl_upper_bound": 0.3494277152243061,
+        "passes_regression_gate": true
+      },
+      {
+        "name": "rwp_lam300_mu0",
+        "lambda": 3.0,
+        "mu": 0.0,
+        "is_negative_check": false,
+        "scenarios": {
+          "geom_dev_separable": {
+            "scenario": "geom_dev_separable",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": -0.010958988967158623,
+                "half_width": 0.00026365065038186423,
+                "ci_lower": -0.011222639617540487,
+                "ci_upper": -0.01069533831677676
+              },
+              "auc_pass": true
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": -2.900351037475621,
+                "half_width": 0.15235089444827984,
+                "ci_lower": -3.0527019319239006,
+                "ci_upper": -2.7480001430273413
+              },
+              "upper_ratio": 0.06405583570838666,
+              "kl_pass": true
+            },
+            "status": "pass"
+          },
+          "geom_dev_partial_040": {
+            "scenario": "geom_dev_partial_040",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": -0.015132151827941743,
+                "half_width": 0.00040063042941173037,
+                "ci_lower": -0.015532782257353474,
+                "ci_upper": -0.014731521398530012
+              },
+              "auc_pass": true
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": -1.2829405684315764,
+                "half_width": 0.06412791585583386,
+                "ci_lower": -1.3470684842874103,
+                "ci_upper": -1.2188126525757426
+              },
+              "upper_ratio": 0.2955809158915091,
+              "kl_pass": true
+            },
+            "status": "pass"
+          },
+          "geom_dev_partial_080": {
+            "scenario": "geom_dev_partial_080",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": -0.019261847699436695,
+                "half_width": 0.0005960104375901922,
+                "ci_lower": -0.019857858137026885,
+                "ci_upper": -0.018665837261846504
+              },
+              "auc_pass": true
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": -0.7474943572249544,
+                "half_width": 0.024765136626489135,
+                "ci_lower": -0.7722594938514435,
+                "ci_upper": -0.7227292205984652
+              },
+              "upper_ratio": 0.48542561285098057,
+              "kl_pass": true
+            },
+            "status": "pass"
+          }
+        },
+        "pass_count": 3,
+        "mean_kl_upper_bound": 0.2816874548169588,
+        "passes_regression_gate": true
+      },
+      {
+        "name": "rwp_lam300_mu1e3",
+        "lambda": 3.0,
+        "mu": 0.001,
+        "is_negative_check": false,
+        "scenarios": {
+          "geom_dev_separable": {
+            "scenario": "geom_dev_separable",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": -0.011136624682238638,
+                "half_width": 0.0002414642025144109,
+                "ci_lower": -0.01137808888475305,
+                "ci_upper": -0.010895160479724227
+              },
+              "auc_pass": true
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": -2.90350323210226,
+                "half_width": 0.15894521993663174,
+                "ci_lower": -3.0624484520388915,
+                "ci_upper": -2.744558012165628
+              },
+              "upper_ratio": 0.06427670418838136,
+              "kl_pass": true
+            },
+            "status": "pass"
+          },
+          "geom_dev_partial_040": {
+            "scenario": "geom_dev_partial_040",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": -0.015381996497543876,
+                "half_width": 0.0004252250060600931,
+                "ci_lower": -0.01580722150360397,
+                "ci_upper": -0.014956771491483783
+              },
+              "auc_pass": true
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": -1.2912006227286352,
+                "half_width": 0.05932382538670723,
+                "ci_lower": -1.3505244481153424,
+                "ci_upper": -1.231876797341928
+              },
+              "upper_ratio": 0.2917445182071567,
+              "kl_pass": true
+            },
+            "status": "pass"
+          },
+          "geom_dev_partial_080": {
+            "scenario": "geom_dev_partial_080",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": -0.0196520522627671,
+                "half_width": 0.000665518945459806,
+                "ci_lower": -0.020317571208226904,
+                "ci_upper": -0.018986533317307295
+              },
+              "auc_pass": false
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": -0.7583398940223807,
+                "half_width": 0.027034464055921286,
+                "ci_lower": -0.7853743580783019,
+                "ci_upper": -0.7313054299664594
+              },
+              "upper_ratio": 0.48128030209678696,
+              "kl_pass": true
+            },
+            "status": "fail"
+          }
+        },
+        "pass_count": 2,
+        "mean_kl_upper_bound": 0.2791005081641083,
+        "passes_regression_gate": true
+      },
+      {
+        "name": "rwp_lam300_mu1e2",
+        "lambda": 3.0,
+        "mu": 0.01,
+        "is_negative_check": false,
+        "scenarios": {
+          "geom_dev_separable": {
+            "scenario": "geom_dev_separable",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": -0.0124215596357169,
+                "half_width": 0.0003004026938825164,
+                "ci_lower": -0.012721962329599415,
+                "ci_upper": -0.012121156941834384
+              },
+              "auc_pass": true
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": -3.018369869981119,
+                "half_width": 0.18680263891347956,
+                "ci_lower": -3.2051725088945986,
+                "ci_upper": -2.8315672310676394
+              },
+              "upper_ratio": 0.0589204393280163,
+              "kl_pass": true
+            },
+            "status": "pass"
+          },
+          "geom_dev_partial_040": {
+            "scenario": "geom_dev_partial_040",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": -0.017683026202590157,
+                "half_width": 0.0004444941362589809,
+                "ci_lower": -0.018127520338849137,
+                "ci_upper": -0.017238532066331178
+              },
+              "auc_pass": true
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": -1.371784174608269,
+                "half_width": 0.06606558961554704,
+                "ci_lower": -1.4378497642238162,
+                "ci_upper": -1.305718584992722
+              },
+              "upper_ratio": 0.2709777445266315,
+              "kl_pass": true
+            },
+            "status": "pass"
+          },
+          "geom_dev_partial_080": {
+            "scenario": "geom_dev_partial_080",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": -0.022801471915320403,
+                "half_width": 0.0006822155886474729,
+                "ci_lower": -0.023483687503967877,
+                "ci_upper": -0.02211925632667293
+              },
+              "auc_pass": false
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": -0.8469662177836582,
+                "half_width": 0.02841270142296768,
+                "ci_lower": -0.8753789192066259,
+                "ci_upper": -0.8185535163606905
+              },
+              "upper_ratio": 0.4410691926715783,
+              "kl_pass": true
+            },
+            "status": "fail"
+          }
+        },
+        "pass_count": 2,
+        "mean_kl_upper_bound": 0.25698912550874203,
+        "passes_regression_gate": true
+      },
+      {
+        "name": "rwp_lam500_mu0",
+        "lambda": 5.0,
+        "mu": 0.0,
+        "is_negative_check": false,
+        "scenarios": {
+          "geom_dev_separable": {
+            "scenario": "geom_dev_separable",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": -0.016464436852015048,
+                "half_width": 0.0004024181892699216,
+                "ci_lower": -0.01686685504128497,
+                "ci_upper": -0.016062018662745127
+              },
+              "auc_pass": true
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": -3.416063030086702,
+                "half_width": 0.16719886182911847,
+                "ci_lower": -3.5832618919158206,
+                "ci_upper": -3.248864168257583
+              },
+              "upper_ratio": 0.03881827382880596,
+              "kl_pass": true
+            },
+            "status": "pass"
+          },
+          "geom_dev_partial_040": {
+            "scenario": "geom_dev_partial_040",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": -0.025139638544572896,
+                "half_width": 0.0005469758349480008,
+                "ci_lower": -0.025686614379520897,
+                "ci_upper": -0.024592662709624895
+              },
+              "auc_pass": false
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": -1.708655946944298,
+                "half_width": 0.0628442598113211,
+                "ci_lower": -1.771500206755619,
+                "ci_upper": -1.6458116871329769
+              },
+              "upper_ratio": 0.19285596054465234,
+              "kl_pass": true
+            },
+            "status": "fail"
+          },
+          "geom_dev_partial_080": {
+            "scenario": "geom_dev_partial_080",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": -0.03496191130195113,
+                "half_width": 0.0006806696231773752,
+                "ci_lower": -0.0356425809251285,
+                "ci_upper": -0.034281241678773756
+              },
+              "auc_pass": false
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": -1.1503136872713198,
+                "half_width": 0.027233132839123524,
+                "ci_lower": -1.1775468201104433,
+                "ci_upper": -1.1230805544321962
+              },
+              "upper_ratio": 0.3252762185346069,
+              "kl_pass": true
+            },
+            "status": "fail"
+          }
+        },
+        "pass_count": 1,
+        "mean_kl_upper_bound": 0.18565015096935508,
+        "passes_regression_gate": true
+      },
+      {
+        "name": "rwp_lam500_mu1e3",
+        "lambda": 5.0,
+        "mu": 0.001,
+        "is_negative_check": false,
+        "scenarios": {
+          "geom_dev_separable": {
+            "scenario": "geom_dev_separable",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": -0.016690473602479945,
+                "half_width": 0.0004187327357556751,
+                "ci_lower": -0.017109206338235622,
+                "ci_upper": -0.01627174086672427
+              },
+              "auc_pass": true
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": -3.4411967111549018,
+                "half_width": 0.15833739838526376,
+                "ci_lower": -3.5995341095401656,
+                "ci_upper": -3.282859312769638
+              },
+              "upper_ratio": 0.037520819523584326,
+              "kl_pass": true
+            },
+            "status": "pass"
+          },
+          "geom_dev_partial_040": {
+            "scenario": "geom_dev_partial_040",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": -0.02542628141825798,
+                "half_width": 0.000574295812196382,
+                "ci_lower": -0.02600057723045436,
+                "ci_upper": -0.024851985606061597
+              },
+              "auc_pass": false
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": -1.7175956428037993,
+                "half_width": 0.061782804411379434,
+                "ci_lower": -1.7793784472151788,
+                "ci_upper": -1.6558128383924198
+              },
+              "upper_ratio": 0.19093679185685802,
+              "kl_pass": true
+            },
+            "status": "fail"
+          },
+          "geom_dev_partial_080": {
+            "scenario": "geom_dev_partial_080",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": -0.03550017243729296,
+                "half_width": 0.0007174133952525425,
+                "ci_lower": -0.0362175858325455,
+                "ci_upper": -0.03478275904204042
+              },
+              "auc_pass": false
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": -1.163804032558048,
+                "half_width": 0.0270725691663833,
+                "ci_lower": -1.1908766017244314,
+                "ci_upper": -1.1367314633916648
+              },
+              "upper_ratio": 0.32086607222628494,
+              "kl_pass": true
+            },
+            "status": "fail"
+          }
+        },
+        "pass_count": 1,
+        "mean_kl_upper_bound": 0.18310789453557574,
+        "passes_regression_gate": true
+      },
+      {
+        "name": "rwp_lam500_mu1e2",
+        "lambda": 5.0,
+        "mu": 0.01,
+        "is_negative_check": false,
+        "scenarios": {
+          "geom_dev_separable": {
+            "scenario": "geom_dev_separable",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": -0.018508131829369202,
+                "half_width": 0.000485762492162946,
+                "ci_lower": -0.01899389432153215,
+                "ci_upper": -0.018022369337206256
+              },
+              "auc_pass": true
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": -3.5610337568214887,
+                "half_width": 0.14928544565623308,
+                "ci_lower": -3.710319202477722,
+                "ci_upper": -3.4117483111652556
+              },
+              "upper_ratio": 0.03298348454367441,
+              "kl_pass": true
+            },
+            "status": "pass"
+          },
+          "geom_dev_partial_040": {
+            "scenario": "geom_dev_partial_040",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": -0.02847060286930022,
+                "half_width": 0.000553025920707488,
+                "ci_lower": -0.029023628790007708,
+                "ci_upper": -0.02791757694859273
+              },
+              "auc_pass": false
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": -1.795986852127621,
+                "half_width": 0.06647849931043333,
+                "ci_lower": -1.8624653514380543,
+                "ci_upper": -1.7295083528171877
+              },
+              "upper_ratio": 0.1773715927804315,
+              "kl_pass": true
+            },
+            "status": "fail"
+          },
+          "geom_dev_partial_080": {
+            "scenario": "geom_dev_partial_080",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": -0.039915543316711696,
+                "half_width": 0.0008651294489692528,
+                "ci_lower": -0.040780672765680946,
+                "ci_upper": -0.039050413867742446
+              },
+              "auc_pass": false
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": -1.2448832368779734,
+                "half_width": 0.02927368770048174,
+                "ci_lower": -1.2741569245784552,
+                "ci_upper": -1.2156095491774916
+              },
+              "upper_ratio": 0.29652921005901334,
+              "kl_pass": true
+            },
+            "status": "fail"
+          }
+        },
+        "pass_count": 1,
+        "mean_kl_upper_bound": 0.1689614291277064,
+        "passes_regression_gate": true
+      },
+      {
+        "name": "rwp_lam050_mu0",
+        "lambda": null,
+        "mu": null,
+        "is_negative_check": true,
+        "scenarios": {
+          "geom_dev_separable": {
+            "scenario": "geom_dev_separable",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": -0.00022468530465431514,
+                "half_width": 0.00015985364953766424,
+                "ci_lower": -0.00038453895419197936,
+                "ci_upper": -6.48316551166509e-05
+              },
+              "auc_pass": true
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": -1.0754247126269785,
+                "half_width": 0.13122787894338814,
+                "ci_lower": -1.2066525915703665,
+                "ci_upper": -0.9441968336835903
+              },
+              "upper_ratio": 0.3889918706385044,
+              "kl_pass": true
+            },
+            "status": "pass"
+          },
+          "geom_dev_partial_040": {
+            "scenario": "geom_dev_partial_040",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": 0.0014972161720451294,
+                "half_width": 0.0002559797965067327,
+                "ci_lower": 0.0012412363755383968,
+                "ci_upper": 0.0017531959685518621
+              },
+              "auc_pass": true
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": -0.19145136732125784,
+                "half_width": 0.03896913229247146,
+                "ci_lower": -0.2304204996137293,
+                "ci_upper": -0.15248223502878638
+              },
+              "upper_ratio": 0.8585741463659099,
+              "kl_pass": false
+            },
+            "status": "fail"
+          },
+          "geom_dev_partial_080": {
+            "scenario": "geom_dev_partial_080",
+            "auc": {
+              "d_auc": {
+                "n": 20,
+                "mean": 0.0042204748759906595,
+                "half_width": 0.0002572023668106485,
+                "ci_lower": 0.003963272509180011,
+                "ci_upper": 0.004477677242801308
+              },
+              "auc_pass": true
+            },
+            "kl": {
+              "dropped_seeds": 0,
+              "degenerate": false,
+              "log_ratio": {
+                "n": 20,
+                "mean": 0.2007053164248774,
+                "half_width": 0.025044288208369472,
+                "ci_lower": 0.17566102821650792,
+                "ci_upper": 0.2257496046332469
+              },
+              "upper_ratio": 1.2532618150346901,
+              "kl_pass": false
+            },
+            "status": "fail"
+          }
+        },
+        "pass_count": 1,
+        "mean_kl_upper_bound": 0.8336092773463681,
+        "passes_regression_gate": true
+      }
+    ],
+    "eligible_count": 15,
+    "selected": {
+      "method": "rwp_lam300_mu0",
+      "lambda": 3.0,
+      "mu": 0.0,
+      "pass_count": 3,
+      "mean_kl_upper_bound": 0.2816874548169588
+    },
+    "negative_check": {
+      "method": "rwp_lam050_mu0",
+      "pass_count": 1,
+      "outperformed_grid": false
+    },
+    "outcome": "SELECTED"
+  }
+}

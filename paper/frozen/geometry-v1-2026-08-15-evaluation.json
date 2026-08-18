@@ -1,0 +1,156 @@
+{
+  "protocol_id": "geometry-v1-2026-08-15",
+  "phase": "test",
+  "frozen_thresholds": {
+    "baseline_method": "projected_uniform_eta075",
+    "v1_reference_method": "projected_online_eta125",
+    "candidate_method": "rwp_omd_eta125",
+    "required_scenarios": [
+      "separable_shared_features",
+      "partial_feature_aliasing",
+      "geom_holdout_a",
+      "geom_holdout_b"
+    ],
+    "invariant_scenarios": [
+      "complete_feature_aliasing_negative_control"
+    ],
+    "auc_non_inferiority_margin": 0.02,
+    "distractor_kl_ratio_bound": 0.75,
+    "degenerate_kl_threshold": 1e-09,
+    "max_dropped_kl_seeds": 2,
+    "auc_precision_floor": 0.02,
+    "log_kl_precision_floor": 0.6931471805599453,
+    "invariant_tolerance": 1e-09
+  },
+  "scenario_results": {
+    "separable_shared_features": {
+      "scenario": "separable_shared_features",
+      "auc": {
+        "d_auc": {
+          "n": 20,
+          "mean": -0.011475489484611023,
+          "half_width": 0.00042841496480020794,
+          "ci_lower": -0.011903904449411232,
+          "ci_upper": -0.011047074519810815
+        },
+        "auc_pass": true
+      },
+      "kl": {
+        "dropped_seeds": 0,
+        "degenerate": false,
+        "log_ratio": {
+          "n": 20,
+          "mean": -2.688221659297354,
+          "half_width": 0.15996047168065997,
+          "ci_lower": -2.8481821309780138,
+          "ci_upper": -2.5282611876166943
+        },
+        "upper_ratio": 0.07979765286991078,
+        "kl_pass": true
+      },
+      "status": "pass"
+    },
+    "partial_feature_aliasing": {
+      "scenario": "partial_feature_aliasing",
+      "auc": {
+        "d_auc": {
+          "n": 20,
+          "mean": -0.014384799858255188,
+          "half_width": 0.0007861296637117613,
+          "ci_lower": -0.015170929521966948,
+          "ci_upper": -0.013598670194543427
+        },
+        "auc_pass": true
+      },
+      "kl": {
+        "dropped_seeds": 0,
+        "degenerate": false,
+        "log_ratio": {
+          "n": 20,
+          "mean": -0.552893893520378,
+          "half_width": 0.03782903145128423,
+          "ci_lower": -0.5907229249716622,
+          "ci_upper": -0.5150648620690937
+        },
+        "upper_ratio": 0.5974618407502275,
+        "kl_pass": true
+      },
+      "status": "pass"
+    },
+    "geom_holdout_a": {
+      "scenario": "geom_holdout_a",
+      "auc": {
+        "d_auc": {
+          "n": 20,
+          "mean": -0.011403196295390421,
+          "half_width": 0.00042467282967010526,
+          "ci_lower": -0.011827869125060526,
+          "ci_upper": -0.010978523465720317
+        },
+        "auc_pass": true
+      },
+      "kl": {
+        "dropped_seeds": 0,
+        "degenerate": false,
+        "log_ratio": {
+          "n": 20,
+          "mean": -0.8641153650753903,
+          "half_width": 0.027603022024681702,
+          "ci_lower": -0.891718387100072,
+          "ci_upper": -0.8365123430507087
+        },
+        "upper_ratio": 0.43321881030092585,
+        "kl_pass": true
+      },
+      "status": "pass"
+    },
+    "geom_holdout_b": {
+      "scenario": "geom_holdout_b",
+      "auc": {
+        "d_auc": {
+          "n": 20,
+          "mean": -0.01760729563468868,
+          "half_width": 0.0004984703242178871,
+          "ci_lower": -0.018105765958906565,
+          "ci_upper": -0.017108825310470793
+        },
+        "auc_pass": true
+      },
+      "kl": {
+        "dropped_seeds": 0,
+        "degenerate": false,
+        "log_ratio": {
+          "n": 20,
+          "mean": -0.9513719848996681,
+          "half_width": 0.027722526877896003,
+          "ci_lower": -0.9790945117775641,
+          "ci_upper": -0.9236494580217721
+        },
+        "upper_ratio": 0.3970673131944377,
+        "kl_pass": true
+      },
+      "status": "pass"
+    }
+  },
+  "invariants": [
+    {
+      "scenario": "complete_feature_aliasing_negative_control",
+      "methods": {
+        "rwp_omd_eta125": {
+          "max_abs_difference": 0.0,
+          "holds": true
+        }
+      },
+      "invariant_holds": true
+    }
+  ],
+  "invariant_holds": true,
+  "required_scenarios": [
+    "separable_shared_features",
+    "partial_feature_aliasing",
+    "geom_holdout_a",
+    "geom_holdout_b"
+  ],
+  "pass_count": 4,
+  "decision": "GO"
+}

@@ -1,0 +1,366 @@
+{
+  "record_type": "golden_record",
+  "record_status": "ORIGINAL",
+  "protocol_id": "geometry-v3-2026-08-19",
+  "phase": "confirmation",
+  "predictor_freeze_commit": "df85d66c05256ab15fa1d7bd5f8680ab067d3cfb",
+  "execution_commit": "df85d66c05256ab15fa1d7bd5f8680ab067d3cfb",
+  "executed_on": "2026-08-19",
+  "provenance": "Single execution of the confirmation subset, evaluated once, after the predictor was frozen and committed. The confirmation scenarios were not read by the discovery phase.",
+  "environment": {
+    "python": "3.12.10",
+    "numpy": "2.5.2",
+    "platform": "Windows-11-10.0.26200-SP0"
+  },
+  "config": {
+    "path": "configs/geometry_v3.json",
+    "sha256": "b54ac20ad501356518699bb49a168f3d6eba853c84fe9f18ca0bd2c5ec9f58ad",
+    "bytes": 236474
+  },
+  "summary": {
+    "path": "results/geometry_v3/summary.json",
+    "sha256": "9a366f5bf823ae8b438dcd3b4dd634913130abc587de66df217c4b73acd6c63c",
+    "bytes": 3775637
+  },
+  "frozen_predictor": "alpha",
+  "discovery_rho": -0.7867687338228522,
+  "confirmation": {
+    "rho": -0.8859002953861457,
+    "ci_lower": -0.9519045123546304,
+    "ci_upper": -0.7209596953947994,
+    "resamples": 10000,
+    "required_magnitude_bound": 0.5,
+    "sign_matches_discovery": true,
+    "magnitude_clears_bound": true
+  },
+  "outcome": "CONFIRMED",
+  "interpretation_limits": [
+    "THE CONFIRMATION CRITERION WAS AMENDED AFTER THIS SUBSET WAS EXECUTED. The frozen wording required a bootstrap lower bound above +0.50 while also requiring the sign to match discovery; those clauses are jointly unsatisfiable for a negative predictor, and the selection rule ranks by absolute correlation, so a negative predictor was always reachable. The contradiction is demonstrable from the document alone, the 0.50 threshold is unchanged, and the observed interval [-0.9519, -0.7210] is far from the bound either way. It remains a post-hoc amendment and a reader may discount it on that ground. See the amendment note in docs/GEOMETRY_V3_PROTOCOL.md.",
+    "The discovery selection margin over critical_mass_in_pure_groups was 0.0024 in absolute correlation, a tie in all but the letter of the deterministic rule. This result licenses alpha only, and does not establish that alpha rather than critical_mass_in_pure_groups is the operative quantity.",
+    "Correlation, not mechanism. alpha is a correlate computable from the feature map; no causal account is claimed.",
+    "Softmax-linear one-hot tie-group features only, assumption (M1). Whether alpha predicts anything under non-linear function approximation is untested.",
+    "A confirmed predictor licenses BUILDING a continuous analogue for a transformer and measuring it. It does not license assuming that analogue behaves the same way."
+  ],
+  "metrics": {
+    "gv3_000": {
+      "delta_raw": 0.015096201536214715,
+      "delta_ci": {
+        "n": 20,
+        "mean": 0.015096201536214715,
+        "sd": 0.003791544322869858,
+        "half_width": 0.0017744973656827528,
+        "ci_lower": 0.013321704170531962,
+        "ci_upper": 0.016870698901897466
+      },
+      "loo_bias": 0.0015932563573437882,
+      "delta_corrected": 0.013502945178870927,
+      "dropped_seeds": 0,
+      "usable": true,
+      "allocation_max_abs_deviation_from_one": 0.5131079458236656
+    },
+    "gv3_001": {
+      "delta_raw": 0.000950844081061114,
+      "delta_ci": {
+        "n": 20,
+        "mean": 0.000950844081061114,
+        "sd": 0.0015590367073027784,
+        "half_width": 0.0007296516391551758,
+        "ci_lower": 0.0002211924419059382,
+        "ci_upper": 0.00168049572021629
+      },
+      "loo_bias": 0.0014923394588729324,
+      "delta_corrected": -0.0005414953778118183,
+      "dropped_seeds": 0,
+      "usable": true,
+      "allocation_max_abs_deviation_from_one": 0.3221224864186437
+    },
+    "gv3_011": {
+      "delta_raw": -0.0003616388116946034,
+      "delta_ci": {
+        "n": 20,
+        "mean": -0.0003616388116946034,
+        "sd": 0.0012012371124464807,
+        "half_width": 0.0005621962741512179,
+        "ci_lower": -0.0009238350858458214,
+        "ci_upper": 0.00020055746245661453
+      },
+      "loo_bias": 0.0011166441053009906,
+      "delta_corrected": -0.001478282916995594,
+      "dropped_seeds": 0,
+      "usable": true,
+      "allocation_max_abs_deviation_from_one": 0.3608597118922109
+    },
+    "gv3_014": {
+      "delta_raw": 0.002157138161039607,
+      "delta_ci": {
+        "n": 20,
+        "mean": 0.002157138161039607,
+        "sd": 0.00309121447354529,
+        "half_width": 0.0014467329069529633,
+        "ci_lower": 0.0007104052540866435,
+        "ci_upper": 0.00360387106799257
+      },
+      "loo_bias": 0.0017929892485174922,
+      "delta_corrected": 0.00036414891252211463,
+      "dropped_seeds": 0,
+      "usable": true,
+      "allocation_max_abs_deviation_from_one": 0.48155988115398907
+    },
+    "gv3_017": {
+      "delta_raw": 0.055350000005923564,
+      "delta_ci": {
+        "n": 20,
+        "mean": 0.055350000005923564,
+        "sd": 0.016107864709187795,
+        "half_width": 0.007538712740562898,
+        "ci_lower": 0.047811287265360665,
+        "ci_upper": 0.06288871274648646
+      },
+      "loo_bias": 0.001380505891157972,
+      "delta_corrected": 0.05396949411476559,
+      "dropped_seeds": 0,
+      "usable": true,
+      "allocation_max_abs_deviation_from_one": 0.8598008602546947
+    },
+    "gv3_023": {
+      "delta_raw": 0.028823835120969123,
+      "delta_ci": {
+        "n": 20,
+        "mean": 0.028823835120969123,
+        "sd": 0.005010053681674399,
+        "half_width": 0.002344777299960777,
+        "ci_lower": 0.026479057821008345,
+        "ci_upper": 0.0311686124209299
+      },
+      "loo_bias": 0.0017127237198688288,
+      "delta_corrected": 0.027111111401100292,
+      "dropped_seeds": 0,
+      "usable": true,
+      "allocation_max_abs_deviation_from_one": 0.6167343409813886
+    },
+    "gv3_025": {
+      "delta_raw": 0.03171185283568027,
+      "delta_ci": {
+        "n": 20,
+        "mean": 0.03171185283568027,
+        "sd": 0.00571998189168383,
+        "half_width": 0.002677033929769097,
+        "ci_lower": 0.02903481890591117,
+        "ci_upper": 0.034388886765449364
+      },
+      "loo_bias": 0.0011548931182971483,
+      "delta_corrected": 0.03055695971738312,
+      "dropped_seeds": 0,
+      "usable": true,
+      "allocation_max_abs_deviation_from_one": 0.7435556060923794
+    },
+    "gv3_027": {
+      "delta_raw": 0.08157020739598349,
+      "delta_ci": {
+        "n": 20,
+        "mean": 0.08157020739598349,
+        "sd": 0.019072945580269708,
+        "half_width": 0.008926413304429358,
+        "ci_lower": 0.07264379409155414,
+        "ci_upper": 0.09049662070041284
+      },
+      "loo_bias": 0.0018432416165881577,
+      "delta_corrected": 0.07972696577939534,
+      "dropped_seeds": 0,
+      "usable": true,
+      "allocation_max_abs_deviation_from_one": 0.8665497401543998
+    },
+    "gv3_028": {
+      "delta_raw": 0.011699037897467197,
+      "delta_ci": {
+        "n": 20,
+        "mean": 0.011699037897467197,
+        "sd": 0.003015996773838795,
+        "half_width": 0.0014115299398725562,
+        "ci_lower": 0.01028750795759464,
+        "ci_upper": 0.013110567837339753
+      },
+      "loo_bias": 0.0011850636409121373,
+      "delta_corrected": 0.010513974256555059,
+      "dropped_seeds": 0,
+      "usable": true,
+      "allocation_max_abs_deviation_from_one": 0.630948579659362
+    },
+    "gv3_029": {
+      "delta_raw": 0.032957121386364405,
+      "delta_ci": {
+        "n": 20,
+        "mean": 0.032957121386364405,
+        "sd": 0.009723295815732709,
+        "half_width": 0.004550642519645432,
+        "ci_lower": 0.028406478866718973,
+        "ci_upper": 0.037507763906009836
+      },
+      "loo_bias": 0.001983814593528782,
+      "delta_corrected": 0.030973306792835623,
+      "dropped_seeds": 0,
+      "usable": true,
+      "allocation_max_abs_deviation_from_one": 0.7114459014444722
+    },
+    "gv3_030": {
+      "delta_raw": 0.010311928535565373,
+      "delta_ci": {
+        "n": 20,
+        "mean": 0.010311928535565373,
+        "sd": 0.004977648123079795,
+        "half_width": 0.0023296110316904173,
+        "ci_lower": 0.007982317503874955,
+        "ci_upper": 0.012641539567255791
+      },
+      "loo_bias": 0.001648210191792037,
+      "delta_corrected": 0.008663718343773337,
+      "dropped_seeds": 0,
+      "usable": true,
+      "allocation_max_abs_deviation_from_one": 0.5353763261519872
+    },
+    "gv3_034": {
+      "delta_raw": 0.00657838779307357,
+      "delta_ci": {
+        "n": 20,
+        "mean": 0.00657838779307357,
+        "sd": 0.0032157643198486114,
+        "half_width": 0.0015050240293403045,
+        "ci_lower": 0.005073363763733266,
+        "ci_upper": 0.008083411822413875
+      },
+      "loo_bias": 0.001497722746875027,
+      "delta_corrected": 0.005080665046198543,
+      "dropped_seeds": 0,
+      "usable": true,
+      "allocation_max_abs_deviation_from_one": 0.5275401855297481
+    },
+    "gv3_037": {
+      "delta_raw": 0.030265299337191083,
+      "delta_ci": {
+        "n": 20,
+        "mean": 0.030265299337191083,
+        "sd": 0.003861426589090147,
+        "half_width": 0.0018072032730271203,
+        "ci_lower": 0.02845809606416396,
+        "ci_upper": 0.032072502610218205
+      },
+      "loo_bias": 0.0014755747548324976,
+      "delta_corrected": 0.028789724582358584,
+      "dropped_seeds": 0,
+      "usable": true,
+      "allocation_max_abs_deviation_from_one": 0.5951853435948997
+    },
+    "gv3_039": {
+      "delta_raw": 0.01961837223478562,
+      "delta_ci": {
+        "n": 20,
+        "mean": 0.01961837223478562,
+        "sd": 0.0026361940514025434,
+        "half_width": 0.0012337767941748845,
+        "ci_lower": 0.018384595440610736,
+        "ci_upper": 0.020852149028960505
+      },
+      "loo_bias": 0.0009726107214246358,
+      "delta_corrected": 0.018645761513360982,
+      "dropped_seeds": 0,
+      "usable": true,
+      "allocation_max_abs_deviation_from_one": 0.5841520797678563
+    },
+    "gv3_040": {
+      "delta_raw": 0.00982161439576441,
+      "delta_ci": {
+        "n": 20,
+        "mean": 0.00982161439576441,
+        "sd": 0.002282140091908643,
+        "half_width": 0.0010680744404817242,
+        "ci_lower": 0.008753539955282686,
+        "ci_upper": 0.010889688836246135
+      },
+      "loo_bias": 0.0009475326503981466,
+      "delta_corrected": 0.008874081745366264,
+      "dropped_seeds": 0,
+      "usable": true,
+      "allocation_max_abs_deviation_from_one": 0.5507384490703291
+    },
+    "gv3_041": {
+      "delta_raw": 0.003960895752044785,
+      "delta_ci": {
+        "n": 20,
+        "mean": 0.003960895752044785,
+        "sd": 0.0009790481167367936,
+        "half_width": 0.0004582086232111107,
+        "ci_lower": 0.003502687128833674,
+        "ci_upper": 0.004419104375255896
+      },
+      "loo_bias": 0.0006746149687100287,
+      "delta_corrected": 0.0032862807833347564,
+      "dropped_seeds": 0,
+      "usable": true,
+      "allocation_max_abs_deviation_from_one": 0.3337778556282176
+    },
+    "gv3_042": {
+      "delta_raw": 0.011934968263768064,
+      "delta_ci": {
+        "n": 20,
+        "mean": 0.011934968263768064,
+        "sd": 0.003832329144698878,
+        "half_width": 0.0017935852498620036,
+        "ci_lower": 0.01014138301390606,
+        "ci_upper": 0.013728553513630067
+      },
+      "loo_bias": 0.0014842403888459766,
+      "delta_corrected": 0.010450727874922086,
+      "dropped_seeds": 0,
+      "usable": true,
+      "allocation_max_abs_deviation_from_one": 0.5319146168622302
+    },
+    "gv3_044": {
+      "delta_raw": 0.002178637782762749,
+      "delta_ci": {
+        "n": 20,
+        "mean": 0.002178637782762749,
+        "sd": 0.0021216642185846804,
+        "half_width": 0.0009929694198832918,
+        "ci_lower": 0.0011856683628794571,
+        "ci_upper": 0.0031716072026460405
+      },
+      "loo_bias": 0.0015161503397538932,
+      "delta_corrected": 0.0006624874430088557,
+      "dropped_seeds": 0,
+      "usable": true,
+      "allocation_max_abs_deviation_from_one": 0.28580427518163154
+    },
+    "gv3_045": {
+      "delta_raw": 0.00032107991636318167,
+      "delta_ci": {
+        "n": 20,
+        "mean": 0.00032107991636318167,
+        "sd": 0.0015524580698215668,
+        "half_width": 0.0007265727420393547,
+        "ci_lower": -0.0004054928256761731,
+        "ci_upper": 0.0010476526584025365
+      },
+      "loo_bias": 0.0016914395681513553,
+      "delta_corrected": -0.0013703596517881736,
+      "dropped_seeds": 0,
+      "usable": true,
+      "allocation_max_abs_deviation_from_one": 0.26300793906523445
+    },
+    "gv3_046": {
+      "delta_raw": 0.02083675142602013,
+      "delta_ci": {
+        "n": 20,
+        "mean": 0.02083675142602013,
+        "sd": 0.007957378020561068,
+        "half_width": 0.003724167550951803,
+        "ci_lower": 0.017112583875068327,
+        "ci_upper": 0.02456091897697193
+      },
+      "loo_bias": 0.0008837416302533806,
+      "delta_corrected": 0.01995300979576675,
+      "dropped_seeds": 0,
+      "usable": true,
+      "allocation_max_abs_deviation_from_one": 0.8525398362256229
+    }
+  }
+}

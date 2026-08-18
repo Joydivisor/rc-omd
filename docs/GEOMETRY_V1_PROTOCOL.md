@@ -335,6 +335,20 @@ next.
    - This is **not** a success criterion. Equal KL is the expected correct
      outcome. An apparent distractor-KL *improvement* here is evidence of a
      bug and must halt the protocol pending investigation.
+
+   > **Clarification, recorded after execution.** As written, "apparent
+   > improvement" is ambiguous and the run exposed the ambiguity. A method may
+   > legitimately show a distractor-KL *ratio below 1 against the baseline* at
+   > `alpha = 1` simply by moving less overall, since the geometry forbids
+   > moving distractors independently but not moving everything less. What
+   > would be a bug is distractor KL falling while critical KL does not, i.e.
+   > the two decoupling. Only the latter is a defect, and it is exactly what
+   > the invariant assertion tests. The assertion, not this prose, is
+   > authoritative. In the frozen run RWP-OMD showed a 0.644 ratio at
+   > `alpha = 1` with critical and distractor KL numerically identical, so the
+   > invariant held and no halt was warranted. Recorded rather than silently
+   > reinterpreted; the decision rule was unaffected either way, since complete
+   > aliasing contributes nothing to it.
 2. **Zero reliability.** `r = 0` everywhere must produce zero policy movement
    (design spec, Section 9). Enforced as a unit test, not a scenario.
 3. **Inverted lambda.** A single `lambda = 0.5` point is run on the development
