@@ -1,0 +1,394 @@
+{
+  "record_type": "golden_record",
+  "record_status": "ORIGINAL",
+  "protocol_id": "geometry-v2-2026-08-18",
+  "phase": "test",
+  "protocol_commit": "43d06190ed4acd701e29f08f5588c7bfe5408ac7",
+  "structure_freeze_commit": "24665fd1cf2ad7d9a83fb1a82ff14a624b01c3c5",
+  "execution_commit": "c5384a5646e5253fc5c687206922fce83a2c3915",
+  "executed_on": "2026-08-19",
+  "provenance": "Single execution of the frozen test config at commit c5384a5 with a clean working tree, after the stage-3 coverage re-check confirmed zero dropped seeds on all 40 development seeds. Seeds 500-519, disjoint from every prior geometry protocol. lambda*=3.0 and mu*=0.0 inherited frozen from geometry-v1 and not re-selected.",
+  "coverage_recheck": "paper/frozen/geometry-v2-2026-08-18-coverage.json",
+  "environment": {
+    "python": "3.12.10",
+    "numpy": "2.5.2",
+    "matplotlib": "3.11.1",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "processor": "Intel64 Family 6 Model 198 Stepping 2, GenuineIntel"
+  },
+  "config": {
+    "path": "configs/geometry_v2.json",
+    "sha256": "3a50a0275c9635448ffec205a8e2947f925cf37b4783957f36a100cd2b79eb78",
+    "bytes": 33904
+  },
+  "hypotheses": {
+    "h_pure": "A pure-critical tie-group is required for a frontier advantage.",
+    "h_hetero": "Yield-ratio heterogeneity is required, and pure_crit >= 1 is its extreme case.",
+    "discriminating_scenario": "geom_v2_a3_pure0_hetero",
+    "discriminating_verdict": "positive"
+  },
+  "decision": {
+    "outcome": "NO-GO_LAW_REFUTED",
+    "verdicts": {
+      "geom_v2_a3_pure_ge1": "positive",
+      "geom_v2_a3_pure0_homog": "positive",
+      "geom_v2_a3_pure0_hetero": "positive",
+      "separable_shared_features": "positive",
+      "geom_holdout_a": "positive",
+      "geom_holdout_b": "positive",
+      "partial_feature_aliasing": "positive",
+      "complete_feature_aliasing_negative_control": "negative"
+    },
+    "h_pure_satisfied": false,
+    "h_hetero_satisfied": false,
+    "control_1_invariant_holds": true,
+    "control_2_no_spurious_pass_holds": false
+  },
+  "headline": "NO-GO: the pure-critical group law is refuted. geom_v2_a3_pure0_homog, which has pure_crit=0 and homogeneous yield ratios, returned a positive frontier advantage of +0.00494 [+0.00418, +0.00570] where both pre-registered hypotheses predicted null. The refutation survives correction for interpolation bias (+0.00398 after subtracting a leave-one-out bias of +0.00096). Within the exactly-matched A3 triple the advantage is graded rather than binary: pure_ge1 +0.01209, pure0_hetero +0.00594, pure0_homog +0.00398 after bias correction, so pure-criticality and ratio heterogeneity each contribute but neither is necessary.",
+  "mechanism": "A post-hoc leave-one-out test showed the primary metric carries a systematic positive bias: interpolating a uniform grid point's own AUC from the remaining points, where the true value is exactly zero by construction, returns positive in 99.2 percent of cases with mean +0.00136. This is the concavity artifact of interpolating a concave AUC(log KL) curve linearly. It explains why partial_feature_aliasing flipped from the null measured on the geometry-v1 seeds to a marginal positive here (+0.00067, CI lower bound +0.00002): after bias correction it is -0.00147, consistent with the earlier null. The bias does not explain geom_v2_a3_pure0_homog.",
+  "interpretation_limits": [
+    "Every result rests on the softmax-linear one-hot tie-group parameterization of assumption (M1). The collapse identity, the convexity argument, and the exact projection all depend on it. Nothing here transfers to non-linear function approximation.",
+    "Lemma 2 supplies a NECESSARY structural condition, not a sufficient one. In particular the observed null on partial_feature_aliasing is not explained by the theory: that scenario contains a purely-distractor tie-group whose down-weighting should reduce distractor KL at zero critical cost. The mean-normalization cancellation conjecture is not assumed and not tested by this protocol.",
+    "The five inherited scenarios are seen data. Only the three A3 arms are new under this protocol.",
+    "lambda*=3.0 and mu*=0.0 remain frozen from geometry-v1 and are not re-selected here. This protocol says nothing about their optimality.",
+    "The heterogeneous discriminator arm cannot match the per-group critical-count multiset of the other two arms, because heterogeneous finite yield ratios at a fixed group-size multiset require unequal critical counts. Its evidence is correspondingly weaker than the exactly-matched homogeneous/pure-critical pair.",
+    "No runtime interval may be quoted; wall-clock ratios do not reproduce across machines. See docs/ERRATA.md E7."
+  ],
+  "generated_files": {
+    "geometry_v2.json": {
+      "sha256": "3a50a0275c9635448ffec205a8e2947f925cf37b4783957f36a100cd2b79eb78",
+      "bytes": 33904
+    },
+    "auc_distractor_kl_pareto.pdf": {
+      "sha256": "bbbc347516d7dc41e1afb607ab081e319e23df06ec3d72ac3ab4de32326c1b35",
+      "bytes": 50450
+    },
+    "auc_distractor_kl_pareto.png": {
+      "sha256": "4009ccf657c1495631cc74d884bc7c3a2ef79810c1c79f544c20160223de6eb6",
+      "bytes": 968045
+    },
+    "distractor_kl_fraction.png": {
+      "sha256": "e64aed857f2cce1131e6198d91abfab60d5b07b1dd9736400489f6f4de9c39a5",
+      "bytes": 140216
+    },
+    "history.csv": {
+      "sha256": "28ed2a0dbf38734c86a2e375187bb43691c0bcfccc073303144e20e2046eca92",
+      "bytes": 50716977
+    },
+    "interpolation_bias_diagnostic.json": {
+      "sha256": "111d9951f904da18ac6a8a6817f77b138e58c6d933673b97ea3490c6a8e0d97c",
+      "bytes": 2731
+    },
+    "protocol_evaluation.json": {
+      "sha256": "1a7e5db887268a578c49b6be232c07c9b5cabd73b2b9f69a1a48249a512b11fd",
+      "bytes": 12033
+    },
+    "success_comparison.png": {
+      "sha256": "349e1d54bd7c73eca6a80f20ad591190e90eca9dd1a54eb757e590e6d5d56147",
+      "bytes": 1523271
+    },
+    "summary.json": {
+      "sha256": "a0578272c4ce40447f46f92cfa9ca68d96e9d51542b57c03da150dec39aafca0",
+      "bytes": 592056
+    }
+  },
+  "protocol_evaluation_archive": "paper/frozen/geometry-v2-2026-08-18-evaluation.json",
+  "scenario_results": {
+    "geom_v2_a3_pure_ge1": {
+      "scenario": "geom_v2_a3_pure_ge1",
+      "candidate": "rwp_eta125_lam3",
+      "primary": {
+        "delta_frontier": {
+          "n": 20,
+          "mean": 0.013011258253710939,
+          "sd": 0.0028170492204155867,
+          "half_width": 0.0013184196187484983,
+          "ci_lower": 0.01169283863496244,
+          "ci_upper": 0.014329677872459437
+        },
+        "dropped_seeds": 0,
+        "dropped_index": [],
+        "verdict": "positive"
+      },
+      "secondary": {
+        "allocation": {
+          "log_ratio": {
+            "n": 20,
+            "mean": -0.828027824038575,
+            "sd": 0.12553134819972744,
+            "half_width": 0.058750479414787685,
+            "ci_lower": -0.8867783034533627,
+            "ci_upper": -0.7692773446237873
+          },
+          "ratio_mean": 0.4369101008018182,
+          "ratio_ci": [
+            0.4119808944288527,
+            0.46334778812326904
+          ],
+          "max_abs_deviation_from_one": 0.6366451147415033
+        },
+        "dropped_seeds": 0
+      },
+      "descriptive_mean_log_dist_over_crit": -1.2946921572358856
+    },
+    "geom_v2_a3_pure0_homog": {
+      "scenario": "geom_v2_a3_pure0_homog",
+      "candidate": "rwp_eta125_lam3",
+      "primary": {
+        "delta_frontier": {
+          "n": 20,
+          "mean": 0.004939886855120873,
+          "sd": 0.0016161183836809025,
+          "half_width": 0.0007563666860427376,
+          "ci_lower": 0.004183520169078135,
+          "ci_upper": 0.0056962535411636105
+        },
+        "dropped_seeds": 0,
+        "dropped_index": [],
+        "verdict": "positive"
+      },
+      "secondary": {
+        "allocation": {
+          "log_ratio": {
+            "n": 20,
+            "mean": -0.40658340031006246,
+            "sd": 0.04376447637835149,
+            "half_width": 0.02048240543449277,
+            "ci_lower": -0.4270658057445552,
+            "ci_upper": -0.3861009948755697
+          },
+          "ratio_mean": 0.6659215552358709,
+          "ratio_ci": [
+            0.6524206177907328,
+            0.6797018758073651
+          ],
+          "max_abs_deviation_from_one": 0.37799330378552753
+        },
+        "dropped_seeds": 0
+      },
+      "descriptive_mean_log_dist_over_crit": -0.6301892233421614
+    },
+    "geom_v2_a3_pure0_hetero": {
+      "scenario": "geom_v2_a3_pure0_hetero",
+      "candidate": "rwp_eta125_lam3",
+      "primary": {
+        "delta_frontier": {
+          "n": 20,
+          "mean": 0.0069036095864229985,
+          "sd": 0.0009952991488579757,
+          "half_width": 0.0004658143403630168,
+          "ci_lower": 0.006437795246059982,
+          "ci_upper": 0.007369423926786015
+        },
+        "dropped_seeds": 0,
+        "dropped_index": [],
+        "verdict": "positive"
+      },
+      "secondary": {
+        "allocation": {
+          "log_ratio": {
+            "n": 20,
+            "mean": -0.5431899547733792,
+            "sd": 0.042072620660702366,
+            "half_width": 0.019690592585049065,
+            "ci_lower": -0.5628805473584282,
+            "ci_upper": -0.5234993621883302
+          },
+          "ratio_mean": 0.5808922736226301,
+          "ratio_ci": [
+            0.5695660366337789,
+            0.5924437411134362
+          ],
+          "max_abs_deviation_from_one": 0.47190031986219017
+        },
+        "dropped_seeds": 0
+      },
+      "descriptive_mean_log_dist_over_crit": -0.8177804080988766
+    },
+    "separable_shared_features": {
+      "scenario": "separable_shared_features",
+      "candidate": "rwp_eta125_lam3",
+      "primary": {
+        "delta_frontier": {
+          "n": 20,
+          "mean": 0.12462327361532458,
+          "sd": 0.025882237362145406,
+          "half_width": 0.012113259955863948,
+          "ci_lower": 0.11251001365946063,
+          "ci_upper": 0.13673653357118853
+        },
+        "dropped_seeds": 0,
+        "dropped_index": [],
+        "verdict": "positive"
+      },
+      "secondary": {
+        "allocation": {
+          "log_ratio": {
+            "n": 20,
+            "mean": -2.5491321291190703,
+            "sd": 0.2569248088594164,
+            "half_width": 0.12024451191289107,
+            "ci_lower": -2.6693766410319615,
+            "ci_upper": -2.428887617206179
+          },
+          "ratio_mean": 0.07814946021946881,
+          "ratio_ci": [
+            0.06929540776273567,
+            0.08813481772855115
+          ],
+          "max_abs_deviation_from_one": 0.951735844397129
+        },
+        "dropped_seeds": 0
+      },
+      "descriptive_mean_log_dist_over_crit": -3.9930308713139646
+    },
+    "geom_holdout_a": {
+      "scenario": "geom_holdout_a",
+      "candidate": "rwp_eta125_lam3",
+      "primary": {
+        "delta_frontier": {
+          "n": 20,
+          "mean": 0.004641247704683387,
+          "sd": 0.0012847626029480676,
+          "half_width": 0.0006012874070092508,
+          "ci_lower": 0.004039960297674137,
+          "ci_upper": 0.005242535111692638
+        },
+        "dropped_seeds": 0,
+        "dropped_index": [],
+        "verdict": "positive"
+      },
+      "secondary": {
+        "allocation": {
+          "log_ratio": {
+            "n": 20,
+            "mean": -0.3345935505191007,
+            "sd": 0.06663419202062656,
+            "half_width": 0.03118576182580449,
+            "ci_lower": -0.36577931234490524,
+            "ci_upper": -0.3034077886932962
+          },
+          "ratio_mean": 0.7156288942417798,
+          "ratio_ci": [
+            0.6936558656058465,
+            0.7382979654131766
+          ],
+          "max_abs_deviation_from_one": 0.34346480671038715
+        },
+        "dropped_seeds": 0
+      },
+      "descriptive_mean_log_dist_over_crit": -0.7943048667210181
+    },
+    "geom_holdout_b": {
+      "scenario": "geom_holdout_b",
+      "candidate": "rwp_eta125_lam3",
+      "primary": {
+        "delta_frontier": {
+          "n": 20,
+          "mean": 0.005829396675207871,
+          "sd": 0.0017899985853150268,
+          "half_width": 0.0008377451253987081,
+          "ci_lower": 0.004991651549809163,
+          "ci_upper": 0.006667141800606579
+        },
+        "dropped_seeds": 0,
+        "dropped_index": [],
+        "verdict": "positive"
+      },
+      "secondary": {
+        "allocation": {
+          "log_ratio": {
+            "n": 20,
+            "mean": -0.2727449336681881,
+            "sd": 0.03776789659005472,
+            "half_width": 0.01767591970432337,
+            "ci_lower": -0.29042085337251144,
+            "ci_upper": -0.2550690139638647
+          },
+          "ratio_mean": 0.761286941534453,
+          "ratio_ci": [
+            0.7479487245886364,
+            0.7748630197472854
+          ],
+          "max_abs_deviation_from_one": 0.28069070907924354
+        },
+        "dropped_seeds": 0
+      },
+      "descriptive_mean_log_dist_over_crit": -0.486609963536689
+    },
+    "partial_feature_aliasing": {
+      "scenario": "partial_feature_aliasing",
+      "candidate": "rwp_eta125_lam3",
+      "primary": {
+        "delta_frontier": {
+          "n": 20,
+          "mean": 0.0006676843778275876,
+          "sd": 0.001384750003532182,
+          "half_width": 0.0006480829509430958,
+          "ci_lower": 1.960142688449179e-05,
+          "ci_upper": 0.0013157673287706832
+        },
+        "dropped_seeds": 0,
+        "dropped_index": [],
+        "verdict": "positive"
+      },
+      "secondary": {
+        "allocation": {
+          "log_ratio": {
+            "n": 20,
+            "mean": -0.19648122802691242,
+            "sd": 0.036970154521308626,
+            "half_width": 0.017302564923542967,
+            "ci_lower": -0.21378379295045538,
+            "ci_upper": -0.17917866310336947
+          },
+          "ratio_mean": 0.8216167545180952,
+          "ratio_ci": [
+            0.8075229583062691,
+            0.83595653146597
+          ],
+          "max_abs_deviation_from_one": 0.2641080131486695
+        },
+        "dropped_seeds": 0
+      },
+      "descriptive_mean_log_dist_over_crit": -0.6687996133666119
+    },
+    "complete_feature_aliasing_negative_control": {
+      "scenario": "complete_feature_aliasing_negative_control",
+      "candidate": "rwp_eta125_lam3",
+      "primary": {
+        "delta_frontier": {
+          "n": 20,
+          "mean": -0.002973194867780371,
+          "sd": 0.0015449709441770134,
+          "half_width": 0.0007230686593750277,
+          "ci_lower": -0.0036962635271553987,
+          "ci_upper": -0.0022501262084053436
+        },
+        "dropped_seeds": 0,
+        "dropped_index": [],
+        "verdict": "negative"
+      },
+      "secondary": {
+        "allocation": {
+          "log_ratio": {
+            "n": 20,
+            "mean": 5.551115123125771e-18,
+            "sd": 1.5895974606912447e-16,
+            "half_width": 7.439545120120245e-17,
+            "ci_lower": -6.884433607807667e-17,
+            "ci_upper": 7.994656632432822e-17
+          },
+          "ratio_mean": 1.0,
+          "ratio_ci": [
+            0.9999999999999999,
+            1.0
+          ],
+          "max_abs_deviation_from_one": 2.220446049250313e-16
+        },
+        "dropped_seeds": 0
+      },
+      "descriptive_mean_log_dist_over_crit": 0.0
+    }
+  }
+}
