@@ -146,6 +146,42 @@ Limits:
 - `lambda*` and `mu*` were inherited frozen and not re-selected; this says nothing
   about their optimality.
 
+## Supported by the frozen geometry-v3 protocol
+
+Protocol `geometry-v3-2026-08-19`, 50-scenario randomized family plus a
+complete-aliasing control, 20 seeds, split 30 discovery / 20 confirmation by a
+committed seed **before any scenario ran**. Golden records:
+`paper/frozen/geometry-v3-2026-08-19-discovery.json` and
+`-confirmation.json`.
+
+- **CONFIRMED: `alpha` predicts the frontier advantage.** Spearman
+  `rho = -0.8859`, 95% bootstrap interval `[-0.9519, -0.7210]`, on 20 held-out
+  scenarios never read during selection. Discovery measured `-0.7868` on the
+  disjoint 30. Higher aliasing, smaller advantage.
+- **The selection was not overfitted.** `pure_crit` and `pure_crit_indicator`,
+  refuted by `geometry-v2` and retained in the closed menu precisely as a trap,
+  ranked fifth and sixth (0.4785, 0.4621) and were not selected. The held-out
+  correlation is stronger than the discovery correlation.
+- Both controls held: complete-aliasing allocation invariant exact at 2.22e-16,
+  pooled leave-one-out bias +0.00142 (positive, as [E10](../docs/ERRATA.md)
+  requires).
+
+Limits:
+
+- **The confirmation criterion was amended after the confirmation subset ran**
+  ([E11](../docs/ERRATA.md)). The frozen wording was self-contradictory for
+  negative predictors. The correction is the only self-consistent reading and
+  the threshold did not move, but it is post hoc and may be discounted.
+- **Correlation, not mechanism.** No causal account is claimed.
+- **The discovery margin over `critical_mass_in_pure_groups` was 0.0024**, a tie
+  in all but the letter of the deterministic rule. This licenses `alpha` alone
+  and does not establish which of the two is mechanistically prior.
+- **Assumption (M1) only** -- softmax-linear one-hot tie-group features. Whether
+  `alpha` predicts anything once linearity is dropped is the open Stage B
+  question.
+- This reverses `geometry-v2`'s demotion of `alpha` to a descriptive variable,
+  which was itself an inference from nine scenarios.
+
 ## Supported only by exploratory development experiments
 
 - Entropy can hurt when its alignment with positional importance is reversed
@@ -200,9 +236,10 @@ current algorithm is known not to deliver.
 - Benefits for language-model RLVR.
 - ~~Whether RWP-OMD's advantage survives step-size matching.~~ **Tested**; it
   does, on 6 of 8 scenarios. See the geometry-v2 section above.
-- **What structural property produces the frontier advantage.** The pure-critical
-  hypothesis is refuted; no replacement is asserted, and the current scenario set
-  is spent.
+- ~~**What structural property predicts the frontier advantage.**~~ **Tested**;
+  `alpha` predicts it under assumption (M1). See the geometry-v3 section. What
+  *mechanism* produces it remains unknown -- geometry-v3 establishes a correlate,
+  not a cause.
 - Reliability geometry beyond shared *linear* features.
 
 ## Known defects affecting published numbers

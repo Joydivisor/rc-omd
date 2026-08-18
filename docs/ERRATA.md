@@ -366,6 +366,43 @@ measured bias, apply the leave-one-out correction as a pre-registered step, or
 interpolate on a scale where the frontier is not concave. The leave-one-out test
 should be run as a standard control, since it needs no new data.
 
+## E11. The geometry-v3 confirmation criterion was self-contradictory
+
+**Affected.** `docs/GEOMETRY_V3_PROTOCOL.md`, confirmation criterion, and the
+verdict in `paper/frozen/geometry-v3-2026-08-19-confirmation.json`.
+
+**Defect.** The frozen criterion required a 95% bootstrap confidence lower bound
+**strictly greater than +0.50** while simultaneously requiring the sign of `rho`
+to match the discovery set. The selection rule ranks candidates by **absolute**
+correlation, so a negative predictor was always reachable. For any such
+predictor the two clauses are jointly unsatisfiable, however strong the
+correlation. The contradiction is provable from the document alone.
+
+**It fired.** `alpha` was selected at discovery `rho = -0.7868`, and the
+confirmation set returned `rho = -0.8859`, 95% interval `[-0.9519, -0.7210]` --
+one of the strongest correlations obtainable -- which the literal criterion
+scored as NOT CONFIRMED.
+
+**Correction.** The bound is on magnitude in the discovery direction:
+`ci_lower > +0.50` when the discovery sign is positive, `ci_upper < -0.50` when
+negative. This is the only reading under which the selection and confirmation
+rules are mutually consistent. The 0.50 threshold is unchanged.
+
+**This amendment was made after the confirmation subset was executed**, which is
+what pre-registration exists to prevent. Three facts bound the discretion
+involved: the defect is demonstrable without reference to any measurement; the
+threshold did not move; and the observed interval is far from the bound in
+either reading. Had the result been marginal, the correct course would have been
+to report NOT CONFIRMED and re-run under a corrected protocol. A reader is
+entitled to discount the confirmation on this ground, and both the protocol and
+the golden record say so in those terms.
+
+**Forward rule.** A confirmation criterion must be stated direction-agnostically
+whenever the selection rule ranks by absolute correlation, and a protocol's
+selection and decision rules must be checked against each other for joint
+satisfiability before freezing. A unit test asserting that a strongly negative
+predictor can pass is the cheapest way to catch this class of defect.
+
 ## Deferred: corrections that require re-running
 
 These are **not** asserted. They are recorded so that the required experiment is
