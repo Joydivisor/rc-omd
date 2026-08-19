@@ -1,0 +1,16 @@
+# Environment lock for qwen-v1 (Q3).
+# Recorded from the interpreter that produced results/qwen_smoke/summary.json.
+# NOTE: installed into the existing user Python, not an isolated venv --
+# the venv creation step was declined by the operator. Isolation remains
+# available and would not change these pins.
+# python 3.12.10 | CUDA runtime 12.8 | RTX 5070 Laptop, sm_120, 8151 MiB
+accelerate==1.14.0
+datasets==5.0.1
+huggingface_hub==1.28.0
+numpy==2.5.2
+peft==0.20.0
+safetensors==0.8.0
+tokenizers==0.22.2
+torch==2.11.0+cu128
+torchvision==0.26.0+cu128
+transformers==5.15.1

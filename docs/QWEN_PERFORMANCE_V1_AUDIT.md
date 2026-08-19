@@ -10,8 +10,8 @@ Status: **frozen as of this commit**, except the four items explicitly marked
 
 | item | value |
 |---|---|
-| Hugging Face ID | `Qwen/Qwen2.5-Math-1.5B` |
-| revision (pinned) | `4a83ca6e4526a4f2da3aa259ec36c259f66b2ab2` |
+| Hugging Face ID | `Qwen/Qwen2.5-Math-1.5B-Instruct` |
+| revision (pinned) | `aafeb0fc6f22cbf0eaeed126eff8be45b0360a35` |
 | tokenizer | the tokenizer shipped at that revision; no substitution |
 | vocabulary | 151936 |
 | layers / hidden / kv-heads / head-dim | 28 / 1536 / 2 / 128 |
@@ -29,7 +29,17 @@ possibility in the plan does not exist, so that fallback is unavailable. The
 only smaller alternative is `Qwen/Qwen2.5-0.5B-Instruct`, which is a general
 model with no mathematical specialisation.
 
-**Selected: `Qwen2.5-Math-1.5B` with LoRA.** It is the original target, it is
+**Amended at Q3: the Instruct variant is used, not the base model.** The
+operator specified `Qwen/Qwen2.5-Math-1.5B-Instruct`. This changes two things
+downstream and both are recorded rather than absorbed silently. Prompts must use
+the model's chat template rather than the plain `Question:/Answer:` template
+frozen below, because an instruction-tuned checkpoint is not calibrated for raw
+completion; the smoke test uses `apply_chat_template` accordingly and **the
+template section below is superseded for this variant**. And instruction tuning
+is an additional training stage between pre-training and this experiment, so the
+contamination disclosure applies at least as strongly.
+
+**Selected: `Qwen2.5-Math-1.5B-Instruct` with LoRA.** It is the original target, it is
 math-specialised so clean accuracy sits far enough above floor for a 2-point
 non-inferiority margin to be meaningful, and the memory budget below shows it
 fits. The 0.5B general model would need `bitsandbytes` 8-bit optimisers, which
@@ -91,9 +101,19 @@ Headroom ~2.8 GB. The full-vocabulary cross-entropy of D4 costs
 controlled by the microbatch token count rather than by choosing a smaller
 model. Microbatching, not truncation, is therefore the primary mitigation.
 
-**Pending Q3 measurement**: peak VRAM under real generation and backward; whether
-the full-vocabulary cross-entropy fits at the frozen lengths; throughput; and
-whether the top-`k` fallback of D4 is needed at all.
+**Measured at Q3** (`results/qwen_smoke/summary.json`), superseding the estimate
+above: peak **4545 MiB of 8151**, 56% of the card, at 8 sequences of 256 new
+tokens for generation and 2 sequences for backward. Generation ran at 143.6
+tok/s, training at 0.458 s/step. Peak GPU temperature 70 C under load, returning
+to 60 C. The arithmetic estimate of ~5.3 GB was conservative by roughly 0.8 GB.
+
+The one OOM encountered was **not** a capacity limit: it was a defect in the
+smoke test, which held the trained model resident while loading a second full
+base model for the checkpoint-restore check, requiring ~6.2 GB of weights alone.
+Releasing the first model before building the restore copy fixed it. The
+full-vocabulary cross-entropy fits at these lengths and **the top-`k` fallback of
+D4 is not needed**, though the RWP branch needs `pi_old` logits as well and Q4B
+must re-measure rather than assume this headroom carries over.
 
 ## Lengths
 
@@ -148,8 +168,16 @@ reported.
 
 ## Software stack
 
-`torch 2.11.0+cu128` is present. `transformers`, `datasets`, `accelerate` and
-`peft` are **not installed** and are Q3's first task. `trl` is not required --
+Installed and pinned at Q3 in `configs/qwen_v1_requirements.lock`: torch
+2.11.0+cu128, transformers 5.15.1, accelerate 1.14.0, peft 0.20.0, safetensors
+0.8.0, datasets 5.0.1, on Python 3.12.10 with CUDA runtime 12.8. The GPU reports
+compute capability sm_120 (Blackwell) and is supported by this torch build.
+
+**Deviation from Q3 item 1**: these were installed into the existing user Python
+rather than an isolated virtual environment, because the venv creation step was
+declined by the operator. The lock file records exact versions, so
+reproducibility is preserved; isolation remains available and would not change
+the pins. `trl` is not required --
 the GRPO loop is implemented directly, because D5's exact-equivalence test needs
 both branches to share one code path with reliability as the only difference.
 
