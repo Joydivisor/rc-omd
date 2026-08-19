@@ -141,7 +141,7 @@ class DiagnosticsTest(unittest.TestCase):
         ])
         self.mask = completion_mask(self.sequences, 1, self.PAD, self.EOS)
         self.reliability = token_reliability(
-            torch.tensor([1.0, -1.0, 1.0, -1.0]), self.mask, 2, 1,
+            torch.tensor([1.0, 0.0, 1.0, 0.0]), self.sequences, self.mask, 2, 1,
             ReliabilityConfig(enabled=True),
         )
 

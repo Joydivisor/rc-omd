@@ -126,35 +126,55 @@ class ReliabilityConfig:
 
 
 def token_reliability(
-    advantages: torch.Tensor, mask: torch.Tensor, group_size: int,
-    prompt_length: int, config: ReliabilityConfig,
+    rewards: torch.Tensor, sequences: torch.Tensor, mask: torch.Tensor,
+    group_size: int, prompt_length: int, config: ReliabilityConfig,
 ) -> torch.Tensor:
-    """Per-token reliability from the rollout group, by D2.
+    """Per-token reliability from the rollout group, by D2 as amended at Q4B.
 
-    Tokens are aligned across rollouts by index. This is crude -- different
-    rollouts say different things at the same index -- and is adopted knowingly;
-    see the limitation recorded in D2.
+    ``rewards`` are the **raw** per-rollout rewards, not group-relative
+    advantages: advantages are standardised to unit variance, so their spread is
+    an artefact of standardisation and carries no information.
+
+    The position-dependent term is ``explained_t``, the share of reward variance
+    at index ``t`` attributable to which token each surviving rollout emitted
+    there. Without it reliability would be constant whenever completions run to
+    the length cap, because the surviving set is then identical at every index.
     """
 
     batch, total = mask.shape
     if not config.enabled:
         return torch.ones((batch, total), dtype=torch.float32, device=mask.device)
 
-    generated_mask = mask[:, prompt_length:].view(-1, group_size,
-                                                  total - prompt_length)
-    grouped_advantage = advantages.view(-1, group_size)
-    n_groups, _, length = generated_mask.shape
+    length = total - prompt_length
+    generated_mask = mask[:, prompt_length:].view(-1, group_size, length)
+    generated_tokens = sequences[:, prompt_length:].view(-1, group_size, length)
+    grouped_reward = rewards.view(-1, group_size)
+    n_groups = generated_mask.shape[0]
 
-    coverage = generated_mask.sum(dim=1).float()                    # (groups, len)
-    dispersion = torch.zeros((n_groups, length), device=mask.device)
-    for position in range(length):
-        alive = generated_mask[:, :, position]
-        for g in range(n_groups):
-            selected = grouped_advantage[g][alive[g]]
-            if selected.numel() > 1:
-                dispersion[g, position] = selected.std(unbiased=False)
+    coverage = generated_mask.sum(dim=1).float()
+    explained = torch.zeros((n_groups, length), device=mask.device)
+    for g in range(n_groups):
+        for position in range(length):
+            alive = generated_mask[g, :, position]
+            if int(alive.sum()) < 2:
+                continue
+            values = grouped_reward[g][alive]
+            total_variance = values.var(unbiased=False)
+            if float(total_variance) <= 1e-12:
+                continue  # no outcome spread => nothing for the token to explain
+            tokens = generated_tokens[g][alive, position]
+            within = values.new_zeros(())
+            for token in torch.unique(tokens):
+                subset = values[tokens == token]
+                within = within + subset.numel() * subset.var(unbiased=False)
+            within = within / values.numel()
+            explained[g, position] = (
+                (total_variance - within) / total_variance
+            ).clamp(0.0, 1.0)
 
-    raw = (coverage / (coverage + config.warmup)) / (1.0 + config.confidence * dispersion)
+    raw = (coverage / (coverage + config.warmup)) / (
+        1.0 + config.confidence * (1.0 - explained)
+    )
     raw = raw.clamp(min=config.floor)
 
     reliability = torch.ones((batch, total), dtype=torch.float32, device=mask.device)

@@ -202,7 +202,8 @@ def main() -> None:
             mask = completion_mask(sequences, prompt_length,
                                    tokenizer.pad_token_id, tokenizer.eos_token_id)
             reliability = token_reliability(
-                advantages, mask, group_size, prompt_length, reliability_config
+                rewards, sequences, mask, group_size, prompt_length,
+                reliability_config,
             )
             started = time.perf_counter()
             loss_value, stats = step_loss(
@@ -305,8 +306,8 @@ def _verify_pre(config, model, tokenizer, prompts, golds, group_size,
     sequences, prompt_length, _ = a
     mask = completion_mask(sequences, prompt_length, tokenizer.pad_token_id,
                            tokenizer.eos_token_id)
-    reliability = token_reliability(adv_a, mask, group_size, prompt_length,
-                                    reliability_config)
+    reliability = token_reliability(sequences, sequences, mask, group_size,
+                                    prompt_length, reliability_config)
     keep = sequences.shape[1] - prompt_length + 1
     offset = sequences.shape[1] - keep
     model.eval()

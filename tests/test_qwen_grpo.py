@@ -187,21 +187,25 @@ class LossTest(unittest.TestCase):
 class ReliabilityTest(unittest.TestCase):
     def test_disabled_gives_exactly_one(self) -> None:
         mask = torch.ones(4, 6, dtype=torch.bool)
-        out = token_reliability(torch.zeros(4), mask, 2, 2, ReliabilityConfig())
+        out = token_reliability(torch.zeros(4), torch.zeros(4, 6, dtype=torch.long),
+                                mask, 2, 2, ReliabilityConfig())
         torch.testing.assert_close(out, torch.ones(4, 6))
 
     def test_enabled_stays_within_floor_and_one(self) -> None:
         mask = torch.ones(4, 6, dtype=torch.bool)
         config = ReliabilityConfig(enabled=True, floor=0.1)
-        out = token_reliability(torch.tensor([1.0, -1.0, 0.5, -0.5]), mask, 2, 2,
-                                config)
+        tokens = torch.tensor([[1, 1, 2, 2, 3, 3], [1, 1, 5, 5, 3, 3],
+                               [1, 1, 2, 2, 3, 3], [1, 1, 7, 7, 3, 3]])
+        out = token_reliability(torch.tensor([1.0, 0.0, 1.0, 0.0]), tokens, mask,
+                                2, 2, config)
         generated = out[:, 2:]
         self.assertGreaterEqual(float(generated.min()), config.floor - 1e-6)
         self.assertLessEqual(float(generated.max()), 1.0 + 1e-6)
 
     def test_prompt_region_is_left_at_one(self) -> None:
         mask = torch.ones(2, 5, dtype=torch.bool)
-        out = token_reliability(torch.tensor([1.0, -1.0]), mask, 2, 3,
+        tokens = torch.tensor([[1, 1, 1, 2, 3], [1, 1, 1, 9, 3]])
+        out = token_reliability(torch.tensor([1.0, 0.0]), tokens, mask, 2, 3,
                                 ReliabilityConfig(enabled=True))
         torch.testing.assert_close(out[:, :3], torch.ones(2, 3))
 

@@ -27,26 +27,59 @@ Rejected alternatives, recorded so the choice is not silently revisited:
 
 ## D2. Reliability
 
-Let a **group** be the `G` rollouts sampled for one prompt, and `A_i` the
-GRPO-normalized scalar advantage of rollout `i`. For token index `t`, let
-`S_t = { i : len_i > t }` be the rollouts that reach that index, and
-`n_t = |S_t|`.
+Let a **group** be the `G` rollouts sampled for one prompt, `R_i` the **raw**
+scalar reward of rollout `i`, and `a_i^t` the token rollout `i` emitted at index
+`t`. For index `t`, let `S_t = { i : len_i > t }` and `n_t = |S_t|`.
 
 ```
-dispersion_t = stdev({ A_i : i in S_t })          (0 when n_t < 2)
-raw_t        = [ n_t / (n_t + warmup) ] * [ 1 / (1 + c * dispersion_t) ]
-r_t          = max(r_floor, raw_t)
+coverage_t       = n_t / (n_t + warmup)
+explained_t      = fraction of the variance of {R_i : i in S_t}
+                   explained by the token identity a_i^t
+r_t              = max(r_floor, coverage_t / (1 + c * (1 - explained_t)))
 ```
 
-`warmup`, `c` and `r_floor` are the language-model analogues of
-`warmup_effective_samples`, `confidence_multiplier` and `reliability_floor`.
-They are **not** inherited from the synthetic runs; they are selected on the
-development split at Q4.
+`explained_t` is the between-token share of reward variance at that index: group
+the surviving rollouts by the token they emitted there, and ask how much of the
+spread in outcomes that partition accounts for. It is 0 when every rollout
+emitted the same token, or when the choice is uncorrelated with the outcome, and
+1 when the token at `t` fully separates good rollouts from bad ones. When the
+surviving rollouts all share a reward there is no variance to explain and
+`explained_t` is 0, which drives `r_t` to its floor -- correctly, since a group
+with no outcome spread carries no credit signal at all.
 
-The two factors carry the same meaning as in the synthetic estimator: a token
-index reached by few rollouts has little evidence behind it, and one where the
-group's outcomes disagree has unreliable credit. Reliability is computed from
-the **rollout group alone** and never from the candidate's own updates.
+`warmup`, `c` and `r_floor` are **not** inherited from the synthetic runs; they
+are selected on the development split at Q4C. Reliability is computed from the
+**rollout group alone** and never from the candidate's own updates.
+
+### Amended at Q4B, before any development sweep
+
+The original definition set `dispersion_t = stdev({A_i : i in S_t})` over the
+**group-relative advantages** and used `1 / (1 + c * dispersion_t)`. Measured on
+real rollouts that estimator is nearly constant: standard deviation **0.0049**
+about a mean of **0.1659**, spanning only 0.1306 to 0.1667. A treatment that
+flat cannot produce a measurable effect, and no hyperparameter at Q4C could
+recover one, because the flatness is upstream of every hyperparameter.
+
+Two independent causes compounded, and **both** had to be fixed:
+
+- Group-relative advantages are standardised to unit variance by construction,
+  so their dispersion is approximately 1 wherever the whole group is alive. The
+  term was measuring an artefact of standardisation. Hence **raw rewards**.
+- `S_t` was the only position-dependent input, and when completions run to the
+  length cap it is identical at every index -- observed here at 185 to 192
+  tokens of 192. Any statistic over `S_t` alone is therefore position-constant.
+  Switching to raw rewards would **not** have fixed this on its own. Hence
+  `explained_t`, which depends on the tokens actually emitted at `t`.
+
+This is a change to what the treatment *is*, not a tuning choice, and it is
+recorded as such. It was made before any development sweep and before any test
+data was touched.
+
+**The alignment assumption is not what failed.** Full-group index alignment
+measured 0.966 and rollouts stayed length-aligned while diverging in content
+after about 13 tokens. D2's crude index alignment held; the quantity being
+aligned simply carried no signal. The limitation recorded below still stands and
+is still a confound for a NO-GO, but it is not the cause of this defect.
 
 **Known limitation, stated now rather than discovered later.** Tokens are
 aligned by index across rollouts, and different rollouts say different things at
