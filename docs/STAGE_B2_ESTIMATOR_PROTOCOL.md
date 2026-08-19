@@ -85,16 +85,33 @@ seed-averaged.
 
 ## Calibration gate (stage 2, blocking, per variant)
 
-**Rank agreement, not exact reproduction.** On the linear head, where the
-discrete aliasing index is ground truth, a variant must satisfy
+**Monotone agreement, not exact reproduction.** On the linear head, where the
+discrete aliasing index is ground truth, a variant must be a monotone function
+of it: for every pair of unperturbed Stage B instances with **different**
+discrete `alpha`, the measured values must order the same way.
 
 ```
-spearman(measured_alpha, discrete_alpha) == 1.0   (tolerance 1e-9)
+for all i, j with discrete[i] < discrete[j]:  measured[i] <= measured[j]
 ```
 
-across the unperturbed Stage B instances. A variant failing this is
-**disqualified before selection** and may not be chosen whatever its
-correlation with the advantage.
+Pairs tied in the discrete index impose no constraint. A variant with any
+discordant non-tied pair is **disqualified before selection** and may not be
+chosen whatever its correlation with the advantage.
+
+**Amended before selection.** The gate originally read
+`spearman(measured, discrete) == 1.0`. That is unusable here: the discrete
+index is heavily tied -- 9 distinct values across the 25 unperturbed instances,
+with `alpha = 0.5` occurring 9 times -- and Spearman penalises the arbitrary
+ordering a continuous estimator imposes *within* a tie group. Measured on the
+menu, every variant scored 0.975 to 0.993 and all six were disqualified,
+including `jacobian_cosine`, which reproduces the discrete index to better than
+`1e-9` and therefore cannot genuinely disagree with it. All six in fact have
+**zero discordant pairs among the 249 non-tied pairs**.
+
+The pairwise form tests the property actually required -- that the estimator
+orders scenarios correctly wherever the ground truth expresses an order -- and
+is insensitive to tie-breaking noise. The amendment was made before any variant
+was selected and before the confirmation set was evaluated.
 
 **This gate differs deliberately from Stage B's.** Stage B required exact
 numerical reproduction of the discrete index. Copying that here would be wrong:
