@@ -306,7 +306,7 @@ def _verify_pre(config, model, tokenizer, prompts, golds, group_size,
     sequences, prompt_length, _ = a
     mask = completion_mask(sequences, prompt_length, tokenizer.pad_token_id,
                            tokenizer.eos_token_id)
-    reliability = token_reliability(sequences, sequences, mask, group_size,
+    reliability = token_reliability(ra, sequences, mask, group_size,
                                     prompt_length, reliability_config)
     keep = sequences.shape[1] - prompt_length + 1
     offset = sequences.shape[1] - keep
