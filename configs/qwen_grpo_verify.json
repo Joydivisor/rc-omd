@@ -1,0 +1,60 @@
+{
+  "protocol_id": "qwen-v1-uniform-grpo",
+  "phase": "implementation_verification",
+  "purpose": "Q4A/Q4B integration gates on a handful of steps. Not a training run and not a scientific result; hyperparameters here are placeholders and are selected at Q4C on the development split.",
+  "model": {
+    "id": "Qwen/Qwen2.5-Math-1.5B-Instruct",
+    "revision": "aafeb0fc6f22cbf0eaeed126eff8be45b0360a35",
+    "dtype": "bfloat16",
+    "attn_implementation": "sdpa"
+  },
+  "lora": {
+    "r": 16,
+    "lora_alpha": 32,
+    "lora_dropout": 0.0,
+    "bias": "none",
+    "task_type": "CAUSAL_LM",
+    "target_modules": [
+      "q_proj",
+      "k_proj",
+      "v_proj",
+      "o_proj",
+      "gate_proj",
+      "up_proj",
+      "down_proj"
+    ]
+  },
+  "generation": {
+    "max_prompt_tokens": 512,
+    "max_new_tokens": 192,
+    "temperature": 0.8,
+    "top_p": 1.0,
+    "completions_per_prompt": 4
+  },
+  "training": {
+    "steps": 3,
+    "learning_rate": 1e-05,
+    "microbatch_sequences": 1,
+    "chunk_tokens": 256,
+    "eta": 1.0,
+    "lam": 1.0,
+    "seed": 20260825
+  },
+  "reliability": {
+    "warmup": 8.0,
+    "confidence": 1.0,
+    "floor": 0.1
+  },
+  "resource_guard": {
+    "cuda_memory_fraction": 0.85
+  },
+  "prompts": [
+    "Natalia sold clips to 48 of her friends in April, and then she sold half as many clips in May. How many clips did Natalia sell altogether in April and May?",
+    "Weng earns $12 an hour for babysitting. Yesterday, she just did 50 minutes of babysitting. How much did she earn?"
+  ],
+  "gold_answers": [
+    "Natalia sold 48/2 = 24 clips in May.\n#### 72",
+    "Weng earns 12/60 = 0.2 per minute.\n#### 10"
+  ],
+  "output_directory": "results/qwen_grpo_verify"
+}
