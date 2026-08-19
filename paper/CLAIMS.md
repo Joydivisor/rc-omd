@@ -230,6 +230,60 @@ Limits:
   Nothing here predicts what `alpha` would do on Qwen -- which is precisely why
   the gate is not reinstated.
 
+## Tested under the frozen Stage B-2 protocol
+
+Protocol `stage-b2-estimator-2026-08-19`, execution commit `49c2d01`. Golden
+record: `paper/frozen/stage-b2-estimator-2026-08-19-selection.json`.
+
+Stage B-2 asked whether **any** estimator in a closed menu of six fixed
+Jacobian transforms recovers a measurement of aliasing that predicts the
+frontier advantage under non-linearity.
+
+- **NO ESTIMATOR FOUND.** The best admissible variant,
+  `centered_action_difference`, reached `|rho| = 0.4167` on the 42 Stage B
+  discovery instances against a selection threshold of 0.50.
+- **The confirmation set was not evaluated**, per the frozen rule. This
+  protocol therefore makes **no held-out claim about any estimator**, and its
+  30 fresh instances remain **unspent**.
+- **The overfitting check is clean**: the refuted Stage B estimator ranked last
+  of six at +0.1536.
+- All six variants passed the tie-aware calibration gate with zero discordant
+  pairs among 249 non-tied pairs, so the null is not an instrument artefact on
+  the linear head.
+
+Limits:
+
+- **Post-hoc and unsupported by held-out data**: every variant that removes or
+  suppresses the output-bias contribution carried the correct negative sign
+  (-0.4167, -0.4146, -0.2706) while every variant retaining it was weakly
+  positive (+0.1847, +0.1728, +0.1536). The bias, whose derivative is identical
+  at every position, is implicated. This is an observation across a ranked
+  menu, not a tested hypothesis, and **may not be quoted as a result**.
+- Fisher weighting did **not** help, which is evidence against the narrower
+  reading of [E4](../docs/ERRATA.md) that the KL metric rather than the constant
+  bias component is the issue.
+
+**Standing conclusion across geometry-v2, Stage B and Stage B-2:** the frontier
+advantage is real and survives both step-size matching and non-linearity, but
+**aliasing geometry is not measurable from parameter gradients by any transform
+tested**, so there is no validated pre-flight screen for a language model.
+
+### Scope note: Qwen Performance V1
+
+A subsequent protocol, `qwen-performance-v1`, evaluates RWP-OMD on a Qwen
+mathematical-reasoning checkpoint. It is a **performance experiment and not a
+mechanism validation**. It does not test `alpha`, the Jacobian estimator, or
+whether the synthetic mechanism transfers, and **no result from it may be read
+as evidence for or against** the geometry-v1/-v2/-v3 or Stage B/B-2 findings in
+either direction.
+
+The Stage B/B-2 prohibition on progressing to Qwen was scoped to the mechanism
+pipeline: it blocked using `alpha` as a pre-flight screen. A direct performance
+test asks a different question and does not depend on that screen. The
+practical consequence is recorded rather than dissolved: **`qwen-performance-v1`
+proceeds without a validated screen, so its compute is committed unhedged**, and
+that was a deliberate decision, not an oversight.
+
 ## Supported only by exploratory development experiments
 
 - Entropy can hurt when its alignment with positional importance is reversed
@@ -293,9 +347,14 @@ current algorithm is known not to deliver.
 - ~~Reliability geometry beyond shared *linear* features.~~ **Partly tested**:
   the frontier advantage survives a non-linear policy (Stage B); what does not
   survive is the ability to *predict* it from the feature map.
-- **A working continuous estimator of the aliasing geometry.** The Jacobian
-  cosine estimator is exact on a linear head and fails on an MLP. This is now
-  the identified blocker for the language-model phase.
+- ~~**A working continuous estimator of the aliasing geometry.**~~ **Tested and
+  not supported.** Stage B-2 found no estimator in a closed menu of six fixed
+  Jacobian transforms that clears the selection threshold. The blocker is not
+  merely unsolved; a menu of plausible solutions has been tried and failed.
+- **Whether aliasing geometry is measurable at all from parameter gradients.**
+  Three protocols have now returned null. A successor would need a different
+  class of instrument, not another transform of the same Jacobian, and the 30
+  unspent Stage B-2 confirmation instances are reserved as its held-out set.
 
 ## Known defects affecting published numbers
 
