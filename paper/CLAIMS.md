@@ -176,11 +176,59 @@ Limits:
 - **The discovery margin over `critical_mass_in_pure_groups` was 0.0024**, a tie
   in all but the letter of the deterministic rule. This licenses `alpha` alone
   and does not establish which of the two is mechanistically prior.
-- **Assumption (M1) only** -- softmax-linear one-hot tie-group features. Whether
-  `alpha` predicts anything once linearity is dropped is the open Stage B
-  question.
+- **Assumption (M1) only** -- softmax-linear one-hot tie-group features.
+  ~~Whether `alpha` predicts anything once linearity is dropped is the open
+  Stage B question.~~ **Tested and not supported for the measured estimator**;
+  see the Stage B section below.
 - This reverses `geometry-v2`'s demotion of `alpha` to a descriptive variable,
   which was itself an inference from nine scenarios.
+
+## Tested under the frozen Stage B protocol
+
+Protocol `stage-b-mlp-2026-08-19`, 24 base scenarios at three feature-noise
+levels plus three control instances, 19 non-linear methods, split by **base
+scenario** 14/10 before execution, seeds 700--719 discovery and 800--819
+confirmation. Golden record: `paper/frozen/stage-b-mlp-2026-08-19.json`.
+
+The policy is a shared single-hidden-layer tanh MLP over the same feature rows.
+Only the parameterization changes; the OMD target, the reliability estimator,
+the mixture construction, and the KL accounting are inherited verbatim, so this
+tests non-linearity rather than a different algorithm.
+
+- **The frontier advantage survives non-linearity.** 40 of 42 discovery and 26
+  of 30 confirmation instances show a positive bias-corrected advantage, up to
+  +0.077. RWP-OMD still beats the step-swept uniform frontier when the policy is
+  an MLP.
+- **NOT CONFIRMED: the measured `alpha` estimator does not predict it.**
+  Confirmation `rho = +0.2089`, 95% bootstrap CI `[-0.1705, +0.5329]` -- the
+  wrong sign against the negative direction inherited from `geometry-v3`, with
+  an interval spanning zero. Discovery agreed at `+0.1536`.
+- **Consequence, fixed before execution and now in force: direct progression to
+  Qwen is prohibited.** The language-model pre-flight screen has no validated
+  instrument, and mechanistic investigation resumes on synthetic scenarios.
+- The calibration gate passed at **1.11e-16**: the estimator is exact against the
+  linear head, where the discrete answer is defined. Its failure is specific to
+  the non-linear parameterization.
+
+Limits:
+
+- **The null is a result about the estimator, not about `alpha`.** Post-hoc, the
+  *discrete* aliasing index still correlates with the advantage under the MLP
+  (-0.6581 discovery, -0.3445 confirmation), while the Jacobian estimator tracks
+  it only weakly (+0.1724, +0.5862). This is recorded in the golden record as a
+  lead for a successor protocol and **may not be quoted as a result**: it was
+  computed after seeing the outcome, its confirmation interval includes zero,
+  and substituting a predictor post hoc is what the protocol forbids.
+- **The null is not an artefact.** Measured `alpha` spans 0.31 to 0.81 with a
+  median seed-to-seed SD of 0.030, so it is neither constant nor
+  noise-dominated, and no instance was dropped for grid coverage.
+- Two protocol defects were found during implementation and amended **before any
+  instance ran**: the initialization produced a non-uniform initial policy, and
+  the calibration gate was stated against the MLP where it is false by
+  construction. Both are recorded in `docs/STAGE_B_MLP_PROTOCOL.md`.
+- An MLP over fixed features is not a transformer over learned representations.
+  Nothing here predicts what `alpha` would do on Qwen -- which is precisely why
+  the gate is not reinstated.
 
 ## Supported only by exploratory development experiments
 
@@ -233,14 +281,21 @@ current algorithm is known not to deliver.
 
 - Causal identification of step credit.
 - Robustness under persistent confounding or nonstationarity.
-- Benefits for language-model RLVR.
+- Benefits for language-model RLVR. **Blocked**: the Stage B pre-flight screen
+  returned NOT CONFIRMED, so there is no validated instrument for deciding
+  whether to spend the compute. See the Stage B section.
 - ~~Whether RWP-OMD's advantage survives step-size matching.~~ **Tested**; it
   does, on 6 of 8 scenarios. See the geometry-v2 section above.
 - ~~**What structural property predicts the frontier advantage.**~~ **Tested**;
   `alpha` predicts it under assumption (M1). See the geometry-v3 section. What
   *mechanism* produces it remains unknown -- geometry-v3 establishes a correlate,
   not a cause.
-- Reliability geometry beyond shared *linear* features.
+- ~~Reliability geometry beyond shared *linear* features.~~ **Partly tested**:
+  the frontier advantage survives a non-linear policy (Stage B); what does not
+  survive is the ability to *predict* it from the feature map.
+- **A working continuous estimator of the aliasing geometry.** The Jacobian
+  cosine estimator is exact on a linear head and fails on an MLP. This is now
+  the identified blocker for the language-model phase.
 
 ## Known defects affecting published numbers
 
