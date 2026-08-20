@@ -1,0 +1,153 @@
+{
+  "record_type": "golden_record",
+  "record_status": "ORIGINAL",
+  "protocol_id": "qwen-math-threshold-v2",
+  "phase": "execution",
+  "execution_commit": "041100ab09c8ffafaa3e0246c03558923e0e9ff2",
+  "executed_on": "2026-08-21",
+  "supersedes": "qwen-math500-v1, which returned INCONCLUSIVE dominated by a training ceiling effect rather than by anything about the algorithm",
+  "scope": "PERFORMANCE experiment, not mechanism validation. In-distribution: MATH train to MATH-500. Bears on geometry-v1/-v2/-v3 and Stage B/B-2 in neither direction.",
+  "model": {
+    "id": "Qwen/Qwen2.5-Math-1.5B-Instruct",
+    "revision": "aafeb0fc6f22cbf0eaeed126eff8be45b0360a35",
+    "dtype": "bfloat16",
+    "lora": "r=16 alpha=32 on q,k,v,o_proj; base frozen"
+  },
+  "config": {
+    "path": "configs/qwen_threshold.json",
+    "sha256": "5c6dc8095b69f54417724d4e50f91930f4efb4776149238333989420c3e590da"
+  },
+  "training_pool": {
+    "source": "EleutherAI/hendrycks_math train, Levels 3-5",
+    "selection": "base model at threshold: 1 <= correct <= 3 of G=4",
+    "candidates_screened": 264,
+    "kept": 64,
+    "yield": 0.24242424242424243,
+    "screening_minutes": 72.20108496666653,
+    "shared_by_all_branches_and_seeds": true
+  },
+  "evaluation_set": {
+    "dataset": "HuggingFaceH4/MATH-500",
+    "levels": [
+      4,
+      5
+    ],
+    "n": 100,
+    "selection": "first 100 by unique_id sort among Levels 4-5, frozen",
+    "decoding": "greedy",
+    "scorer": "brace-matched boxed extraction plus LaTeX normalization; self-check recovers 500 of 500 gold answers from gold solutions"
+  },
+  "untrained_reference_accuracy": 0.58,
+  "per_seed": {
+    "3201": {
+      "uniform": 0.57,
+      "rwp": 0.57,
+      "delta_pp": 0.0
+    },
+    "3202": {
+      "uniform": 0.57,
+      "rwp": 0.57,
+      "delta_pp": 0.0
+    },
+    "3203": {
+      "uniform": 0.59,
+      "rwp": 0.61,
+      "delta_pp": 2.0000000000000018
+    }
+  },
+  "paired_bootstrap": {
+    "items": 100,
+    "resamples": 10000,
+    "seed": 20260828,
+    "mean_delta_pp": 0.6666666666666666,
+    "ci_lower_pp": -1.0,
+    "ci_upper_pp": 2.333333333333333,
+    "non_inferiority_margin_pp": -2.0,
+    "margin_cleared": true,
+    "seeds_favouring_rwp": 1
+  },
+  "effect_size_control": {
+    "note": "The decisive comparison. Items on which the two ALGORITHMS differ within a seed, against items on which ONE algorithm differs from itself across seeds. The distributions are identical, so the observed delta is indistinguishable from reseeding.",
+    "uniform_vs_rwp_within_seed": [
+      2,
+      2,
+      4
+    ],
+    "uniform_vs_uniform_across_seeds": [
+      2,
+      4,
+      2
+    ]
+  },
+  "training_diagnostics": {
+    "uniform_s3201": {
+      "steps": 15,
+      "reward_variance_group_fraction": 0.6666666666666666,
+      "mean_reward": 0.5083333333333333,
+      "mean_grad_norm": 0.011839310067677881,
+      "mean_reliability": 1.0,
+      "thermal_wait_seconds": 0.0
+    },
+    "uniform_s3202": {
+      "steps": 15,
+      "reward_variance_group_fraction": 0.5333333333333333,
+      "mean_reward": 0.45416666666666666,
+      "mean_grad_norm": 0.009438185055296344,
+      "mean_reliability": 1.0,
+      "thermal_wait_seconds": 0.0
+    },
+    "uniform_s3203": {
+      "steps": 15,
+      "reward_variance_group_fraction": 0.6833333333333333,
+      "mean_reward": 0.45,
+      "mean_grad_norm": 0.01247857635219892,
+      "mean_reliability": 1.0,
+      "thermal_wait_seconds": 0.0
+    },
+    "rwp_s3201": {
+      "steps": 15,
+      "reward_variance_group_fraction": 0.6333333333333333,
+      "mean_reward": 0.5125,
+      "mean_grad_norm": 0.0015234019064034024,
+      "mean_reliability": 0.2477242350578308,
+      "thermal_wait_seconds": 0.0
+    },
+    "rwp_s3202": {
+      "steps": 15,
+      "reward_variance_group_fraction": 0.6166666666666667,
+      "mean_reward": 0.45416666666666666,
+      "mean_grad_norm": 0.001328426335627834,
+      "mean_reliability": 0.24475654164950053,
+      "thermal_wait_seconds": 0.0
+    },
+    "rwp_s3203": {
+      "steps": 15,
+      "reward_variance_group_fraction": 0.6666666666666666,
+      "mean_reward": 0.475,
+      "mean_grad_norm": 0.0015154000177669028,
+      "mean_reliability": 0.25330543518066406,
+      "thermal_wait_seconds": 110.0
+    }
+  },
+  "verdict": "INCONCLUSIVE",
+  "verdict_basis": "Non-inferiority PASSES: the CI lower bound of -1.00 pp clears the -2.00 pp margin, which qwen-math500-v1 failed. But the interval spans zero, only 1 of 3 seeds favours RWP, and the direction is inconsistent across seeds. Protocol Section 11 assigns INCONCLUSIVE.",
+  "what_the_redesign_fixed": [
+    "Threshold screening raised the fraction of rollout groups carrying gradient from 0.125 to 0.533-0.683, roughly fivefold. GRPO's group-relative advantage is exactly zero when a group's completions all score alike, so this is the difference between training on signal and training on nothing.",
+    "A NEGATIVE RESULT ALONG THE WAY, worth recording: difficulty alone does not fix this. An unscreened MATH Level 4-5 pool still gave only 19 percent non-degenerate groups, because hard problems mostly add all-wrong groups, which are as gradient-free as all-right ones. Per-group correct counts were bimodal. Threshold difficulty is the operative variable, not difficulty.",
+    "Evaluation headroom went from roughly zero, 78.33 percent on the mixed set, to 42 points, 58.00 percent on Levels 4-5.",
+    "Non-inferiority now passes where it previously failed."
+  ],
+  "interpretation_limits": [
+    "THE EFFECT IS INDISTINGUISHABLE FROM SEED NOISE. Uniform and RWP differ on 2, 2 and 4 items of 100 within a seed, while uniform differs from ITSELF across seeds on 2, 4 and 2. The +2.00 pp on seed 3203 is two items.",
+    "RWP TRAINS LESS PER STEP AT THE SAME LEARNING RATE. Its mean gradient norm is 0.0015 against uniform's 0.0112, about sevenfold smaller, at mean reliability 0.18. Mean-one normalization balances the weights but the mixture still blends toward pi_old, shrinking the effective step. A like-for-like comparison must sweep RWP's learning rate separately or rescale for this, otherwise RWP is handicapped by construction. It was not corrected here because the learning rate was frozen before execution.",
+    "Fifteen steps is a pilot budget; each branch saw 60 prompts.",
+    "The pool is screened against the BASE model, which both branches share, and the pool and its order are identical for every branch and seed, so screening cannot advantage either arm. It does make the pool a curriculum rather than a random sample of MATH.",
+    "Contamination is unresolved for this checkpoint; absolute accuracy may not be quoted as a benchmark result. The paired comparison from an identical checkpoint stands.",
+    "Index-based token alignment remains a confound for any negative result."
+  ],
+  "next_step_if_resumed": [
+    "Sweep the RWP learning rate to compensate for the sevenfold smaller gradient norm, or the comparison is not like-for-like.",
+    "Substantially more steps: the intervention currently changes about 3 predictions in 100, below the resolution of a 100-item evaluation.",
+    "More seeds or a larger evaluation set, to separate a 1-2 item effect from reseeding."
+  ]
+}
