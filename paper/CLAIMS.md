@@ -319,6 +319,56 @@ Limits: 20 GRPO steps is a pilot budget; contamination is unresolved and
 absolute accuracy may not be quoted as a benchmark result; index-based token
 alignment remains a confound for any negative result.
 
+## Tested under qwen-math-threshold-v2
+
+Protocol `qwen-math-threshold-v2`, execution commit `607e9a5`,
+`Qwen/Qwen2.5-Math-1.5B-Instruct` at revision `aafeb0fc6f22`, LoRA r=16.
+Golden record: `paper/frozen/qwen-math-threshold-v2-2026-08-21.json`.
+Supersedes `qwen-math500-v1`, whose result was dominated by a training ceiling.
+
+**Scope**: performance experiment, in-distribution (MATH train to MATH-500).
+Bears on `geometry-v1/-v2/-v3` and Stage B/B-2 in **neither direction**.
+
+- **INCONCLUSIVE, but non-inferiority now PASSES.** Paired bootstrap over 100
+  items: `+0.67 pp`, 95% CI `[-1.00, +2.33]`. The lower bound clears the
+  `-2.00 pp` margin, which `qwen-math500-v1` failed. The interval spans zero,
+  1 of 3 seeds favours RWP, and the direction is inconsistent, so the verdict
+  is INCONCLUSIVE.
+- Per seed (uniform / RWP): 57.00/57.00, 57.00/57.00, 59.00/61.00, against an
+  untrained reference of **58.00%** on MATH-500 Levels 4-5.
+- **The effect is indistinguishable from seed noise.** Uniform and RWP differ on
+  2, 2 and 4 items of 100 within a seed; uniform differs from **itself** across
+  seeds on 2, 4 and 2. The `+2.00 pp` on seed 3203 is two items.
+
+**What the redesign established.** Threshold screening raised the fraction of
+rollout groups carrying gradient from **0.125 to 0.533-0.683**, roughly
+fivefold. GRPO's group-relative advantage is exactly zero for a group whose
+completions all score alike, so this is the difference between training on
+signal and training on nothing.
+
+**A negative result worth keeping**: difficulty alone does not fix this. An
+unscreened MATH Level 4-5 pool still gave only **19%** non-degenerate groups,
+because hard problems mostly add all-wrong groups, which are as gradient-free as
+all-right ones. **Threshold difficulty is the operative variable, not
+difficulty.**
+
+Limits:
+
+- **RWP trains less per step at the same learning rate**: mean gradient norm
+  0.0015 against uniform's 0.0112, roughly sevenfold smaller, at mean
+  reliability 0.18. Mean-one normalization balances the weights but the mixture
+  still blends toward `pi_old`, shrinking the effective step. **A like-for-like
+  comparison must sweep RWP's learning rate separately**, or RWP is handicapped
+  by construction. Not corrected here because the learning rate was frozen
+  before execution.
+- 15 steps is a pilot budget; each branch saw 60 prompts. The intervention
+  changes about 3 predictions in 100, below the resolution of a 100-item set.
+- The pool is a screened curriculum, not a random sample of MATH. Screening uses
+  the base model both branches share, in one fixed order, so it cannot advantage
+  either arm.
+- Contamination unresolved; absolute accuracy may not be quoted as a benchmark
+  result. The paired comparison from an identical checkpoint stands.
+
 ## Supported only by exploratory development experiments
 
 - Entropy can hurt when its alignment with positional importance is reversed
@@ -370,11 +420,13 @@ current algorithm is known not to deliver.
 
 - Causal identification of step credit.
 - Robustness under persistent confounding or nonstationarity.
-- **Benefits for language-model RLVR.** Attempted once under `qwen-math500-v1`
-  and returned INCONCLUSIVE, dominated by a training-set ceiling effect rather
-  than by anything about the algorithm. The question is open, and answering it
-  needs prompts the model does not already solve, larger `G`, and far more
-  steps -- not tuning.
+- **Benefits for language-model RLVR.** Attempted twice. `qwen-math500-v1`
+  returned INCONCLUSIVE dominated by a training ceiling;
+  `qwen-math-threshold-v2` fixed the ceiling, passed non-inferiority, and still
+  returned INCONCLUSIVE with an effect the size of seed noise. The question
+  remains open. What is now known to be needed: a separate learning-rate sweep
+  for RWP, which trains sevenfold less per step at matched settings; far more
+  than 15 steps; and an evaluation larger than 100 items.
 - ~~Whether RWP-OMD's advantage survives step-size matching.~~ **Tested**; it
   does, on 6 of 8 scenarios. See the geometry-v2 section above.
 - ~~**What structural property predicts the frontier advantage.**~~ **Tested**;
