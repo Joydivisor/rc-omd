@@ -284,6 +284,41 @@ practical consequence is recorded rather than dissolved: **`qwen-performance-v1`
 proceeds without a validated screen, so its compute is committed unhedged**, and
 that was a deliberate decision, not an oversight.
 
+## Tested under qwen-math500-v1
+
+Protocol `qwen-math500-v1`, execution commit `78ed5c7`, `Qwen/Qwen2.5-Math-1.5B-Instruct`
+at revision `aafeb0fc6f22`, LoRA r=16 on q/k/v/o. Golden record:
+`paper/frozen/qwen-math500-v1-2026-08-20.json`.
+
+**Scope**: a performance experiment and a **transfer** evaluation -- reinforcement
+learning on GSM8K training buckets, scored on a frozen 120-problem MATH-500
+subset. It bears on `geometry-v1/-v2/-v3` and Stage B/B-2 in **neither
+direction**.
+
+- **INCONCLUSIVE.** Paired bootstrap over items: mean `delta = -0.28 pp`, 95% CI
+  `[-2.22, +1.67]`. Per seed (uniform / RWP): 80.00/79.17, 80.83/80.00,
+  79.17/80.00 against an untrained reference of 78.33%.
+- Every per-seed difference is **exactly one problem** (one item = 0.83 pp), and
+  the direction splits 2-1 against RWP.
+- The non-inferiority margin formally fails (-2.22 against -2.00). That is a
+  statement about **precision**, not about RWP: the interval spans zero.
+
+**The dominant finding is a ceiling effect, not an algorithm result.** Mean
+training reward was 0.92 and only ~12% of rollout groups had any reward
+variance. A group whose completions all score alike has exactly zero
+group-relative advantage, so ~88% of groups contributed no gradient at all and
+each 20-step run trained on roughly ten informative prompts.
+
+RWP's mean gradient norm was 0.0007 against the baseline's 0.0060 at mean
+reliability 0.18. Mean-one normalization balances the weights, but the mixture
+still blends toward `pi_old` and shrinks the effective step, so **RWP trained
+even less than the baseline**. That is a mechanism for the null rather than
+evidence against the method.
+
+Limits: 20 GRPO steps is a pilot budget; contamination is unresolved and
+absolute accuracy may not be quoted as a benchmark result; index-based token
+alignment remains a confound for any negative result.
+
 ## Supported only by exploratory development experiments
 
 - Entropy can hurt when its alignment with positional importance is reversed
@@ -335,9 +370,11 @@ current algorithm is known not to deliver.
 
 - Causal identification of step credit.
 - Robustness under persistent confounding or nonstationarity.
-- Benefits for language-model RLVR. **Blocked**: the Stage B pre-flight screen
-  returned NOT CONFIRMED, so there is no validated instrument for deciding
-  whether to spend the compute. See the Stage B section.
+- **Benefits for language-model RLVR.** Attempted once under `qwen-math500-v1`
+  and returned INCONCLUSIVE, dominated by a training-set ceiling effect rather
+  than by anything about the algorithm. The question is open, and answering it
+  needs prompts the model does not already solve, larger `G`, and far more
+  steps -- not tuning.
 - ~~Whether RWP-OMD's advantage survives step-size matching.~~ **Tested**; it
   does, on 6 of 8 scenarios. See the geometry-v2 section above.
 - ~~**What structural property predicts the frontier advantage.**~~ **Tested**;
