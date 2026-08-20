@@ -146,6 +146,229 @@ Limits:
 - `lambda*` and `mu*` were inherited frozen and not re-selected; this says nothing
   about their optimality.
 
+## Supported by the frozen geometry-v3 protocol
+
+Protocol `geometry-v3-2026-08-19`, 50-scenario randomized family plus a
+complete-aliasing control, 20 seeds, split 30 discovery / 20 confirmation by a
+committed seed **before any scenario ran**. Golden records:
+`paper/frozen/geometry-v3-2026-08-19-discovery.json` and
+`-confirmation.json`.
+
+- **CONFIRMED: `alpha` predicts the frontier advantage.** Spearman
+  `rho = -0.8859`, 95% bootstrap interval `[-0.9519, -0.7210]`, on 20 held-out
+  scenarios never read during selection. Discovery measured `-0.7868` on the
+  disjoint 30. Higher aliasing, smaller advantage.
+- **The selection was not overfitted.** `pure_crit` and `pure_crit_indicator`,
+  refuted by `geometry-v2` and retained in the closed menu precisely as a trap,
+  ranked fifth and sixth (0.4785, 0.4621) and were not selected. The held-out
+  correlation is stronger than the discovery correlation.
+- Both controls held: complete-aliasing allocation invariant exact at 2.22e-16,
+  pooled leave-one-out bias +0.00142 (positive, as [E10](../docs/ERRATA.md)
+  requires).
+
+Limits:
+
+- **The confirmation criterion was amended after the confirmation subset ran**
+  ([E11](../docs/ERRATA.md)). The frozen wording was self-contradictory for
+  negative predictors. The correction is the only self-consistent reading and
+  the threshold did not move, but it is post hoc and may be discounted.
+- **Correlation, not mechanism.** No causal account is claimed.
+- **The discovery margin over `critical_mass_in_pure_groups` was 0.0024**, a tie
+  in all but the letter of the deterministic rule. This licenses `alpha` alone
+  and does not establish which of the two is mechanistically prior.
+- **Assumption (M1) only** -- softmax-linear one-hot tie-group features.
+  ~~Whether `alpha` predicts anything once linearity is dropped is the open
+  Stage B question.~~ **Tested and not supported for the measured estimator**;
+  see the Stage B section below.
+- This reverses `geometry-v2`'s demotion of `alpha` to a descriptive variable,
+  which was itself an inference from nine scenarios.
+
+## Tested under the frozen Stage B protocol
+
+Protocol `stage-b-mlp-2026-08-19`, 24 base scenarios at three feature-noise
+levels plus three control instances, 19 non-linear methods, split by **base
+scenario** 14/10 before execution, seeds 700--719 discovery and 800--819
+confirmation. Golden record: `paper/frozen/stage-b-mlp-2026-08-19.json`.
+
+The policy is a shared single-hidden-layer tanh MLP over the same feature rows.
+Only the parameterization changes; the OMD target, the reliability estimator,
+the mixture construction, and the KL accounting are inherited verbatim, so this
+tests non-linearity rather than a different algorithm.
+
+- **The frontier advantage survives non-linearity.** 40 of 42 discovery and 26
+  of 30 confirmation instances show a positive bias-corrected advantage, up to
+  +0.077. RWP-OMD still beats the step-swept uniform frontier when the policy is
+  an MLP.
+- **NOT CONFIRMED: the measured `alpha` estimator does not predict it.**
+  Confirmation `rho = +0.2089`, 95% bootstrap CI `[-0.1705, +0.5329]` -- the
+  wrong sign against the negative direction inherited from `geometry-v3`, with
+  an interval spanning zero. Discovery agreed at `+0.1536`.
+- **Consequence, fixed before execution and now in force: direct progression to
+  Qwen is prohibited.** The language-model pre-flight screen has no validated
+  instrument, and mechanistic investigation resumes on synthetic scenarios.
+- The calibration gate passed at **1.11e-16**: the estimator is exact against the
+  linear head, where the discrete answer is defined. Its failure is specific to
+  the non-linear parameterization.
+
+Limits:
+
+- **The null is a result about the estimator, not about `alpha`.** Post-hoc, the
+  *discrete* aliasing index still correlates with the advantage under the MLP
+  (-0.6581 discovery, -0.3445 confirmation), while the Jacobian estimator tracks
+  it only weakly (+0.1724, +0.5862). This is recorded in the golden record as a
+  lead for a successor protocol and **may not be quoted as a result**: it was
+  computed after seeing the outcome, its confirmation interval includes zero,
+  and substituting a predictor post hoc is what the protocol forbids.
+- **The null is not an artefact.** Measured `alpha` spans 0.31 to 0.81 with a
+  median seed-to-seed SD of 0.030, so it is neither constant nor
+  noise-dominated, and no instance was dropped for grid coverage.
+- Two protocol defects were found during implementation and amended **before any
+  instance ran**: the initialization produced a non-uniform initial policy, and
+  the calibration gate was stated against the MLP where it is false by
+  construction. Both are recorded in `docs/STAGE_B_MLP_PROTOCOL.md`.
+- An MLP over fixed features is not a transformer over learned representations.
+  Nothing here predicts what `alpha` would do on Qwen -- which is precisely why
+  the gate is not reinstated.
+
+## Tested under the frozen Stage B-2 protocol
+
+Protocol `stage-b2-estimator-2026-08-19`, execution commit `49c2d01`. Golden
+record: `paper/frozen/stage-b2-estimator-2026-08-19-selection.json`.
+
+Stage B-2 asked whether **any** estimator in a closed menu of six fixed
+Jacobian transforms recovers a measurement of aliasing that predicts the
+frontier advantage under non-linearity.
+
+- **NO ESTIMATOR FOUND.** The best admissible variant,
+  `centered_action_difference`, reached `|rho| = 0.4167` on the 42 Stage B
+  discovery instances against a selection threshold of 0.50.
+- **The confirmation set was not evaluated**, per the frozen rule. This
+  protocol therefore makes **no held-out claim about any estimator**, and its
+  30 fresh instances remain **unspent**.
+- **The overfitting check is clean**: the refuted Stage B estimator ranked last
+  of six at +0.1536.
+- All six variants passed the tie-aware calibration gate with zero discordant
+  pairs among 249 non-tied pairs, so the null is not an instrument artefact on
+  the linear head.
+
+Limits:
+
+- **Post-hoc and unsupported by held-out data**: every variant that removes or
+  suppresses the output-bias contribution carried the correct negative sign
+  (-0.4167, -0.4146, -0.2706) while every variant retaining it was weakly
+  positive (+0.1847, +0.1728, +0.1536). The bias, whose derivative is identical
+  at every position, is implicated. This is an observation across a ranked
+  menu, not a tested hypothesis, and **may not be quoted as a result**.
+- Fisher weighting did **not** help, which is evidence against the narrower
+  reading of [E4](../docs/ERRATA.md) that the KL metric rather than the constant
+  bias component is the issue.
+
+**Standing conclusion across geometry-v2, Stage B and Stage B-2:** the frontier
+advantage is real and survives both step-size matching and non-linearity, but
+**aliasing geometry is not measurable from parameter gradients by any transform
+tested**, so there is no validated pre-flight screen for a language model.
+
+### Scope note: Qwen Performance V1
+
+A subsequent protocol, `qwen-performance-v1`, evaluates RWP-OMD on a Qwen
+mathematical-reasoning checkpoint. It is a **performance experiment and not a
+mechanism validation**. It does not test `alpha`, the Jacobian estimator, or
+whether the synthetic mechanism transfers, and **no result from it may be read
+as evidence for or against** the geometry-v1/-v2/-v3 or Stage B/B-2 findings in
+either direction.
+
+The Stage B/B-2 prohibition on progressing to Qwen was scoped to the mechanism
+pipeline: it blocked using `alpha` as a pre-flight screen. A direct performance
+test asks a different question and does not depend on that screen. The
+practical consequence is recorded rather than dissolved: **`qwen-performance-v1`
+proceeds without a validated screen, so its compute is committed unhedged**, and
+that was a deliberate decision, not an oversight.
+
+## Tested under qwen-math500-v1
+
+Protocol `qwen-math500-v1`, execution commit `78ed5c7`, `Qwen/Qwen2.5-Math-1.5B-Instruct`
+at revision `aafeb0fc6f22`, LoRA r=16 on q/k/v/o. Golden record:
+`paper/frozen/qwen-math500-v1-2026-08-20.json`.
+
+**Scope**: a performance experiment and a **transfer** evaluation -- reinforcement
+learning on GSM8K training buckets, scored on a frozen 120-problem MATH-500
+subset. It bears on `geometry-v1/-v2/-v3` and Stage B/B-2 in **neither
+direction**.
+
+- **INCONCLUSIVE.** Paired bootstrap over items: mean `delta = -0.28 pp`, 95% CI
+  `[-2.22, +1.67]`. Per seed (uniform / RWP): 80.00/79.17, 80.83/80.00,
+  79.17/80.00 against an untrained reference of 78.33%.
+- Every per-seed difference is **exactly one problem** (one item = 0.83 pp), and
+  the direction splits 2-1 against RWP.
+- The non-inferiority margin formally fails (-2.22 against -2.00). That is a
+  statement about **precision**, not about RWP: the interval spans zero.
+
+**The dominant finding is a ceiling effect, not an algorithm result.** Mean
+training reward was 0.92 and only ~12% of rollout groups had any reward
+variance. A group whose completions all score alike has exactly zero
+group-relative advantage, so ~88% of groups contributed no gradient at all and
+each 20-step run trained on roughly ten informative prompts.
+
+RWP's mean gradient norm was 0.0007 against the baseline's 0.0060 at mean
+reliability 0.18. Mean-one normalization balances the weights, but the mixture
+still blends toward `pi_old` and shrinks the effective step, so **RWP trained
+even less than the baseline**. That is a mechanism for the null rather than
+evidence against the method.
+
+Limits: 20 GRPO steps is a pilot budget; contamination is unresolved and
+absolute accuracy may not be quoted as a benchmark result; index-based token
+alignment remains a confound for any negative result.
+
+## Tested under qwen-math-threshold-v2
+
+Protocol `qwen-math-threshold-v2`, execution commit `607e9a5`,
+`Qwen/Qwen2.5-Math-1.5B-Instruct` at revision `aafeb0fc6f22`, LoRA r=16.
+Golden record: `paper/frozen/qwen-math-threshold-v2-2026-08-21.json`.
+Supersedes `qwen-math500-v1`, whose result was dominated by a training ceiling.
+
+**Scope**: performance experiment, in-distribution (MATH train to MATH-500).
+Bears on `geometry-v1/-v2/-v3` and Stage B/B-2 in **neither direction**.
+
+- **INCONCLUSIVE, but non-inferiority now PASSES.** Paired bootstrap over 100
+  items: `+0.67 pp`, 95% CI `[-1.00, +2.33]`. The lower bound clears the
+  `-2.00 pp` margin, which `qwen-math500-v1` failed. The interval spans zero,
+  1 of 3 seeds favours RWP, and the direction is inconsistent, so the verdict
+  is INCONCLUSIVE.
+- Per seed (uniform / RWP): 57.00/57.00, 57.00/57.00, 59.00/61.00, against an
+  untrained reference of **58.00%** on MATH-500 Levels 4-5.
+- **The effect is indistinguishable from seed noise.** Uniform and RWP differ on
+  2, 2 and 4 items of 100 within a seed; uniform differs from **itself** across
+  seeds on 2, 4 and 2. The `+2.00 pp` on seed 3203 is two items.
+
+**What the redesign established.** Threshold screening raised the fraction of
+rollout groups carrying gradient from **0.125 to 0.533-0.683**, roughly
+fivefold. GRPO's group-relative advantage is exactly zero for a group whose
+completions all score alike, so this is the difference between training on
+signal and training on nothing.
+
+**A negative result worth keeping**: difficulty alone does not fix this. An
+unscreened MATH Level 4-5 pool still gave only **19%** non-degenerate groups,
+because hard problems mostly add all-wrong groups, which are as gradient-free as
+all-right ones. **Threshold difficulty is the operative variable, not
+difficulty.**
+
+Limits:
+
+- **RWP trains less per step at the same learning rate**: mean gradient norm
+  0.0015 against uniform's 0.0112, roughly sevenfold smaller, at mean
+  reliability 0.18. Mean-one normalization balances the weights but the mixture
+  still blends toward `pi_old`, shrinking the effective step. **A like-for-like
+  comparison must sweep RWP's learning rate separately**, or RWP is handicapped
+  by construction. Not corrected here because the learning rate was frozen
+  before execution.
+- 15 steps is a pilot budget; each branch saw 60 prompts. The intervention
+  changes about 3 predictions in 100, below the resolution of a 100-item set.
+- The pool is a screened curriculum, not a random sample of MATH. Screening uses
+  the base model both branches share, in one fixed order, so it cannot advantage
+  either arm.
+- Contamination unresolved; absolute accuracy may not be quoted as a benchmark
+  result. The paired comparison from an identical checkpoint stands.
+
 ## Supported only by exploratory development experiments
 
 - Entropy can hurt when its alignment with positional importance is reversed
@@ -197,13 +420,30 @@ current algorithm is known not to deliver.
 
 - Causal identification of step credit.
 - Robustness under persistent confounding or nonstationarity.
-- Benefits for language-model RLVR.
+- **Benefits for language-model RLVR.** Attempted twice. `qwen-math500-v1`
+  returned INCONCLUSIVE dominated by a training ceiling;
+  `qwen-math-threshold-v2` fixed the ceiling, passed non-inferiority, and still
+  returned INCONCLUSIVE with an effect the size of seed noise. The question
+  remains open. What is now known to be needed: a separate learning-rate sweep
+  for RWP, which trains sevenfold less per step at matched settings; far more
+  than 15 steps; and an evaluation larger than 100 items.
 - ~~Whether RWP-OMD's advantage survives step-size matching.~~ **Tested**; it
   does, on 6 of 8 scenarios. See the geometry-v2 section above.
-- **What structural property produces the frontier advantage.** The pure-critical
-  hypothesis is refuted; no replacement is asserted, and the current scenario set
-  is spent.
-- Reliability geometry beyond shared *linear* features.
+- ~~**What structural property predicts the frontier advantage.**~~ **Tested**;
+  `alpha` predicts it under assumption (M1). See the geometry-v3 section. What
+  *mechanism* produces it remains unknown -- geometry-v3 establishes a correlate,
+  not a cause.
+- ~~Reliability geometry beyond shared *linear* features.~~ **Partly tested**:
+  the frontier advantage survives a non-linear policy (Stage B); what does not
+  survive is the ability to *predict* it from the feature map.
+- ~~**A working continuous estimator of the aliasing geometry.**~~ **Tested and
+  not supported.** Stage B-2 found no estimator in a closed menu of six fixed
+  Jacobian transforms that clears the selection threshold. The blocker is not
+  merely unsolved; a menu of plausible solutions has been tried and failed.
+- **Whether aliasing geometry is measurable at all from parameter gradients.**
+  Three protocols have now returned null. A successor would need a different
+  class of instrument, not another transform of the same Jacobian, and the 30
+  unspent Stage B-2 confirmation instances are reserved as its held-out set.
 
 ## Known defects affecting published numbers
 

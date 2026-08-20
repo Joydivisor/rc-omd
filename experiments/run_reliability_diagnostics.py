@@ -13,6 +13,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from algorithms import (
+    MLPProjectedGroupOMD,
+    MLPReliabilityWeightedProjectionOMD,
     EntropyWeightedOMD,
     GlobalReliabilityOMD,
     GroupOMD,
@@ -36,6 +38,8 @@ METHOD_LABELS = {
     "projected_group_omd": "Projected Group OMD",
     "projected_online_rc_omd": "Projected Online RC-OMD",
     "rwp_omd": "RWP-OMD",
+    "mlp_projected_group_omd": "Uniform (MLP)",
+    "mlp_rwp_omd": "RWP-OMD (MLP)",
 }
 
 METHOD_COLORS = {
@@ -48,6 +52,8 @@ METHOD_COLORS = {
     "projected_group_omd": "#2458A6",
     "projected_online_rc_omd": "#0891B2",
     "rwp_omd": "#DC2626",
+    "mlp_projected_group_omd": "#2458A6",
+    "mlp_rwp_omd": "#DC2626",
 }
 
 
@@ -98,6 +104,8 @@ def build_algorithm(
         "projected_group_omd",
         "projected_online_rc_omd",
         "rwp_omd",
+        "mlp_projected_group_omd",
+        "mlp_rwp_omd",
     }:
         arguments.update(
             {
@@ -112,8 +120,15 @@ def build_algorithm(
                 ),
             }
         )
+        if algorithm_name in {"mlp_projected_group_omd", "mlp_rwp_omd"}:
+            # stage-b: the MLP seed is derived from the run seed so the
+            # initialization is paired across arms within a seed.
+            arguments["mlp_hidden"] = int(method_config.get("mlp_hidden", 32))
+            arguments["mlp_seed"] = seed + 500_000
         if algorithm_name == "projected_group_omd":
             return ProjectedGroupOMD(**arguments)
+        if algorithm_name == "mlp_projected_group_omd":
+            return MLPProjectedGroupOMD(**arguments)
         arguments.update(
             {
                 "reliability_decay": float(method_config["reliability_decay"]),
@@ -124,10 +139,12 @@ def build_algorithm(
                 "reliability_floor": float(method_config["reliability_floor"]),
             }
         )
-        if algorithm_name == "rwp_omd":
+        if algorithm_name in {"rwp_omd", "mlp_rwp_omd"}:
             arguments["projection_lambda"] = float(
                 method_config["projection_lambda"]
             )
+            if algorithm_name == "mlp_rwp_omd":
+                return MLPReliabilityWeightedProjectionOMD(**arguments)
             return ReliabilityWeightedProjectionOMD(**arguments)
         return ProjectedOnlineReliabilityOMD(**arguments)
 

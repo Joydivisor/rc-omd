@@ -1,0 +1,81 @@
+{
+  "protocol_id": "qwen-math500-v1",
+  "phase": "development",
+  "model": {
+    "id": "Qwen/Qwen2.5-Math-1.5B-Instruct",
+    "revision": "aafeb0fc6f22cbf0eaeed126eff8be45b0360a35",
+    "dtype": "bfloat16"
+  },
+  "lora": {
+    "r": 16,
+    "lora_alpha": 32,
+    "lora_dropout": 0.0,
+    "bias": "none",
+    "task_type": "CAUSAL_LM",
+    "target_modules": [
+      "q_proj",
+      "k_proj",
+      "v_proj",
+      "o_proj"
+    ]
+  },
+  "data": {
+    "dataset": "openai/gsm8k",
+    "config": "main",
+    "split_rule": "SHA-256 question bucket: 0-999 development, 1000-9999 training",
+    "test_access": "Phase D only"
+  },
+  "generation": {
+    "max_prompt_tokens": 512,
+    "max_new_tokens": 512,
+    "temperature": 0.8,
+    "top_p": 1.0,
+    "completions_per_prompt": 4,
+    "eval_max_new_tokens": 768,
+    "eval_batch": 8
+  },
+  "q3b": {
+    "questions": 64,
+    "completions_per_question": 4,
+    "question_batch": 4
+  },
+  "seeds": {
+    "pilot": 3401,
+    "development": [
+      3201,
+      3202,
+      3203
+    ],
+    "confirmation": [
+      3301,
+      3302,
+      3303,
+      3304,
+      3305
+    ]
+  },
+  "resource_guard": {
+    "cuda_memory_fraction": 0.85
+  },
+  "output_directory": "results/qwen_math500",
+  "training": {
+    "steps": 20,
+    "prompts_per_step": 4,
+    "learning_rate": 1e-05,
+    "microbatch_sequences": 1,
+    "chunk_tokens": 256,
+    "eta": 1.0,
+    "lam": 3.0
+  },
+  "reliability": {
+    "warmup": 8.0,
+    "confidence": 1.0,
+    "floor": 0.1
+  },
+  "evaluation": {
+    "dataset": "HuggingFaceH4/MATH-500",
+    "n_problems": 120,
+    "selection": "first 120 by unique_id sort, frozen",
+    "decoding": "greedy"
+  }
+}

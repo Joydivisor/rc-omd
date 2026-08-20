@@ -1,0 +1,132 @@
+{
+  "record_type": "golden_record",
+  "record_status": "ORIGINAL",
+  "protocol_id": "qwen-math500-v1",
+  "phase": "execution",
+  "execution_commit": "fe4c4d7ce86e7a33d999428278a1de050a7c756c",
+  "executed_on": "2026-08-20",
+  "wall_clock": "1h47m, 16:13 to 18:00 local, six paired runs plus one reference",
+  "scope": "PERFORMANCE experiment, not mechanism validation. Reinforcement learning on GSM8K training buckets, scored on MATH-500: a TRANSFER evaluation, not in-distribution. No result here bears on geometry-v1/-v2/-v3 or Stage B/B-2 in either direction.",
+  "model": {
+    "id": "Qwen/Qwen2.5-Math-1.5B-Instruct",
+    "revision": "aafeb0fc6f22cbf0eaeed126eff8be45b0360a35",
+    "dtype": "bfloat16",
+    "lora": "r=16 alpha=32 on q,k,v,o_proj; base frozen"
+  },
+  "environment": {
+    "python": "3.12.10",
+    "torch": "2.11.0+cu128",
+    "transformers": "5.15.1",
+    "peft": "0.20.0",
+    "gpu": "NVIDIA GeForce RTX 5070 Laptop, 8151 MiB, sm_120",
+    "peak_vram_mib_observed": 4800
+  },
+  "config": {
+    "path": "configs/qwen_math500.json",
+    "sha256": "9b7104dfc4f4fe495c1064545220007ccc9b143900ffc262b1ee106a61c35e20"
+  },
+  "evaluation_set": {
+    "dataset": "HuggingFaceH4/MATH-500",
+    "n": 120,
+    "selection": "first 120 by unique_id sort, frozen before any run",
+    "decoding": "greedy",
+    "scorer": "brace-matched \boxed{} + LaTeX normalization",
+    "scorer_self_check": "recovers 500/500 gold answers from gold solutions"
+  },
+  "untrained_reference_accuracy": 0.7833333333333333,
+  "per_seed": {
+    "3201": {
+      "uniform": 0.8,
+      "rwp": 0.7916666666666666,
+      "delta_pp": -0.8333333333333415
+    },
+    "3202": {
+      "uniform": 0.8083333333333333,
+      "rwp": 0.8,
+      "delta_pp": -0.8333333333333304
+    },
+    "3203": {
+      "uniform": 0.7916666666666666,
+      "rwp": 0.8,
+      "delta_pp": 0.8333333333333415
+    }
+  },
+  "paired_bootstrap": {
+    "items": 120,
+    "resamples": 10000,
+    "seed": 20260826,
+    "mean_delta_pp": -0.27777777777777773,
+    "ci_lower_pp": -2.222222222222222,
+    "ci_upper_pp": 1.6666666666666667,
+    "non_inferiority_margin_pp": -2.0,
+    "margin_cleared": false,
+    "seeds_favouring_rwp": 1,
+    "one_item_pp": 0.8333333333333334
+  },
+  "training_diagnostics": {
+    "uniform_s3201": {
+      "mean_reward": 0.946875,
+      "reward_variance_group_fraction": 0.0625,
+      "mean_reliability": 1.0,
+      "mean_grad_norm": 0.002821077709690911,
+      "mean_generation_length": 274.134375,
+      "steps": 20
+    },
+    "uniform_s3202": {
+      "mean_reward": 0.884375,
+      "reward_variance_group_fraction": 0.1875,
+      "mean_reliability": 1.0,
+      "mean_grad_norm": 0.008525333294178239,
+      "mean_generation_length": 288.984375,
+      "steps": 20
+    },
+    "uniform_s3203": {
+      "mean_reward": 0.940625,
+      "reward_variance_group_fraction": 0.125,
+      "mean_reliability": 1.0,
+      "mean_grad_norm": 0.0067565448342584485,
+      "mean_generation_length": 281.115625,
+      "steps": 20
+    },
+    "rwp_s3201": {
+      "mean_reward": 0.940625,
+      "reward_variance_group_fraction": 0.075,
+      "mean_reliability": 0.171120685338974,
+      "mean_grad_norm": 0.0003953618180325691,
+      "mean_generation_length": 272.715625,
+      "steps": 20
+    },
+    "rwp_s3202": {
+      "mean_reward": 0.871875,
+      "reward_variance_group_fraction": 0.1625,
+      "mean_reliability": 0.18597482219338418,
+      "mean_grad_norm": 0.0009111275333047786,
+      "mean_generation_length": 289.234375,
+      "steps": 20
+    },
+    "rwp_s3203": {
+      "mean_reward": 0.953125,
+      "reward_variance_group_fraction": 0.125,
+      "mean_reliability": 0.1794654071331024,
+      "mean_grad_norm": 0.0007403790420099198,
+      "mean_generation_length": 279.45,
+      "steps": 20
+    }
+  },
+  "verdict": "INCONCLUSIVE",
+  "verdict_basis": "Confidence interval spans zero and crosses the decision threshold; effect direction inconsistent across seeds, 1 of 3 favour RWP; every per-seed difference is exactly one problem. Protocol Section 11 assigns this INCONCLUSIVE, not NO-GO.",
+  "interpretation_limits": [
+    "THE DOMINANT FINDING IS A CEILING EFFECT, NOT AN ALGORITHM RESULT. Mean training reward was 0.92 and only 12.1 to 12.5 percent of rollout groups had any reward variance. GRPO's group-relative advantage is exactly zero for a group whose completions all score alike, so roughly 88 percent of groups contributed no gradient at all and each 20-step run trained on the equivalent of about 10 informative prompts.",
+    "RWP's mean gradient norm was 0.0007 against the baseline's 0.0060, about eightfold smaller, with mean reliability 0.18 against 1.0. Mean-one normalization balances the WEIGHTS but the mixture still blends toward pi_old, shrinking the effective step. RWP therefore trained even less than the baseline did, which is a mechanism for the null rather than evidence against the method.",
+    "The non-inferiority margin formally fails, CI lower bound -2.22 against -2.00, but that is a statement about PRECISION and not about RWP: the interval spans zero and would need roughly four times the items to resolve a two-point effect.",
+    "Transfer, not in-distribution: training prompts are GSM8K, scoring is MATH-500. A null here does not bound in-distribution behaviour.",
+    "Twenty GRPO steps is a pilot budget. Published GRPO on this task uses hundreds to thousands of steps with far larger batches.",
+    "Contamination is unresolved. Qwen2.5-Math-1.5B-Instruct may have seen GSM8K in pre-training or instruction tuning; the 92 percent training reward is consistent with that. Absolute accuracy may not be quoted as a benchmark result, though the paired comparison from an identical checkpoint stands.",
+    "Index-based token alignment remains a confound for any negative result per D2, although the Q4B diagnostics showed alignment itself held at 0.966."
+  ],
+  "what_would_be_needed": [
+    "Training prompts the model does not already solve: MATH train, or GSM8K filtered to items the base model gets wrong.",
+    "Larger G, to induce reward variance within a group.",
+    "Substantially more steps. None of this is a tuning fix; the current setup gives the algorithm almost nothing to act on."
+  ]
+}
